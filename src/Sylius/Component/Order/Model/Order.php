@@ -142,6 +142,7 @@ class Order implements OrderInterface
             return;
         }
 
+        $this->itemsTotal = (int) $this->itemsTotal; // bigint(string) to int (ignore if its larger then 64bit int)
         $this->itemsTotal += $item->getTotal();
         $this->items->add($item);
         $item->setOrder($this);
@@ -153,6 +154,7 @@ class Order implements OrderInterface
     {
         if ($this->hasItem($item)) {
             $this->items->removeElement($item);
+            $this->itemsTotal = (int) $this->itemsTotal; // bigint(string) to int (ignore if its larger then 64bit int)
             $this->itemsTotal -= $item->getTotal();
             $this->recalculateTotal();
             $item->setOrder(null);
@@ -166,7 +168,7 @@ class Order implements OrderInterface
 
     public function getItemsTotal(): int
     {
-        return $this->itemsTotal;
+        return (int) $this->itemsTotal;
     }
 
     public function recalculateItemsTotal(): void
@@ -181,7 +183,7 @@ class Order implements OrderInterface
 
     public function getTotal(): int
     {
-        return $this->total;
+        return (int) $this->total;
     }
 
     public function getTotalQuantity(): int
@@ -259,7 +261,7 @@ class Order implements OrderInterface
     public function getAdjustmentsTotal(?string $type = null): int
     {
         if (null === $type) {
-            return $this->adjustmentsTotal;
+            return (int) $this->adjustmentsTotal;
         }
 
         $total = 0;
@@ -323,9 +325,9 @@ class Order implements OrderInterface
      */
     protected function recalculateTotal(): void
     {
-        $this->total = $this->itemsTotal + $this->adjustmentsTotal;
+        $this->total = (int) $this->itemsTotal + (int) $this->adjustmentsTotal;
 
-        if ($this->total < 0) {
+        if ((int) $this->total < 0) {
             $this->total = 0;
         }
     }
@@ -333,6 +335,7 @@ class Order implements OrderInterface
     protected function addToAdjustmentsTotal(AdjustmentInterface $adjustment): void
     {
         if (!$adjustment->isNeutral()) {
+            $this->adjustmentsTotal = (int) $this->adjustmentsTotal; // bigint(string) to int (ignore if its larger then 64bit int)
             $this->adjustmentsTotal += $adjustment->getAmount();
             $this->recalculateTotal();
         }
@@ -341,6 +344,7 @@ class Order implements OrderInterface
     protected function subtractFromAdjustmentsTotal(AdjustmentInterface $adjustment): void
     {
         if (!$adjustment->isNeutral()) {
+            $this->adjustmentsTotal = (int) $this->adjustmentsTotal; // bigint(string) to int (ignore if its larger then 64bit int)
             $this->adjustmentsTotal -= $adjustment->getAmount();
             $this->recalculateTotal();
         }

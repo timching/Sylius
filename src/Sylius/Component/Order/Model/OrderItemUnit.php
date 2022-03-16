@@ -50,7 +50,7 @@ class OrderItemUnit implements OrderItemUnitInterface
 
     public function getTotal(): int
     {
-        $total = $this->orderItem->getUnitPrice() + $this->adjustmentsTotal;
+        $total = $this->orderItem->getUnitPrice() + (int) $this->adjustmentsTotal;
 
         if ($total < 0) {
             return 0;
@@ -107,7 +107,7 @@ class OrderItemUnit implements OrderItemUnitInterface
     public function getAdjustmentsTotal(?string $type = null): int
     {
         if (null === $type) {
-            return $this->adjustmentsTotal;
+            return (int) $this->adjustmentsTotal;
         }
 
         $total = 0;
@@ -143,6 +143,7 @@ class OrderItemUnit implements OrderItemUnitInterface
     protected function addToAdjustmentsTotal(AdjustmentInterface $adjustment): void
     {
         if (!$adjustment->isNeutral()) {
+            $this->adjustmentsTotal = (int) $this->adjustmentsTotal; // bigint(string) to int (ignore if its larger then 64bit int)
             $this->adjustmentsTotal += $adjustment->getAmount();
         }
     }
@@ -150,6 +151,7 @@ class OrderItemUnit implements OrderItemUnitInterface
     protected function subtractFromAdjustmentsTotal(AdjustmentInterface $adjustment): void
     {
         if (!$adjustment->isNeutral()) {
+            $this->adjustmentsTotal = (int) $this->adjustmentsTotal; // bigint(string) to int (ignore if its larger then 64bit int)
             $this->adjustmentsTotal -= $adjustment->getAmount();
         }
     }
