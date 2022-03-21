@@ -40,7 +40,7 @@ class Order implements OrderInterface
      */
     protected $items;
 
-    /** @var int */
+    /** @var string|int */
     protected $itemsTotal = 0;
 
     /**
@@ -50,13 +50,13 @@ class Order implements OrderInterface
      */
     protected $adjustments;
 
-    /** @var int */
+    /** @var string|int */
     protected $adjustmentsTotal = 0;
 
     /**
      * Items total + adjustments total.
      *
-     * @var int
+     * @var string|int
      */
     protected $total = 0;
 

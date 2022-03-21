@@ -27,10 +27,10 @@ class OrderItem implements OrderItemInterface
     /** @var int */
     protected $quantity = 0;
 
-    /** @var int */
+    /** @var string|int */
     protected $unitPrice = 0;
 
-    /** @var int */
+    /** @var string|int */
     protected $total = 0;
 
     /** @var bool */
@@ -43,7 +43,7 @@ class OrderItem implements OrderItemInterface
      */
     protected $units;
 
-    /** @var int */
+    /** @var string|int */
     protected $unitsTotal = 0;
 
     /**
@@ -53,7 +53,7 @@ class OrderItem implements OrderItemInterface
      */
     protected $adjustments;
 
-    /** @var int */
+    /** @var string|int */
     protected $adjustmentsTotal = 0;
 
     public function __construct()
@@ -109,9 +109,10 @@ class OrderItem implements OrderItemInterface
         return (int) $this->unitPrice;
     }
 
-    public function setUnitPrice(int $unitPrice): void
+    /** @param string|int $unitPrice (bigint in db) */
+    public function setUnitPrice($unitPrice): void
     {
-        $this->unitPrice = $unitPrice;
+        $this->unitPrice = (int) $unitPrice > PHP_INT_MAX ? PHP_INT_MAX : (int) $unitPrice;
         $this->recalculateUnitsTotal();
     }
 
