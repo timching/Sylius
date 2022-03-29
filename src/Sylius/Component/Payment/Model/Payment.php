@@ -28,7 +28,7 @@ class Payment implements PaymentInterface
     /** @var string */
     protected $currencyCode;
 
-    /** @var string|int */
+    /** @var int */
     protected $amount = 0;
 
     /** @var string */
@@ -72,10 +72,9 @@ class Payment implements PaymentInterface
         return (int) $this->amount;
     }
 
-    /** @param string|int $amount (bigint in db) */
-    public function setAmount($amount): void
+    public function setAmount(int $amount): void
     {
-        $this->amount = (int) $amount > PHP_INT_MAX ? PHP_INT_MAX : (int) $amount;
+        $this->amount = $amount;
     }
 
     public function getState(): ?string

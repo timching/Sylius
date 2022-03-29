@@ -31,7 +31,7 @@ class OrderItemUnit implements OrderItemUnitInterface
      */
     protected $adjustments;
 
-    /** @var string|int */
+    /** @var int */
     protected $adjustmentsTotal = 0;
 
     public function __construct(OrderItemInterface $orderItem)

@@ -114,14 +114,11 @@ class Adjustment implements AdjustmentInterface
         return (int) $this->amount;
     }
 
-    /** @param string|int $amount (bigint in db) */
-    public function setAmount($amount): void
+    public function setAmount(int $amount): void
     {
-        if (is_numeric($amount)) {
-            $this->amount = (int) $amount > PHP_INT_MAX ? PHP_INT_MAX : (int) $amount;
-            if (!$this->isNeutral()) {
-                $this->recalculateAdjustable();
-            }
+        $this->amount = $amount;
+        if (!$this->isNeutral()) {
+            $this->recalculateAdjustable();
         }
     }
 
