@@ -75,9 +75,7 @@ class Payment implements PaymentInterface
     /** @param string|int $amount (bigint in db) */
     public function setAmount($amount): void
     {
-        if (is_numeric($amount)) {
-            $this->amount = (int) $amount > PHP_INT_MAX ? PHP_INT_MAX : (int) $amount;
-        }
+        $this->amount = (int) $amount > PHP_INT_MAX ? PHP_INT_MAX : (int) $amount;
     }
 
     public function getState(): ?string

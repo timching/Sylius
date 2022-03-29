@@ -112,10 +112,8 @@ class OrderItem implements OrderItemInterface
     /** @param string|int $unitPrice (bigint in db) */
     public function setUnitPrice($unitPrice): void
     {
-        if (is_numeric($unitPrice)) {
-            $this->unitPrice = (int) $unitPrice > PHP_INT_MAX ? PHP_INT_MAX : (int) $unitPrice;
-            $this->recalculateUnitsTotal();
-        }
+        $this->unitPrice = (int) $unitPrice > PHP_INT_MAX ? PHP_INT_MAX : (int) $unitPrice;
+        $this->recalculateUnitsTotal();
     }
 
     public function getTotal(): int
