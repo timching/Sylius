@@ -111,7 +111,7 @@ class Adjustment implements AdjustmentInterface
 
     public function getAmount(): int
     {
-        return (int) $this->amount;
+        return $this->amount;
     }
 
     public function setAmount(int $amount): void
@@ -152,12 +152,12 @@ class Adjustment implements AdjustmentInterface
 
     public function isCharge(): bool
     {
-        return 0 > (int) $this->amount;
+        return 0 > $this->amount;
     }
 
     public function isCredit(): bool
     {
-        return 0 < (int) $this->amount;
+        return 0 < $this->amount;
     }
 
     public function getOriginCode(): ?string
