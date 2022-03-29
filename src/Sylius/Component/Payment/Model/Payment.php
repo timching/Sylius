@@ -69,7 +69,7 @@ class Payment implements PaymentInterface
 
     public function getAmount(): ?int
     {
-        return (int) $this->amount;
+        return $this->amount;
     }
 
     public function setAmount(int $amount): void
