@@ -108,7 +108,7 @@ final class ZoneType extends AbstractResourceType
     private function getZoneMemberEntryOptions(string $zoneMemberType): array
     {
         $zoneMemberEntryOptions = [
-            ZoneInterface::TYPE_COUNTRY => ['label' => 'sylius.form.zone.types.country'],
+            ZoneInterface::TYPE_COUNTRY => ['label' => 'sylius.form.zone.types.country', 'enabled' => null],
             ZoneInterface::TYPE_PROVINCE => ['label' => 'sylius.form.zone.types.province'],
             ZoneInterface::TYPE_ZONE => ['label' => 'sylius.form.zone.types.zone'],
         ];
