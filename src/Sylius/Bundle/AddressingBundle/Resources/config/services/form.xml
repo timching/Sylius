@@ -53,6 +53,7 @@
 
         <service id="sylius.form.type.country_choice" class="Sylius\Bundle\AddressingBundle\Form\Type\CountryChoiceType">
             <argument type="service" id="sylius.repository.country" />
+            <argument type="service" id="translator.data_collector" on-invalid="ignore"/>
             <tag name="form.type" />
         </service>
 

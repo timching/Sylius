@@ -21,15 +21,22 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class CountryChoiceType extends AbstractType
 {
     /** @var RepositoryInterface */
     private $countryRepository;
 
-    public function __construct(RepositoryInterface $countryRepository)
+    /**
+     * @var TranslatorInterface|null
+     */
+    private $translator = null;
+
+    public function __construct(RepositoryInterface $countryRepository, $translator = null)
     {
         $this->countryRepository = $countryRepository;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -51,7 +58,25 @@ final class CountryChoiceType extends AbstractType
                         $countries = $this->countryRepository->findBy(['enabled' => $options['enabled']]);
                     }
 
-                    return $countries;
+                    $groupedCountries = [];
+                    /** @var CountryInterface $country */
+                    foreach ($countries as $country) {
+                        $groupName = $country->isEnabled() ? 'Enabled' : 'Disabled';
+
+                        if (null !== $this->translator) {
+                            $groupName = $this->translator->trans(
+                                $country->isEnabled() ? 'sylius.ui.enabled' : 'sylius.ui.disabled'
+                            );
+                        }
+
+                        if (!array_key_exists($groupName, $groupedCountries)) {
+                            $groupedCountries[$groupName] = [];
+                        }
+
+                        $groupedCountries[$groupName][] = $country;
+                    }
+
+                    return $groupedCountries;
                 },
                 'choice_value' => 'code',
                 'choice_label' => 'name',
@@ -61,16 +86,20 @@ final class CountryChoiceType extends AbstractType
                 'placeholder' => 'sylius.form.country.select',
             ])
             ->setAllowedTypes('choice_filter', ['null', 'callable'])
-            ->setNormalizer('choices', static function (Options $options, array $countries): array {
+            ->setNormalizer('choices', static function (Options $options, array $groupedCountries): array {
                 if ($options['choice_filter']) {
-                    $countries = array_filter($countries, $options['choice_filter']);
+                    foreach ($groupedCountries as &$countries) {
+                        $countries = array_filter($countries, $options['choice_filter']);
+                    }
                 }
 
-                usort($countries, static function (CountryInterface $firstCountry, CountryInterface $secondCountry): int {
-                    return $firstCountry->getName() <=> $secondCountry->getName();
-                });
+                foreach ($groupedCountries as &$countries) {
+                    usort($countries, static function (CountryInterface $firstCountry, CountryInterface $secondCountry): int {
+                        return $firstCountry->getName() <=> $secondCountry->getName();
+                    });
+                }
 
-                return $countries;
+                return $groupedCountries;
             })
         ;
     }
