@@ -86,7 +86,7 @@ final class SyliusCoreExtensionTest extends AbstractExtensionTestCase
         ));
         $this->assertSame(
             '@SyliusCoreBundle/Migrations',
-            $doctrineMigrationsExtensionConfig[0]['migrations_paths']['Sylius\Bundle\CoreBundle\Migrations']
+            $doctrineMigrationsExtensionConfig[0]['migrations_paths']['Sylius\Bundle\CoreBundle\Migrations'],
         );
 
         $syliusLabsDoctrineMigrationsExtraExtensionConfig = $this
@@ -99,7 +99,7 @@ final class SyliusCoreExtensionTest extends AbstractExtensionTestCase
         ));
         $this->assertSame(
             [],
-            $syliusLabsDoctrineMigrationsExtraExtensionConfig[0]['migrations']['Sylius\Bundle\CoreBundle\Migrations']
+            $syliusLabsDoctrineMigrationsExtraExtensionConfig[0]['migrations']['Sylius\Bundle\CoreBundle\Migrations'],
         );
     }
 

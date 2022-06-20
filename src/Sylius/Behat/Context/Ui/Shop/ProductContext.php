@@ -42,7 +42,7 @@ final class ProductContext implements Context
         IndexPageInterface $indexPage,
         ProductReviewIndexPageInterface $productReviewsIndexPage,
         ErrorPageInterface $errorPage,
-        VerticalMenuElementInterface $verticalMenuElement
+        VerticalMenuElementInterface $verticalMenuElement,
     ) {
         $this->showPage = $showPage;
         $this->indexPage = $indexPage;
@@ -113,7 +113,7 @@ final class ProductContext implements Context
             $this->showPage->isOpen([
                 'slug' => $product->getTranslation($localeCode)->getSlug(),
                 '_locale' => $localeCode,
-            ])
+            ]),
         );
     }
 
@@ -173,7 +173,7 @@ final class ProductContext implements Context
     {
         Assert::eq(
             new \DateTime($this->showPage->getAttributeByName($attributeName)),
-            new \DateTime($expectedAttribute)
+            new \DateTime($expectedAttribute),
         );
     }
 
@@ -485,7 +485,7 @@ final class ProductContext implements Context
         foreach ($reviews as $review) {
             Assert::true(
                 $this->showPage->hasReviewTitled($review),
-                sprintf('Product should have review titled "%s" but it does not.', $review)
+                sprintf('Product should have review titled "%s" but it does not.', $review),
             );
         }
     }
@@ -545,7 +545,7 @@ final class ProductContext implements Context
     {
         Assert::true(
             $this->showPage->hasAssociation($productAssociationName),
-            sprintf('There should be an association named "%s" but it does not.', $productAssociationName)
+            sprintf('There should be an association named "%s" but it does not.', $productAssociationName),
         );
 
         foreach ($products as $product) {
@@ -608,7 +608,7 @@ final class ProductContext implements Context
     public function iShouldBeAbleToSelectTheAndColorOptionValues(
         string $optionValue1,
         string $optionValue2,
-        string $optionName
+        string $optionName,
     ) {
         Assert::true(in_array($optionValue1, $this->showPage->getOptionValues($optionName), true));
         Assert::true(in_array($optionValue2, $this->showPage->getOptionValues($optionName), true));
@@ -672,8 +672,8 @@ final class ProductContext implements Context
             sprintf(
                 'There should be an associated product "%s" under association "%s" but it does not.',
                 $productName,
-                $productAssociationName
-            )
+                $productAssociationName,
+            ),
         );
     }
 
