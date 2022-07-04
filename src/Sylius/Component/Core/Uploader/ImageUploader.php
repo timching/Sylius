@@ -27,12 +27,12 @@ class ImageUploader implements ImageUploaderInterface
 
     public function __construct(
         protected Filesystem $filesystem,
-        ?ImagePathGeneratorInterface $imagePathGenerator = null
+        ?ImagePathGeneratorInterface $imagePathGenerator = null,
     ) {
         if ($imagePathGenerator === null) {
             @trigger_error(sprintf(
                 'Not passing an $imagePathGenerator to %s constructor is deprecated since Sylius 1.6 and will be not possible in Sylius 2.0.',
-                self::class
+                self::class,
             ), \E_USER_DEPRECATED);
         }
 
@@ -62,7 +62,7 @@ class ImageUploader implements ImageUploaderInterface
 
         $this->filesystem->write(
             $image->getPath(),
-            file_get_contents($image->getFile()->getPathname())
+            file_get_contents($image->getFile()->getPathname()),
         );
     }
 

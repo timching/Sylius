@@ -13,9 +13,8 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\CoreBundle\Doctrine\ORM;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductRepository as BaseProductRepository;
 use Sylius\Component\Core\Model\ChannelInterface;
@@ -59,14 +58,15 @@ class ProductRepository extends BaseProductRepository implements ProductReposito
         TaxonInterface $taxon,
         string $locale,
         array $sorting = [],
-        bool $includeAllDescendants = false
+        bool $includeAllDescendants = false,
     ): QueryBuilder {
         $queryBuilder = $this->createQueryBuilder('o')
             ->distinct()
             ->addSelect('translation')
             ->addSelect('productTaxon')
             ->innerJoin('o.translations', 'translation', 'WITH', 'translation.locale = :locale')
-            ->innerJoin('o.productTaxons', 'productTaxon');
+            ->innerJoin('o.productTaxons', 'productTaxon')
+        ;
 
         if ($includeAllDescendants) {
             $queryBuilder
@@ -112,8 +112,8 @@ class ProductRepository extends BaseProductRepository implements ProductReposito
                 ->andWhere(
                     $queryBuilder->expr()->in(
                         'variant.position',
-                        str_replace(':product_id', 'o.id', $subQuery->getDQL())
-                    )
+                        str_replace(':product_id', 'o.id', $subQuery->getDQL()),
+                    ),
                 )
                 ->setParameter('channelCode', $channel->getCode())
                 ->setParameter('enabled', true)

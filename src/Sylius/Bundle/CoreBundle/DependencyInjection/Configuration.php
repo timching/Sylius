@@ -15,7 +15,6 @@ namespace Sylius\Bundle\CoreBundle\DependencyInjection;
 
 use Sylius\Bundle\CoreBundle\Controller\ProductTaxonController;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\AvatarImageRepository;
-use Sylius\Bundle\CoreBundle\Doctrine\ORM\ChannelPricingRepository;
 use Sylius\Bundle\CoreBundle\Form\Type\Product\ChannelPricingType;
 use Sylius\Bundle\CoreBundle\Form\Type\ShopBillingDataType;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
@@ -57,7 +56,7 @@ final class Configuration implements ConfigurationInterface
                         ->integerNode('batch_size')
                             ->defaultValue(100)
                             ->validate()
-                                ->ifTrue(fn(int $batchSize): bool => $batchSize <= 0)
+                                ->ifTrue(fn (int $batchSize): bool => $batchSize <= 0)
                                 ->thenInvalid('Expected value bigger than 0, but got %s.')
                             ->end()
                         ->end()
@@ -101,7 +100,7 @@ final class Configuration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('model')->defaultValue(AvatarImage::class)->cannotBeEmpty()->end()
-										->scalarNode('interface')->defaultValue(AvatarImageInterface::class)->cannotBeEmpty()->end()
+                                        ->scalarNode('interface')->defaultValue(AvatarImageInterface::class)->cannotBeEmpty()->end()
                                         ->scalarNode('repository')->defaultValue(AvatarImageRepository::class)->cannotBeEmpty()->end()
                                         ->scalarNode('factory')->defaultValue(Factory::class)->end()
                                     ->end()
