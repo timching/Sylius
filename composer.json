@@ -59,6 +59,7 @@
         "lexik/jwt-authentication-bundle": "^3.1",
         "liip/imagine-bundle": "^2.13",
         "pagerfanta/pagerfanta": "^4.0",
+        "paragonie/halite": "^5.0",
         "payum/offline": "^1.7.5",
         "payum/payum-bundle": "^2.6",
         "php-http/discovery": "^1.20",
