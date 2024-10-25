@@ -76,7 +76,7 @@ final class PaymentRequestEncryptionTest extends KernelTestCase
     }
 
     /** @test */
-    public function it_not_encrypt_and_decrypt_null_payloads(): void
+    public function it_does_not_encrypt_and_decrypt_null_payloads(): void
     {
         $paymentRequest = $this->createTestPaymentRequest();
         $paymentRequest->setPayload(null);
