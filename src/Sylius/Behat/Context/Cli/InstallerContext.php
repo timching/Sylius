@@ -57,7 +57,7 @@ final class InstallerContext implements Context
         private readonly FactoryInterface $adminUserFactory,
         private readonly UserRepositoryInterface $adminUserRepository,
         private readonly ValidatorInterface $validator,
-        private readonly bool $publicDir,
+        private readonly string $publicDir,
     ) {
     }
 
