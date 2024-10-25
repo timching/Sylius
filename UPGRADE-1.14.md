@@ -53,7 +53,6 @@
     | `Sylius\Bundle\AdminBundle\Action\Account\RequestPasswordResetAction`                                               | `sylius_admin.controller.account.request_password_reset`                                            |
     | `sylius.controller.admin.dashboard`                                                                                 | `sylius_admin.controller.dashboard`                                                                 |
     | `sylius.controller.customer_statistics`                                                                             | `sylius_admin.controller.customer_statistics`                                                       |
-    | `sylius.controller.admin.notification`                                                                              | `sylius_admin.controller.notification`                                                              |
     | `Sylius\Bundle\AdminBundle\Controller\RemoveCatalogPromotionAction`                                                 | `sylius_admin.controller.remove_catalog_promotion`                                                  |
     | `Sylius\Bundle\AdminBundle\Controller\RedirectHandler`                                                              | `sylius_admin.resource_controller.redirect_handler`                                                 |
     | `sylius.mailer.shipment_email_manager.admin`                                                                        | `sylius_admin.mailer.shipment_email_manager`                                                        |
@@ -716,8 +715,13 @@
         )
     ```
 
+1. The following classes have been deprecated and will be removed in Sylius 2.0:
+    - **AdminBundle**
+    - `Sylius\Bundle\AdminBundle\Controller\NotificationController`
+
 1. The following services have been deprecated and will be removed in Sylius 2.0:
     - **AdminBundle**
+    - `sylius.controller.admin.notification`
     - `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
     - `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionActionTypeExtension`
     - `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionScopeTypeExtension`
