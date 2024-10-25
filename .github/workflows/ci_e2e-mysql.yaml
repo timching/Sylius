@@ -92,7 +92,7 @@ jobs:
                     echo "{}" > public/build/app/shop/manifest.json
 
             -   name: Build application
-                uses: SyliusLabs/BuildTestAppAction@v2.2
+                uses: SyliusLabs/BuildTestAppAction@v2.2.1
                 with:
                     build_type: "sylius"
                     cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
@@ -103,6 +103,7 @@ jobs:
                     php_version: ${{ matrix.php }}
                     symfony_version: ${{ matrix.symfony }}
                     node_version: "20.x"
+                    chrome_version: stable
 
             -   name: Test installer
                 run: bin/console sylius:install --no-interaction -vvv
