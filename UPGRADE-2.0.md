@@ -106,7 +106,6 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 | `Sylius\Bundle\AdminBundle\Action\Account\RequestPasswordResetAction`                                               | `sylius_admin.controller.account.request_password_reset`                                            |
 | `sylius.controller.admin.dashboard`                                                                                 | `sylius_admin.controller.dashboard`                                                                 |
 | `sylius.controller.customer_statistics`                                                                             | `sylius_admin.controller.customer_statistics`                                                       |
-| `sylius.controller.admin.notification`                                                                              | `sylius_admin.controller.notification`                                                              |
 | `Sylius\Bundle\AdminBundle\Controller\RemoveCatalogPromotionAction`                                                 | `sylius_admin.controller.remove_catalog_promotion`                                                  |
 | `Sylius\Bundle\AdminBundle\Controller\RedirectHandler`                                                              | `sylius_admin.resource_controller.redirect_handler`                                                 |
 | `sylius.mailer.shipment_email_manager.admin`                                                                        | `sylius_admin.mailer.shipment_email_manager`                                                        |
@@ -859,6 +858,7 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 
 * The following classes and interfaces have been removed:
 
+    * `Sylius\Bundle\AdminBundle\Controller\NotificationController`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\CheckoutStepsHelper`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\PriceHelper`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\VariantResolverHelper`
@@ -884,6 +884,7 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
     * `sylius.security.user_login`
     * `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
     * `Sylius\Component\User\Security\UserPasswordHasherInterface`
+    * `sylius.controller.admin.notification`
 
 * The service `sylius.form_registry.payum_gateway_config` has been moved to the `PaymentBundle`, and its ID changed to `sylius.form_registry.payment_gateway_config`.
 
