@@ -188,15 +188,16 @@ final class ApiPlatformClient implements ApiClientInterface
         return $this;
     }
 
-    public function buildCustomUpdateRequest(string $resource, string $id, string $customSuffix): void
+    public function buildCustomUpdateRequest(string $uri, ?string $id = null): self
     {
         $this->request = $this->requestFactory->update(
             $this->section,
-            $resource,
-            sprintf('%s/%s', $id, $customSuffix),
+            $uri,
             $this->authorizationHeader,
             $this->getToken(),
         );
+
+        return $this;
     }
 
     public function addParameter(string $key, bool|int|string $value): self
