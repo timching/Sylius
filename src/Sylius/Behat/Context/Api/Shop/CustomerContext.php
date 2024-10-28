@@ -64,7 +64,7 @@ final class CustomerContext implements Context
         /** @var CustomerInterface $customer */
         $customer = $shopUser->getCustomer();
 
-        $this->client->buildUpdateRequest(sprintf('customers/%s/password', $customer->getId()));
+        $this->client->buildCustomUpdateRequest(sprintf('customers/%s/password', $customer->getId()));
     }
 
     /**

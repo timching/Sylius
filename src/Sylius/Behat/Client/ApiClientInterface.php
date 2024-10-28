@@ -57,6 +57,8 @@ interface ApiClientInterface
     /** @param ?string $id Deprecated, pass the id as a part of the uri */
     public function buildUpdateRequest(string $uri, ?string $id = null): self;
 
+    public function buildCustomUpdateRequest(string $uri, ?string $id = null): self;
+
     /** @param array<string, mixed> $data */
     public function setRequestData(array $data): self;
 
