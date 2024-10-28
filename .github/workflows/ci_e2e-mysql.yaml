@@ -44,7 +44,7 @@ jobs:
     behat-no-js:
         needs: get-matrix
         runs-on: ubuntu-latest
-        name: "Non-JS, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} (${{ matrix.env || 'test_cached' }}), MySQL ${{ matrix.mysql }}, Twig ${{ matrix.twig }}, API Platform ${{ matrix.api-platform }}"
+        name: "Non-JS, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} (${{ matrix.env || 'test_cached' }}), MySQL ${{ matrix.mysql }}, Twig ${{ matrix.twig }}"
         timeout-minutes: 45
         strategy:
             fail-fast: false
@@ -95,8 +95,8 @@ jobs:
                 uses: SyliusLabs/BuildTestAppAction@v2.2.1
                 with:
                     build_type: "sylius"
-                    cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
-                    cache_restore_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
+                    cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
+                    cache_restore_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
                     e2e: "yes"
                     database_version: ${{ matrix.mysql }}
                     legacy_postgresql_setup: ${{ env.USE_LEGACY_POSTGRES_SETUP }}
@@ -124,7 +124,7 @@ jobs:
                 uses: actions/upload-artifact@v3
                 if: failure()
                 with:
-                    name: "Logs (non-JS, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}), ApiPlatform ${{ matrix.api-platform }}, Twig ${{ matrix.twig }}, MySQL ${{ matrix.mysql }}"
+                    name: "Logs (non-JS, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}), Twig ${{ matrix.twig }}, MySQL ${{ matrix.mysql }}"
                     path: |
                         etc/build/
                         var/log
@@ -133,7 +133,7 @@ jobs:
     behat-ui-js-chromedriver:
         needs: get-matrix
         runs-on: ubuntu-latest
-        name: "JS with Chromedriver, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} (${{ matrix.env || 'test_cached' }}), MySQL ${{ matrix.mysql }}, Twig ${{ matrix.twig }}, API Platform ${{ matrix.api-platform }}"
+        name: "JS with Chromedriver, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} (${{ matrix.env || 'test_cached' }}), MySQL ${{ matrix.mysql }}, Twig ${{ matrix.twig }}"
         timeout-minutes: 45
         strategy:
             fail-fast: false
@@ -173,8 +173,8 @@ jobs:
                 uses: actions/cache@v3
                 with:
                     path: ${{ steps.composer-cache.outputs.dir }}
-                    key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
-                    restore-keys: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
+                    key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
+                    restore-keys: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
 
             -   name: Restrict Twig
                 if: matrix.twig == '^2.12'
@@ -184,8 +184,8 @@ jobs:
                 uses: SyliusLabs/BuildTestAppAction@v2.2.1
                 with:
                     build_type: "sylius"
-                    cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
-                    cache_restore_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
+                    cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
+                    cache_restore_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
                     e2e: "yes"
                     e2e_js: "yes"
                     database_version: ${{ matrix.mysql }}
@@ -202,7 +202,7 @@ jobs:
                 uses: actions/upload-artifact@v3
                 if: failure()
                 with:
-                    name: "Logs (JS with Chromedriver, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, ApiPlatform ${{ matrix.api-platform }}, Twig ${{ matrix.twig }}, MySQL ${{ matrix.mysql }})"
+                    name: "Logs (JS with Chromedriver, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, Twig ${{ matrix.twig }}, MySQL ${{ matrix.mysql }})"
                     path: |
                         etc/build/
                         var/log
@@ -211,7 +211,7 @@ jobs:
     behat-ui-js-panther:
         needs: get-matrix
         runs-on: ubuntu-latest
-        name: "JS with Panther, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} (${{ matrix.env || 'test_cached' }}), MySQL ${{ matrix.mysql }}, Twig ${{ matrix.twig }}, API Platform ${{ matrix.api-platform }}"
+        name: "JS with Panther, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }} (${{ matrix.env || 'test_cached' }}), MySQL ${{ matrix.mysql }}, Twig ${{ matrix.twig }}"
         timeout-minutes: 45
         strategy:
             fail-fast: false
@@ -251,8 +251,8 @@ jobs:
                 uses: actions/cache@v3
                 with:
                     path: ${{ steps.composer-cache.outputs.dir }}
-                    key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
-                    restore-keys: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
+                    key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
+                    restore-keys: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
 
             -   name: Restrict Twig
                 if: matrix.twig == '^2.12'
@@ -262,8 +262,8 @@ jobs:
                 uses: SyliusLabs/BuildTestAppAction@v2.2.1
                 with:
                     build_type: "sylius"
-                    cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
-                    cache_restore_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}-api-platform-${{ matrix.api-platform }}"
+                    cache_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
+                    cache_restore_key: "${{ github.run_id }}-${{ runner.os }}-${{ hashFiles('composer.json') }}-symfony-${{ matrix.symfony }}"
                     e2e: "yes"
                     e2e_js: "yes"
                     database_version: ${{ matrix.mysql }}
@@ -283,7 +283,7 @@ jobs:
                 uses: actions/upload-artifact@v3
                 if: failure()
                 with:
-                    name: "Logs (JS with Panther, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, ApiPlatform ${{ matrix.api-platform }}, Twig ${{ matrix.twig }}, MySQL ${{ matrix.mysql }})"
+                    name: "Logs (JS with Panther, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, Twig ${{ matrix.twig }}, MySQL ${{ matrix.mysql }})"
                     path: |
                         etc/build/
                         var/log
