@@ -26,6 +26,10 @@ final class OrderAdjustmentsRecalculationTest extends TestCase
 
     private OrderItemInterface $item;
 
+    private OrderItemUnit $unitNumberOne;
+
+    private OrderItemUnit $unitNumberTwo;
+
     protected function setUp(): void
     {
         $neutralAdjustment = $this->createAdjustment(AdjustmentInterface::ORDER_PROMOTION_ADJUSTMENT, -150, true);
