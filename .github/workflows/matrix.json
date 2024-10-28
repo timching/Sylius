@@ -4,13 +4,11 @@
       "include": [
         {
           "php": "8.2",
-          "symfony": "^6.4",
-          "api-platform": "^4.0.3"
+          "symfony": "^6.4"
         },
         {
           "php": "8.3",
-          "symfony": "^7.1",
-          "api-platform": "^4.0.3"
+          "symfony": "^7.1"
         }
       ]
     },
@@ -44,21 +42,18 @@
         {
           "php": "8.2",
           "symfony": "^6.4",
-          "api-platform": "^4.0.3",
           "mysql": "8.0",
           "twig": "^3.3"
         },
         {
           "php": "8.3",
           "symfony": "^7.1",
-          "api-platform": "^4.0.3",
           "mysql": "8.4",
           "twig": "^3.3"
         },
         {
           "php": "8.3",
           "symfony": "^6.4",
-          "api-platform": "^4.0.3",
           "mysql": "8.4",
           "twig": "^3.3",
           "env": "test_cached_payum"
@@ -102,8 +97,7 @@
   "full": {
     "static-checks": {
       "php": ["8.2", "8.3"],
-      "symfony": ["^6.4", "^7.1"],
-      "api-platform": ["^4.0.3"]
+      "symfony": ["^6.4", "^7.1"]
     },
     "e2e-mariadb": {
       "php": ["8.2", "8.3"],
@@ -122,14 +116,12 @@
     "e2e-mysql": {
       "php": ["8.2", "8.3"],
       "symfony": ["^6.4", "^7.1"],
-      "api-platform": ["^4.0.3"],
       "mysql": ["8.0", "8.4"],
       "twig": ["^3.3"],
       "include": [
         {
           "php": "8.3",
           "symfony": "^6.4",
-          "api-platform": "^4.0.3",
           "mysql": "8.4",
           "twig": "^3.3",
           "env": "test_cached_payum"
