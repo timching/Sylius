@@ -77,10 +77,13 @@ jobs:
                     composer global config --no-plugins allow-plugins.symfony/flex true
                     composer global require --no-progress --no-scripts --no-plugins "symfony/flex:^2.4"
                     composer config extra.symfony.require "${{ matrix.symfony }}"
-                    composer require "api-platform/core:${{ matrix.api-platform }}" --no-update --no-scripts --no-interaction
+                    composer require "api-platform/symfony:${{ matrix.api-platform }}" --no-update --no-scripts --no-interaction
+                    composer require "api-platform/doctrine-orm:${{ matrix.api-platform }}" --no-update --no-scripts --no-interaction
 
             -   name: Restrict API Platform version for ApiBundle
-                run: composer require "api-platform/core:${{ matrix.api-platform }}" --no-update --no-scripts --no-interaction
+                run: |
+                    composer require "api-platform/symfony:${{ matrix.api-platform }}" --no-update --no-scripts --no-interaction
+                    composer require "api-platform/doctrine-orm:${{ matrix.api-platform }}" --no-update --no-scripts --no-interaction
                 working-directory: "src/Sylius/Bundle/ApiBundle"
 
             -   name: Get Composer cache directory
@@ -129,9 +132,9 @@ jobs:
             -   name: Run PHPSpec
                 run: vendor/bin/phpspec run --ansi --no-interaction -f dot
 
-#            -   name: Run ComposerRequireChecker
-#                run: |
-#                    (cat composer.json | jq '.["autoload-dev"]["psr-4"] |= . + {"Sylius\\Behat\\": "src/Sylius/Behat/"}' | jq 'del(.autoload["psr-4"]["Sylius\\Behat\\"])') > _composer.json
-#                    mv _composer.json composer.json
-#                    composer dump-autoload
-#                    composer-require-checker check --config-file=composer-require-checker.json --ignore-parse-errors
+            -   name: Run ComposerRequireChecker
+                run: |
+                    (cat composer.json | jq '.["autoload-dev"]["psr-4"] |= . + {"Sylius\\Behat\\": "src/Sylius/Behat/"}' | jq 'del(.autoload["psr-4"]["Sylius\\Behat\\"])') > _composer.json
+                    mv _composer.json composer.json
+                    composer dump-autoload
+                    composer-require-checker check --config-file=composer-require-checker.json --ignore-parse-errors
