@@ -31,6 +31,22 @@
 
    The previous namespaces are still usable, but are considered deprecated and may be removed in future versions of `Resource` packages, update them at your own convenience.
 
+2. Package `enshrined/svg-sanitize` has been removed from the project due to license incompatibility with Sylius. You can still use it in your project by adding it manually. Just add it to your `composer.json` file:
+
+    ```json
+    {
+        "require": {
+            "enshrined/svg-sanitize": "^0.16",
+        }
+    }
+    ```
+   Also `svg` image support has been removed. If you want to use `svg` images in your project, add `image/svg+xml` to the list of allowed mime types in `CoreBundle` configuration.
+
+    ```yaml
+    sylius_core:
+        allowed_image_mime_types: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
+    ```
+
 ### Deprecations
 
 1. Aliases for the following services have been introduced to standardize service IDs and will replace the incorrect IDs in Sylius 2.0:
@@ -718,9 +734,6 @@
 1. The following classes have been deprecated and will be removed in Sylius 2.0:
     - **AdminBundle**
     - `Sylius\Bundle\AdminBundle\Controller\NotificationController`
-
-1. The following services have been deprecated and will be removed in Sylius 2.0:
-    - **AdminBundle**
     - `sylius.controller.admin.notification`
     - `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
     - `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionActionTypeExtension`
@@ -805,6 +818,7 @@
     - `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
     - `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
     - `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
+    - `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
     - **PayumBundle**
     - `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
     - `Sylius\Bundle\PayumBundle\Controller\PayumController`
