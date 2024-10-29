@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace Sylius\Bundle\CoreBundle\Attribute;
+namespace Sylius\Bundle\PromotionBundle\Attribute;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
-final class AsCatalogPromotionPriceCalculator
+final class AsCatalogPromotionVariantChecker
 {
-    public const SERVICE_TAG = 'sylius.catalog_promotion.price_calculator';
+    public const SERVICE_TAG = 'sylius.catalog_promotion.variant_checker';
 
     public function __construct(
         private string $type,
