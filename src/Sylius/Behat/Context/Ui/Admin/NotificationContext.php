@@ -42,7 +42,7 @@ final readonly class NotificationContext implements Context
     {
         Assert::true($this->notificationsElement->hasNotification((string) NotificationType::success(), 'has been successfully updated.'));
     }
-    
+
     /**
      * @Then I should be notified that it :has been successfully deleted
      * @Then I should be notified that they :have been successfully deleted
