@@ -23,6 +23,9 @@
             <constraint name="Sylius\Bundle\CoreBundle\Validator\Constraints\AllowedImageMimeTypes">
                 <option name="groups">sylius</option>
             </constraint>
+            <constraint name="Sylius\Bundle\CoreBundle\Validator\Constraints\AllowedImageMimeTypes">
+                <option name="groups">sylius</option>
+            </constraint>
         </property>
     </class>
 </constraint-mapping>

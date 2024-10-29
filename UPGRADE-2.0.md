@@ -60,6 +60,8 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 * The following classes were removed:
 
     * `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
+    * `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
+    * `Sylius\Bundle\CoreBundle\DependencyInjection\Compiler\LiipImageFiltersPass`
     * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\DataSource`
     * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\Driver`
     * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExpressionBuilder`
