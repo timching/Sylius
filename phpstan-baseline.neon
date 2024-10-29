@@ -3164,3 +3164,13 @@ parameters:
 			message: "#^Method Sylius\\\\Component\\\\User\\\\Model\\\\UserAwareInterface\\:\\:setUser\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Sylius/Component/User/Model/UserAwareInterface.php
+
+		-
+			message: "#^Call to method sanitize\\(\\) on an unknown class enshrined\\\\svgSanitize\\\\Sanitizer.$#"
+			count: 1
+			path: src/Sylius/Component/Core/Uploader/ImageUploader.php
+
+		-
+			message: "#^Property Sylius\\\\Component\\\\Core\\\\Uploader\\\\ImageUploader\\:\\:\\$sanitizer has unknown class enshrined\\\\svgSanitize\\\\Sanitizer as its type.$#"
+			count: 1
+			path: src/Sylius/Component/Core/Uploader/ImageUploader.php

@@ -46,7 +46,6 @@
         "doctrine/orm": "^2.18",
         "doctrine/persistence": "^3.3",
         "egulias/email-validator": "^4.0",
-        "enshrined/svg-sanitize": "^0.20",
         "fakerphp/faker": "^1.23",
         "friendsofphp/proxy-manager-lts": "^1.0",
         "gedmo/doctrine-extensions": "^3.17.1",
