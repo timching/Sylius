@@ -728,6 +728,8 @@
     ```
 
 1. The following classes have been deprecated and will be removed in Sylius 2.0:
+    - **AddressingBundle**
+    - `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
     - **AdminBundle**
     - `Sylius\Bundle\AdminBundle\Controller\NotificationController`
     - `sylius.controller.admin.notification`
@@ -824,6 +826,9 @@
     - `Sylius\Bundle\PayumBundle\Validator\GatewayFactoryExistsValidator`
     - `Sylius\Bundle\PayumBundle\Validator\GroupsGenerator\GatewayConfigGroupsGenerator`
     - `sylius.form_registry.payum_gateway_config`
+    - **ProductBundle**
+    - `Sylius\Bundle\ProductBundle\Controller\ProductAttributeController`
+    - `Sylius\Bundle\ProductBundle\Controller\ProductSlugController`
     - **ShopBundle**
     - `Sylius\Bundle\ShopBundle\Controller\HomepageController`
     - `Sylius\Bundle\ShopBundle\Controller\SecurityWidgetController`
