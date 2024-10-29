@@ -32,6 +32,7 @@ Good to Know
     is not ``GET``. So if you need to add an endpoint to an API that needs to edit orders that are not in the state 
     ``cart``, you will need to whitelist this endpoint. This can be done by adding your API route to the 
     ``sylius.api.doctrine_extension.order_shop_user_item.filter_cart.allowed_non_get_operations`` parameter. 
+
 How to remove an endpoint?
 --------------------------
 
