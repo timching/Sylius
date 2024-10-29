@@ -1086,7 +1086,7 @@ final class ManagingProductsContext implements Context
      */
     public function iShouldBeNotifiedThatSvgTypeIsNotAllowed(): void
     {
-       $this->assertValidationMessage('image', 'This file type is not allowed.');
+       $this->mediaFormElement->hasValidationErrorWithMessage('This file type is not allowed.');
     }
 
     /**

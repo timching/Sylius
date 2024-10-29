@@ -52,6 +52,7 @@ final class NotificationContext implements Context
         );
     }
 
+
     /**
      * @Then I should be notified that it :has been successfully deleted
      * @Then I should be notified that they :have been successfully deleted

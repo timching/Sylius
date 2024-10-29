@@ -220,6 +220,19 @@ final class ManagingProductImagesContext implements Context
         );
     }
 
+    /**
+     * @Then I should be notified that svg file is not allowed
+     */
+    public function iShouldBeNotifiedThatSvgFileIsNotAllowed(): void
+    {
+        Assert::contains(
+            $this->responseChecker->getError($this->client->getLastResponse()),
+            sprintf(
+                'The file is not a valid image.',
+            ),
+        );
+    }
+
     private function createProductImage(
         string $path,
         ProductInterface $product,
