@@ -1033,6 +1033,16 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
         )
     ```
 
+   `Sylius\Bundle\PayumBundle\Form\Extension\CryptedGatewayConfigTypeExtension`
+    ```diff
+    + use Sylius\Bundle\PayumBundle\Checker\PayumGatewayConfigEncryptionCheckerInterface;
+
+        public function __construct(
+    +       private readonly PayumGatewayConfigEncryptionCheckerInterface $encryptionChecker,
+            private ?CypherInterface $cypher = null,
+        )
+    ```
+
 ## Grids
 
 The experimental `entities` filter has been removed. It has been replaced by the generic `entity` one.
