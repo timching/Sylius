@@ -37,7 +37,7 @@ Configuration Reference
                 classes:
                     model: Sylius\Component\Addressing\Model\Province
                     interface: Sylius\Component\Addressing\Model\ProvinceInterface
-                    controller: Sylius\Bundle\AddressingBundle\Controller\ProvinceController
+                    controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
                     repository: ~
                     factory: Sylius\Resource\Factory\Factory
                     form: Sylius\Bundle\AddressingBundle\Form\Type\ProvinceType

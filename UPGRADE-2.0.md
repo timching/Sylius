@@ -860,6 +860,7 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 
 * The following classes and interfaces have been removed:
 
+    * `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
     * `Sylius\Bundle\AdminBundle\Controller\NotificationController`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\CheckoutStepsHelper`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\PriceHelper`
@@ -874,6 +875,7 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
     * `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelper`
     * `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelperInterface`
     * `Sylius\Bundle\OrderBundle\Templating\Helper\AdjustmentsHelper`
+    * `Sylius\Bundle\ProductBundle\Controller\ProductAttributeController`
     * `Sylius\Bundle\UserBundle\Security\UserLogin`
     * `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
     * `Sylius\Bundle\UserBundle\Security\UserPasswordHasher`
