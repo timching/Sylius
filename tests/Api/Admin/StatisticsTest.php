@@ -347,6 +347,10 @@ final class StatisticsTest extends JsonApiTestCase
                     'propertyPath' => '[endDate]',
                     'message' => 'This value should not be blank.',
                 ],
+                [
+                    'propertyPath' => '',
+                    'message' => 'The start date must be earlier than the end date.',
+                ],
             ],
         ];
     }
@@ -379,6 +383,10 @@ final class StatisticsTest extends JsonApiTestCase
                 [
                     'propertyPath' => '[startDate]',
                     'message' => 'The date time is not valid ISO 8601 date time in Y-m-d\TH:i:s format.',
+                ],
+                [
+                    'propertyPath' => '',
+                    'message' => 'The start date must be earlier than the end date.',
                 ],
             ],
         ];
