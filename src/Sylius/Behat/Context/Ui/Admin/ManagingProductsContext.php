@@ -1082,6 +1082,14 @@ final class ManagingProductsContext implements Context
     }
 
     /**
+     * @Then I should be notified that svg file is not allowed
+     */
+    public function iShouldBeNotifiedThatSvgTypeIsNotAllowed(): void
+    {
+       $this->assertValidationMessage('image', 'This file type is not allowed.');
+    }
+
+    /**
      * @Then I should be notified that simple product code has to be unique
      */
     public function iShouldBeNotifiedThatSimpleProductCodeHasToBeUnique()
