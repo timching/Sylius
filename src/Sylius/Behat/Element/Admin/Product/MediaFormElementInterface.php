@@ -42,4 +42,6 @@ interface MediaFormElementInterface
     public function modifyPositionOfImageWithType(string $type, int $position): void;
 
     public function selectVariantForFirstImage(ProductVariantInterface $productVariant): void;
+
+    public function hasValidationErrorWithMessage(string $message): bool;
 }

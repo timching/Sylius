@@ -193,6 +193,13 @@ final class MediaFormElement extends BaseFormElement implements MediaFormElement
         );
     }
 
+    public function hasValidationErrorWithMessage(string $message): bool
+    {
+        $validationMessage = $this->getDocument()->find('css', '.invalid-feedback');
+
+        return $validationMessage !== null && $validationMessage->getText() === $message;
+    }
+
     protected function getDefinedElements(): array
     {
         return array_merge(
