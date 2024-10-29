@@ -31,16 +31,12 @@
 
    The previous namespaces are still usable, but are considered deprecated and may be removed in future versions of `Resource` packages, update them at your own convenience.
 
-2. Package `enshrined/svg-sanitize` has been removed from the project due to license incompatibility with Sylius. You can still use it in your project by adding it manually. Just add it to your `composer.json` file:
+2. Package `enshrined/svg-sanitize` has been removed from the project due to license incompatibility with Sylius. You can still use it in your project by adding it manually:
 
-    ```json
-    {
-        "require": {
-            "enshrined/svg-sanitize": "^0.16",
-        }
-    }
+    ```bash
+    composer require enshrined/svg-sanitize
     ```
-   Also `svg` image support has been removed. If you want to use `svg` images in your project, add `image/svg+xml` to the list of allowed mime types in `CoreBundle` configuration.
+   Also, uploading `svg` image support has been removed. If you want to use `svg` images in your project, add `image/svg+xml` to the list of allowed mime types in the `CoreBundle` configuration.
 
     ```yaml
     sylius_core:

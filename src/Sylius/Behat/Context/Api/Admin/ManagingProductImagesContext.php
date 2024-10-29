@@ -227,9 +227,7 @@ final class ManagingProductImagesContext implements Context
     {
         Assert::contains(
             $this->responseChecker->getError($this->client->getLastResponse()),
-            sprintf(
-                'The file is not a valid image.',
-            ),
+            'The file is not a valid image.',
         );
     }
 
