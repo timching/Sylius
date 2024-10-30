@@ -93,8 +93,8 @@ class UpdatePage extends BaseUpdatePage implements UpdatePageInterface
             'sandbox' => '[data-test-sandbox]',
             'secret_key' => '[data-test-secret-key]',
             'signature' => '[data-test-signature]',
-            'username' => '[data-test-username]',
             'use_payum' => '[data-test-use-payum]',
+            'username' => '[data-test-username]',
         ]);
     }
 }
