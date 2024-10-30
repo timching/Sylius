@@ -1,5 +1,50 @@
 # CHANGELOG FOR `1.14.X`
 
+## v1.14.0-BETA.1 (2024-10-30)
+
+#### Details
+
+- [#17238](https://github.com/Sylius/Sylius/issues/17238) [AdminBundle] Unification os services name - fix ([@Wojdylak](https://github.com/Wojdylak))
+- [#17233](https://github.com/Sylius/Sylius/issues/17233) [PaymentBundle] Unification of services names ([@Wojdylak](https://github.com/Wojdylak))
+- [#17258](https://github.com/Sylius/Sylius/issues/17258) Fix 1.13 build by temporarily disabling problematic promotion scenarios ([@GSadee](https://github.com/GSadee))
+- [#17246](https://github.com/Sylius/Sylius/issues/17246) [UserBundle] Deprecate pin configuration parameter ([@GSadee](https://github.com/GSadee))
+- [#17241](https://github.com/Sylius/Sylius/issues/17241) [API] Rename and deprecate route parameters ([@GSadee](https://github.com/GSadee))
+- [#17235](https://github.com/Sylius/Sylius/issues/17235) [UserBundle] Deprecate security related classes and services that will be removed in 2.0 ([@GSadee](https://github.com/GSadee))
+- [#17242](https://github.com/Sylius/Sylius/issues/17242) [PayumBundle] Unification os services name ([@Wojdylak](https://github.com/Wojdylak))
+- [#17260](https://github.com/Sylius/Sylius/issues/17260) [UserBundle] Deprecate pin related services and classes ([@GSadee](https://github.com/GSadee))
+- [#17262](https://github.com/Sylius/Sylius/issues/17262) Replace deprecated DOMNodeInserted event with MutationObserver ([@kulczy](https://github.com/kulczy))
+- [#17250](https://github.com/Sylius/Sylius/issues/17250) [ApiBundle] Unification of services names ([@Wojdylak](https://github.com/Wojdylak))
+- [#17265](https://github.com/Sylius/Sylius/issues/17265) [UserBundle] Fix wrongly deprecated pin related services ([@GSadee](https://github.com/GSadee))
+- [#17268](https://github.com/Sylius/Sylius/issues/17268) [CS][DX] Refactor
+- [#17244](https://github.com/Sylius/Sylius/issues/17244) [Core] Deprecate sylius_core.autoconfigure_with_attributes configuration parameter ([@GSadee](https://github.com/GSadee))
+- [#17269](https://github.com/Sylius/Sylius/issues/17269) [CoreBundle] Unification of services names ([@Wojdylak](https://github.com/Wojdylak))
+- [#17275](https://github.com/Sylius/Sylius/issues/17275) [ApiBundle] Unification of services names - fix ([@Wojdylak](https://github.com/Wojdylak))
+- [#17273](https://github.com/Sylius/Sylius/issues/17273) [CS][DX] Refactor
+- [#17274](https://github.com/Sylius/Sylius/issues/17274) [CoreBundle] Unification of services names - fix ([@Wojdylak](https://github.com/Wojdylak))
+- [#17292](https://github.com/Sylius/Sylius/issues/17292) [ShippingBundle] Unification of services names ([@Wojdylak](https://github.com/Wojdylak))
+- [#16096](https://github.com/Sylius/Sylius/issues/16096) Adding an index for the `address_log_entries` ([@mamazu](https://github.com/mamazu))
+- [#17298](https://github.com/Sylius/Sylius/issues/17298) [CoreBundle] Add missing license file ([@GSadee](https://github.com/GSadee))
+- [#17299](https://github.com/Sylius/Sylius/issues/17299) [Docs] Refresh Release Cycle ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#17297](https://github.com/Sylius/Sylius/issues/17297) Add info about trademark and logo to bundles and components in 1.14 ([@GSadee](https://github.com/GSadee))
+- [#17303](https://github.com/Sylius/Sylius/issues/17303) [CS][DX] Refactor
+- [#17306](https://github.com/Sylius/Sylius/issues/17306) [All] Unification of services names ([@Wojdylak](https://github.com/Wojdylak))
+- [#16601](https://github.com/Sylius/Sylius/issues/16601) [ApiBundle][Image] Prevent resolving non-serialized image paths ([@Wojdylak](https://github.com/Wojdylak))
+- [#17313](https://github.com/Sylius/Sylius/issues/17313) [ApiBundle] Deprecate PaymentMethodFilter and ShippingMethodFilter classes ([@Wojdylak](https://github.com/Wojdylak))
+- [#17321](https://github.com/Sylius/Sylius/issues/17321) [API][PHPSpec] Remove unused arguments from ImageNormalizerSpec ([@GSadee](https://github.com/GSadee))
+- [#17318](https://github.com/Sylius/Sylius/issues/17318) [API] Deprecate legacy_error_handling and serialization_groups configuration parameters ([@GSadee](https://github.com/GSadee))
+- [#17320](https://github.com/Sylius/Sylius/issues/17320) Deprecate exceptions from ApiBundle ([@TheMilek](https://github.com/TheMilek))
+- [#17281](https://github.com/Sylius/Sylius/issues/17281) chore(doc): add naming changes for plugin skeleton ([@ebuildy](https://github.com/ebuildy))
+- [#17342](https://github.com/Sylius/Sylius/issues/17342) [Admin] Deprecate NotificationController ([@GSadee](https://github.com/GSadee))
+- [#17337](https://github.com/Sylius/Sylius/issues/17337) [AdminBundle] Add base form type for ShopUserType and  PromotionCouponGeneratorInstructionType ([@Wojdylak](https://github.com/Wojdylak))
+- [#17353](https://github.com/Sylius/Sylius/issues/17353) Fix OrderAdjustmentsRecalculationTest + apply API statistics constraints sequentially ([@GSadee](https://github.com/GSadee))
+- [#17256](https://github.com/Sylius/Sylius/issues/17256) [API][DOC]Adding a tip about api's preventing methods beside GET to load non cart orders by default ([@oliverde8](https://github.com/oliverde8))
+- [#17354](https://github.com/Sylius/Sylius/issues/17354) [API] Refactor statistics constraints ([@GSadee](https://github.com/GSadee))
+- [#17363](https://github.com/Sylius/Sylius/issues/17363) [Admin] Pass admin path name parameter to AdminUriBasedSectionResolver ([@GSadee](https://github.com/GSadee))
+- [#17356](https://github.com/Sylius/Sylius/issues/17356) [Core][Promotion] Add missing type to AsCatalogPromotionPriceCalculator attribute + add missing AsCatalogPromotionVariantChecker attribute ([@GSadee](https://github.com/GSadee))
+- [#17360](https://github.com/Sylius/Sylius/issues/17360) [Maintenance] Remove enshrined/svg-sanitize package ([@mpysiak](https://github.com/mpysiak))
+- [#17374](https://github.com/Sylius/Sylius/issues/17374) [CS][DX] Refactor
+- [#17373](https://github.com/Sylius/Sylius/issues/17373) [Addressing][Product] Deprecate controllers ([@GSadee](https://github.com/GSadee))
+
 ## v1.14.0-ALPHA.2 (2024-10-15)
 
 #### Details
