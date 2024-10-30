@@ -1,5 +1,20 @@
 # CHANGELOG FOR `1.13.X`
 
+## v1.13.8 (2024-10-30)
+
+#### Details
+
+- [#17258](https://github.com/Sylius/Sylius/issues/17258) Fix 1.13 build by temporarily disabling problematic promotion scenarios ([@GSadee](https://github.com/GSadee))
+- [#17262](https://github.com/Sylius/Sylius/issues/17262) Replace deprecated DOMNodeInserted event with MutationObserver ([@kulczy](https://github.com/kulczy))
+- [#17298](https://github.com/Sylius/Sylius/issues/17298) [CoreBundle] Add missing license file ([@GSadee](https://github.com/GSadee))
+- [#17299](https://github.com/Sylius/Sylius/issues/17299) [Docs] Refresh Release Cycle ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#16601](https://github.com/Sylius/Sylius/issues/16601) [ApiBundle][Image] Prevent resolving non-serialized image paths ([@Wojdylak](https://github.com/Wojdylak))
+- [#17321](https://github.com/Sylius/Sylius/issues/17321) [API][PHPSpec] Remove unused arguments from ImageNormalizerSpec ([@GSadee](https://github.com/GSadee))
+- [#17353](https://github.com/Sylius/Sylius/issues/17353) Fix OrderAdjustmentsRecalculationTest + apply API statistics constraints sequentially ([@GSadee](https://github.com/GSadee))
+- [#17256](https://github.com/Sylius/Sylius/issues/17256) [API][DOC]Adding a tip about api's preventing methods beside GET to load non cart orders by default ([@oliverde8](https://github.com/oliverde8))
+- [#17354](https://github.com/Sylius/Sylius/issues/17354) [API] Refactor statistics constraints ([@GSadee](https://github.com/GSadee))
+- [#17363](https://github.com/Sylius/Sylius/issues/17363) [Admin] Pass admin path name parameter to AdminUriBasedSectionResolver ([@GSadee](https://github.com/GSadee))
+
 ## v1.13.7 (2024-10-15)
 
 #### Details
