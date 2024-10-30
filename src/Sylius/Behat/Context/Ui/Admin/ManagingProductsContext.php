@@ -1123,7 +1123,7 @@ final readonly class ManagingProductsContext implements Context
      */
     public function iShouldBeNotifiedThatSvgTypeIsNotAllowed(): void
     {
-       $this->mediaFormElement->hasValidationErrorWithMessage('This file type is not allowed.');
+        $this->mediaFormElement->hasValidationErrorWithMessage('This file type is not allowed.');
     }
 
     /**
