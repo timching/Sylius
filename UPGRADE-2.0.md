@@ -862,6 +862,7 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 
     * `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
     * `Sylius\Bundle\AdminBundle\Controller\NotificationController`
+    * `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\CheckoutStepsHelper`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\PriceHelper`
     * `Sylius\Bundle\CoreBundle\Templating\Helper\VariantResolverHelper`
