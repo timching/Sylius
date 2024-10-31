@@ -1035,3 +1035,27 @@
 
     * `sylius.{user_type}_user.pin_generator.password_reset`
     * `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
+
+### Testing Suite
+
+1. The constructor signature of `Sylius\Component\Core\Test\Services\DefaultChannelFactory` has been changed:
+
+    ```diff
+    public function __construct(
+    -   private ChannelFactoryInterface $channelFactory,
+    -   private FactoryInterface $currencyFactory,
+    -   private FactoryInterface $localeFactory,
+    -   private RepositoryInterface $channelRepository,
+    -   private RepositoryInterface $currencyRepository,
+    -   private RepositoryInterface $localeRepository,
+    -   private string $defaultLocaleCode,
+    +   private readonly ChannelFactoryInterface $channelFactory,
+    +   private readonly FactoryInterface $currencyFactory,
+    +   private readonly FactoryInterface $localeFactory,
+    +   private readonly FactoryInterface $shopBillingDataFactory,
+    +   private readonly RepositoryInterface $channelRepository,
+    +   private readonly RepositoryInterface $currencyRepository,
+    +   private readonly RepositoryInterface $localeRepository,
+    +   private readonly string $defaultLocaleCode,
+    )
+    ```
