@@ -81,7 +81,6 @@
     | `sylius.console.command_factory.question`                                                                           | `sylius_admin.console.command_factory.question`                                                     |
     | `sylius.context.locale.admin_based`                                                                                 | `sylius_admin.context.locale.admin_based`                                                           |
     | `sylius.section_resolver.admin_uri_based_section_resolver`                                                          | `sylius_admin.section_resolver.admin_uri_based`                                                     |
-    | `sylius.twig.extension.widget.admin_notification`                                                                   | `sylius_admin.twig.extension.notification_widget`                                                   |
     | `sylius.twig.extension.shop`                                                                                        | `sylius_admin.twig.extension.shop`                                                                  |
     | `sylius.twig.extension.channels_currencies`                                                                         | `sylius_admin.twig.extension.channels_currencies`                                                   |
     | `Sylius\Bundle\AdminBundle\Twig\OrderUnitTaxesExtension`                                                            | `sylius_admin.twig.extension.order_unit_taxes`                                                      |
@@ -742,6 +741,7 @@
     - `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
     - `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
     - `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
+    - `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
     - **ApiBundle**
     - `Sylius\Bundle\ApiBundle\ApiPlatform\ApiResourceConfigurationMerger`
     - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
