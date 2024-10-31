@@ -43,3 +43,8 @@ Feature: Editing payment methods
     Scenario: Being unable to edit gateway factory field of existing payment method
         When I want to modify the "Offline" payment method
         Then the factory name field should be disabled
+
+    @todo-api @ui
+    Scenario: Being unable to change usePayum field of an existing payment method
+        When I want to modify the "Offline" payment method
+        Then I should not be able to edit its usePayum field

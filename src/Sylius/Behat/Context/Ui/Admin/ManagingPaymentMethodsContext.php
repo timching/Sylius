@@ -382,6 +382,14 @@ final readonly class ManagingPaymentMethodsContext implements Context
     }
 
     /**
+     * @Then I should not be able to edit its usePayum field
+     */
+    public function theUsePayumFieldShouldBeDisabled(): void
+    {
+        Assert::true($this->updatePage->isUsePayumFieldDisabled());
+    }
+
+    /**
      * @Then this payment method should be enabled
      */
     public function thisPaymentMethodShouldBeEnabled(): void

@@ -11,12 +11,13 @@
 
 declare(strict_types=1);
 
-namespace Sylius\Bundle\PayumBundle\Checker;
-
-use Sylius\Component\Payment\Model\GatewayConfigInterface;
+namespace Sylius\Component\Payment\Encryption;
 
 /** @experimental */
-interface PayumGatewayConfigEncryptionCheckerInterface
+trait EncryptionCheckTrait
 {
-    public function isPayumEncryptionEnabled(GatewayConfigInterface $gatewayConfig): bool;
+    protected function isEncrypted(mixed $value): bool
+    {
+        return is_string($value) && str_ends_with($value, EncrypterInterface::ENCRYPTION_SUFFIX);
+    }
 }

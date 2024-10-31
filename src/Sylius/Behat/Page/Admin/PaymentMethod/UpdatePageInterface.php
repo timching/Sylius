@@ -29,6 +29,8 @@ interface UpdatePageInterface extends BaseUpdatePageInterface
 
     public function isFactoryNameFieldDisabled(): bool;
 
+    public function isUsePayumFieldDisabled(): bool;
+
     public function isPaymentMethodEnabled(): bool;
 
     public function isPaymentMethodInSandboxMode(): bool;

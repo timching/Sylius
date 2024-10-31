@@ -48,6 +48,11 @@ class UpdatePage extends BaseUpdatePage implements UpdatePageInterface
         return 'disabled' === $this->getElement('factory_name')->getAttribute('disabled');
     }
 
+    public function isUsePayumFieldDisabled(): bool
+    {
+        return 'disabled' === $this->getElement('use_payum')->getAttribute('disabled');
+    }
+
     public function isAvailableInChannel(string $channelName): bool
     {
         return $this
@@ -88,6 +93,7 @@ class UpdatePage extends BaseUpdatePage implements UpdatePageInterface
             'sandbox' => '[data-test-sandbox]',
             'secret_key' => '[data-test-secret-key]',
             'signature' => '[data-test-signature]',
+            'use_payum' => '[data-test-use-payum]',
             'username' => '[data-test-username]',
         ]);
     }

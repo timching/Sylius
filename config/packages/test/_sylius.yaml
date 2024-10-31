@@ -20,3 +20,8 @@ sylius_state_machine_abstraction:
         sylius_payment_request: '%test_sylius_state_machine_adapter%'
         sylius_product_review: '%test_sylius_state_machine_adapter%'
         sylius_shipment: '%test_sylius_state_machine_adapter%'
+
+sylius_payment:
+    encryption:
+        disabled_for_factories:
+            - online-disabled

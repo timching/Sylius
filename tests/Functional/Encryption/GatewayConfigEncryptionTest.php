@@ -48,11 +48,12 @@ final class GatewayConfigEncryptionTest extends KernelTestCase
         $this->gatewayConfigRepository = self::getContainer()->get('sylius.repository.gateway_config');
         $this->gatewayFactory = self::getContainer()->get('sylius.factory.gateway_config');
 
+        $gatewayConfigEncryptionChecker = self::getContainer()->get('sylius.checker.gateway_config_encryption');
         $encrypter = self::getContainer()->get('sylius.encrypter.gateway_config');
         self::getContainer()->set('sylius.listener.gateway_config_encryption', new GatewayConfigEncryptionListener(
             $encrypter,
             'Sylius\Bundle\PayumBundle\Model\GatewayConfig',
-            ['online-disabled'],
+            $gatewayConfigEncryptionChecker,
         ));
 
         $this->loadFixtures([
@@ -66,6 +67,7 @@ final class GatewayConfigEncryptionTest extends KernelTestCase
         $gatewayConfig = $this->gatewayFactory->createNew();
         $gatewayConfig->setGatewayName('Online');
         $gatewayConfig->setFactoryName('online');
+        $gatewayConfig->setUsePayum(false);
         $gatewayConfig->setConfig(self::$gatewayConfigData);
 
         $this->gatewayConfigRepository->add($gatewayConfig);
@@ -91,6 +93,7 @@ final class GatewayConfigEncryptionTest extends KernelTestCase
         $gatewayConfig = $this->gatewayFactory->createNew();
         $gatewayConfig->setGatewayName('online_disabled');
         $gatewayConfig->setFactoryName('online-disabled');
+        $gatewayConfig->setUsePayum(false);
         $gatewayConfig->setConfig(self::$gatewayConfigData);
 
         $this->gatewayConfigRepository->add($gatewayConfig);
@@ -111,11 +114,38 @@ final class GatewayConfigEncryptionTest extends KernelTestCase
     }
 
     /** @test */
+    public function it_does_not_encrypt_when_gateway_config_use_payum(): void
+    {
+        $gatewayConfig = $this->gatewayFactory->createNew();
+        $gatewayConfig->setGatewayName('Online');
+        $gatewayConfig->setFactoryName('online');
+        $gatewayConfig->setUsePayum(true);
+        $gatewayConfig->setConfig(self::$gatewayConfigData);
+
+        $this->gatewayConfigRepository->add($gatewayConfig);
+        self::assertSame(self::$gatewayConfigData, $gatewayConfig->getConfig());
+
+        $this->entityManager->clear();
+
+        $gatewayConfigFromDatabase = $this->getDatabaseConfigDataForGateway('Online');
+        self::assertSame($gatewayConfig->getConfig(), $gatewayConfigFromDatabase);
+
+        $gatewayFromRepository = $this->gatewayConfigRepository->findOneBy(['gatewayName' => 'Online']);
+        self::assertSame($gatewayConfig->getConfig(), $gatewayFromRepository->getConfig());
+        self::assertSame(self::$gatewayConfigData, $gatewayConfig->getConfig());
+
+        $gatewayConfigFromDatabase = $this->getDatabaseConfigDataForGateway('Online');
+        self::assertSame($gatewayConfig->getConfig(), $gatewayConfigFromDatabase);
+        self::assertSame(self::$gatewayConfigData, $gatewayConfigFromDatabase);
+    }
+
+    /** @test */
     public function it_does_not_encrypt_empty_config(): void
     {
         $gatewayConfig = $this->gatewayFactory->createNew();
         $gatewayConfig->setGatewayName('Online');
         $gatewayConfig->setFactoryName('online');
+        $gatewayConfig->setUsePayum(false);
         $gatewayConfig->setConfig([]);
 
         $this->gatewayConfigRepository->add($gatewayConfig);
