@@ -25,11 +25,11 @@ To begin creating your new project, run this command:
     Worry not, upgrading from 1.x to 2.x will be possible.
     It is currently recommended to start with 1.x and upgrade the project once 2.0 is there,
     but if you'd like to start playing around with the still-in-progress version, you can use this command to set the environment
-    on Sylius 2.0-ALPHA.X/BETA.X.
+    on Sylius 2.0-BETA.X.
 
     .. code-block:: bash
 
-        composer composer create-project --stability=dev sylius/sylius-standard:2.0.x-dev acme
+        composer create-project --stability=dev sylius/sylius-standard:2.0.x-dev acme
 
 .. note::
 
