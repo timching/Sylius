@@ -28,6 +28,7 @@
             <argument type="service" id="sylius.uploader.image" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="behat.mink.parameters" />
+            <argument type="service" id="sylius.factory.avatar_image" />
         </service>
 
         <service id="sylius.behat.context.setup.cart" class="Sylius\Behat\Context\Setup\CartContext">
