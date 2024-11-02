@@ -28,6 +28,10 @@
 /var/
 ###< dependencies ###
 
+###> sylius/sylius ###
+/config/encryption/dev.key
+###< sylius/sylius ###
+
 ###> symfony/framework-bundle ###
 .env.*.local
 .env.local
