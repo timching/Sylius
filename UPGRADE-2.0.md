@@ -1381,3 +1381,41 @@ sylius_shop_payum:
 ## Testing Suite
 
 * The `sylius.behat.api_security` has been replaced by `sylius.behat.api_admin_security` and `sylius.behat.api_shop_security` services.
+
+## Templates changes
+
+### Transition from SemanticUI to Bootstrap
+
+- All `.ui` prefixed classes have been replaced with Bootstrap classes.
+- JavaScript components relying on Semantic UI have been rewritten to utilize Bootstrap's JavaScript plugins.
+- Customized CSS has been replaced by Bootstrap's utility classes.
+
+### Abandoning jQuery
+
+Most of the existing JavaScript has been replaced by SymfonyUX with Stimulus, which includes live components.
+This change led to the removal of jQuery and a significant reduction of custom JavaScript in the project. 
+Check out the documentation for more information [here](https://ux.symfony.com/).
+
+### Abandoning partial routes
+
+All partial routes rendered in templates have been removed and replaced by rendering Twig components.
+
+### Sylius Twig Hooks
+
+Twig Hooks are a robust and powerful alternative to the Sonata Block Events and the old Sylius Template Events systems.
+
+#### Abandoning Sonata Blocks
+
+We are fully replacing Sonata Blocks with Twig hooks.
+
+#### Evolving Sylius Template Events to Twig Hooks
+
+Sylius Twig Hooks is a new generation of template customization and extension, providing:
+
+- Built-in support for Twig templates, Twig Components, and Symfony Live Components.
+- Adjustability and autoprefixing hooks.
+- A configurable and easily manageable system for hookables.
+- A priority mechanism to control rendering order.
+- Simple enable/disable options for each hook.
+
+For more information, visit our [documentation](https://new-docs.sylius.com/).
