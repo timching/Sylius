@@ -122,42 +122,6 @@ All the `setter` methods have been removed from the commands above and also ther
     )
 ```
 
-* Updated API routes related to avatar management:
-
-  Previous Routes:
-    * `'GET' - /api/v2/admin/avatar-images/{id}`
-    * `'POST' - /api/v2/admin/avatar-images`
-    * `'DELETE' - /api/v2/admin/avatar-images/{id}`
-
-  New Routes:
-    * `'GET' - /api/v2/admin/administrators/{id}/avatar-image`
-    * `'POST' - /api/v2/admin/administrators/{id}/avatar-image`
-    * `'DELETE' - /api/v2/admin/administrators/{id}/avatar-image`
-
-* Updated API routes related to shop user management:
-
-  Previous Routes:
-    * `'POST' - /api/v2/shop/reset-password-requests`
-    * `'PATCH' - /api/v2/shop/reset-password-requests/{resetPasswordToken}`
-    * `'POST' - /api/v2/shop/account-verification-requests`
-    * `'PATCH - /api/v2/shop/account-verification-requests/{token}`
-
-  New Routes:
-    * `'POST' - /api/v2/shop/reset-password`
-    * `'PATCH' - /api/v2/shop/reset-password/{resetPasswordToken}`
-    * `'POST' - /api/v2/shop/verify-shop-user`
-    * `'PATCH' - /api/v2/shop/verify-shop-user/{token}`
-
-* Updated API routes related to admin user management:
-
-  Previous Routes:
-    * `'POST' - /api/v2/admin/reset-password-requests`
-    * `'PATCH' - /api/v2/admin/reset-password-requests/{resetPasswordToken}`
-
-  New Routes:
-    * `'POST' - /api/v2/admin/reset-password`
-    * `'PATCH' - /api/v2/admin/reset-password/{resetPasswordToken}`
-
 * The `getCurrentPrefix` method has been removed from the `Sylius\Bundle\ApiBundle\Provider\PathPrefixProviderInterface`.
 
 * The `Sylius\Bundle\ApiBundle\Provider\PathPrefixProvider` constructor has been changed due to refactor. 
@@ -225,3 +189,108 @@ All the `setter` methods have been removed from the commands above and also ther
     - `sylius_api.legacy_error_handling`
     - `sylius_api.serialization_groups.skip_adding_read_group`
     - `sylius_api.serialization_groups.skip_adding_index_and_show_groups`
+
+## Resource configuration changes
+
+### Updated API Routes
+
+* AvatarImage
+
+- `'GET' - /api/v2/admin/avatar-images/{id}` → `'GET' - /api/v2/admin/administrators/{id}/avatar-image`
+- `'POST' - /api/v2/admin/avatar-images` → `'POST' - /api/v2/admin/administrators/{id}/avatar-image`
+- `'DELETE' - /api/v2/admin/avatar-images/{id}` → `'DELETE' - /api/v2/admin/administrators/{id}/avatar-image`
+
+* ShopUser, CustomerPassword and CustomerVerification
+
+- `'POST' - /api/v2/shop/reset-password-requests` → `'POST' - /api/v2/shop/reset-password`
+- `'PATCH' - /api/v2/shop/reset-password-requests/{resetPasswordToken}` → `'PATCH' - /api/v2/shop/reset-password/{resetPasswordToken}`
+- `'POST' - /api/v2/shop/account-verification-requests` → `'POST' - /api/v2/shop/verify-shop-user`
+- `'PATCH' - /api/v2/shop/account-verification-requests/{token}` → `'PATCH' - /api/v2/shop/verify-shop-user/{token}`
+
+* AdminUserPassword
+
+- `'POST' - /api/v2/admin/reset-password-requests` → `'POST' - /api/v2/admin/reset-password`
+- `'PATCH' - /api/v2/admin/reset-password-requests/{resetPasswordToken}` → `'PATCH' - /api/v2/admin/reset-password/{resetPasswordToken}`
+
+* CatalogPromotion
+
+- `'GET' - /api/v2/admin/catalog-promotion-actions/{id}` → `'GET' - /api/v2/admin/catalog-promotions/{code}/actions/{id}`
+- `'GET' - /api/v2/admin/catalog-promotion-scopes/{id}` → `'GET' - /api/v2/admin/catalog-promotions/{code}/scopes/{id}`
+
+* Translation
+
+- `'GET' - /api/v2/admin/[resource]-translations/{id}` → `'GET' - /api/v2/admin/[resource]/{code}/translations/{localeCode}`
+
+* ChannelPricing
+
+- `'GET' - /api/v2/admin/channel-pricings/{id}` → `'GET' - /api/v2/admin/product-variants/{code}/pricing/{id}`
+
+* Order
+
+- `'GET' - /api/v2/admin/order-items/{id}` → `'GET' - /api/v2/admin/orders/{orderToken}/items/{id}`
+
+* Payment
+
+- `'GET' - /api/v2/shop/payments/{id}` → `'GET' - /api/v2/shop/orders/{orderToken}/payments/{id}`
+
+* Product
+
+- `'GET' - /api/v2/admin/product-images/{id}` → `'GET' - /api/v2/admin/products/{code}/images/{id}`
+- `'GET' - /api/v2/admin/products-images` → `'GET' - /api/v2/admin/products/{code}/images`
+- `'GET' - /api/v2/shop/product-images/{id}` → `'GET' - /api/v2/shop/products/{code}/images/{id}`
+- `'GET' - /api/v2/admin/product-option-values/{code}` → `'GET' - /api/v2/admin/product-options/{optionCode}/values/{code}`
+- `'GET' - /api/v2/shop/product-option-values/{code}` → `'GET' - /api/v2/shop/product-options/{optionCode}/values/{code}`
+
+* Promotion
+
+- `'GET' - /api/v2/admin/promotion-actions/{id}` → `'GET' - /api/v2/admin/promotions/{code}/actions/{id}`
+- `'GET' - /api/v2/admin/promotion-coupons/{id}` → `'GET' - /api/v2/admin/promotions/{code}/coupons/{id}`
+- `'POST' - /api/v2/admin/promotion-coupons/generate` → `'POST' - /api/v2/admin/promotions/{promotionCode}/coupons/generate`
+- `'PUT' - /api/v2/admin/promotion-coupons/{code}` → `'PUT' - /api/v2/admin/promotions/{promotionCode}/coupons/{couponCode}`
+- `'DELETE' - /api/v2/admin/promotion-coupons/{code}` → `'DELETE' - /api/v2/admin/promotions/{promotionCode}/coupons/{couponCode}`
+- `'GET' - /api/v2/admin/promotion-rules/{id}` → `'GET' - /api/v2/admin/promotions/{code}/rules/{id}`
+
+* Provinces
+
+- `'GET' - /api/v2/admin/provinces/{code}` → `'GET' - /api/v2/admin/countries/{countryCode}/provinces/{provinceCode}`
+- `'PUT' - /api/v2/admin/provinces/{code}` → `'PUT' - /api/v2/admin/countries/{countryCode}/provinces/{provinceCode}`
+- `'GET' - /api/v2/shop/provinces/{code}` → `'GET' - /api/v2/shop/countries/{countryCode}/provinces/{provinceCode}`
+
+* Shipment
+
+- `'GET' - /api/v2/shop/shipments/{id}` → `'GET' - /api/v2/shop/orders/{orderToken}/shipments/{id}`
+
+* Taxon
+
+- `'GET' - /api/v2/admin/taxon-images/{id}` → `'GET' - /api/v2/admin/taxons/{code}/images/{id}`
+- `'POST' - /api/v2/admin/taxon-images` → `'POST' - /api/v2//admin/taxons/{code}/images`
+- `'PUT' - /api/v2/admin/taxon-images/{id}` → `'PUT' - /api/v2/admin/taxons/{code}/images/{id}`
+- `'DELETE' - /api/v2/admin/taxon-images/{id}` → `'DELETE' - /api/v2/admin/taxons/{code}/images/{id}`
+- `'GET' - /api/v2/shop/taxon-images/{id}` → `'GET' - /api/v2/shop/taxons/{code}/images/{id}`
+
+### Other Resource Changes
+
+1. **Adjustment**
+    - The shop item endpoint is no longer exposed.
+
+1. **CustomerVerification**
+    - `Sylius\Bundle\ApiBundle\Command\Account\VerifyCustomerAccount` command has been renamed to `Sylius\Bundle\ApiBundle\Command\Account\VerifyShopUser`.
+    - `Sylius\Bundle\ApiBundle\Command\Account\ResendVerificationEmail` command has been renamed to `Sylius\Bundle\ApiBundle\Command\Account\RequestShopUserVerification`.
+
+1. **GatewayConfig**
+    - The resource is no longer exposed.
+
+1. **Translation**
+    - All translation resources are no longer exposed.
+
+1. **ChannelPriceHistoryConfig**
+    - The resource configuration has been removed, as it is now handled by the `Channel` resource.
+
+1. **ShopBillingData**
+    - The resource configuration has been removed, as it is now handled by the `Channel` resource.
+
+1. **ZoneMember**
+    - The resource configuration has been removed, as it is now handled by the `Zone` resource.
+
+1. **ProductOptionValueTranslation**
+    - There has been added a new resource configuration for the `ProductOptionValueTranslation` resource.
