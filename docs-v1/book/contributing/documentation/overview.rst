@@ -39,11 +39,6 @@ Choose the right Base Branch
 Before starting to work on a patch, you must determine on which branch you need to work. It will be:
 
 * ``1.x``, if you are fixing or adding docs for features that exist in one of those versions,
-* ``master``, if you are documenting a new feature, that was not in ``1.x``
-
-.. note::
-
-    All bug fixes merged into the ``1.x`` maintenance branches are also merged into ``master`` on a regular basis.
 
 Create a dedicated branch for your changes (for organization):
 
@@ -81,15 +76,15 @@ We suggest to install & use ``Sphinx v1.8.5``
 
 .. code-block:: bash
 
-    pip3 install --no-cache-dir -r ./docs/requirements.txt
+    pip3 install --no-cache-dir -r ./docs-v1/requirements.txt
 
 Then run
 
 .. code-block:: bash
 
-    sphinx-build -b html ./docs ./docs/build
+    sphinx-build -b html ./docs-v1 ./docs-v1/build
 
-and view the generated HTML files in the ``docs/build`` directory. You can open them in your browser and check how they look!
+and view the generated HTML files in the ``docs-v1/build`` directory. You can open them in your browser and check how they look!
 
 .. warning::
 

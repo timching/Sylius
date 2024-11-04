@@ -9,7 +9,7 @@
 
 /bin/symfony_requirements
 
-/docs/.doctrees
+/docs-v1/.doctrees
 
 /composer.lock
 
