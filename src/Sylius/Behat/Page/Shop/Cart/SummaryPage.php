@@ -173,7 +173,7 @@ class SummaryPage extends ShopPage implements SummaryPageInterface
 
     public function cartIsEmpty(): bool
     {
-        return str_contains($this->getElement('flash_message')->getText(), 'Your cart is empty');
+        return str_contains($this->getElement('flash_message_info')->getText(), 'Your cart is empty');
     }
 
     public function getQuantity(string $productName): int
@@ -226,7 +226,7 @@ class SummaryPage extends ShopPage implements SummaryPageInterface
             'checkout_button' => '[data-test-cart-checkout-button]',
             'clear_cart' => '[data-test-clear-cart]',
             'coupon_field' => '[data-test-cart-promotion-coupon-input]',
-            'flash_message' => '[data-test-sylius-flash-message]',
+            'flash_message_info' => '[data-test-sylius-flash-message="alert-info"]',
             'form' => '[data-live-name-value="sylius_shop:cart:form"]',
             'summary_component' => '[data-live-name-value="sylius_shop:cart:summary"]',
             'grand_total' => '[data-test-cart-grand-total]',
