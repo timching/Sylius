@@ -1158,6 +1158,10 @@ If your app never changed the hasher name configuration, you don't need to confi
 
 * Some Twig extension services have been moved from the UiBundle to the new Twig Extra package
 
+## Removal based on deprecations:
+
+### Classes and services
+
 * The following classes have been removed:
     * **AdminBundle**
     * `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
@@ -1169,6 +1173,8 @@ If your app never changed the hasher name configuration, you don't need to confi
     * `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
     * `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
     * `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
+    * `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProvider`
+    * `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProviderInterface`
     * **ApiBundle**
     * `Sylius\Bundle\ApiBundle\ApiPlatform\ApiResourceConfigurationMerger`
     * `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
@@ -1215,6 +1221,17 @@ If your app never changed the hasher name configuration, you don't need to confi
     * `Sylius\Bundle\ApiBundle\DataProvider\ShipmentItemDataProvider`
     * `Sylius\Bundle\ApiBundle\DataProvider\ShippingMethodsCollectionDataProvider`
     * `Sylius\Bundle\ApiBundle\DataProvider\VerifyCustomerAccountItemDataProvider`
+    * `Sylius\Bundle\ApiBundle\Exception\ChannelCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\PaymentMethodCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\ProductAttributeCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\ProductCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\ProductVariantCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\PromotionCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\PromotionCouponCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\ProvinceCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\ShippingMethodCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\TaxonCannotBeRemoved`
+    * `Sylius\Bundle\ApiBundle\Exception\ZoneCannotBeRemoved`
     * `Sylius\Bundle\ApiBundle\Filter\Doctrine\PromotionCouponPromotionFilter`
     * `Sylius\Bundle\ApiBundle\Filter\PaymentMethodFilter`
     * `Sylius\Bundle\ApiBundle\Filter\ShippingMethodFilter`
@@ -1237,11 +1254,22 @@ If your app never changed the hasher name configuration, you don't need to confi
     * `Sylius\Bundle\ApiBundle\DataTransformer\SubresourceIdAwareCommandDataTransformer`
     * `api_platform.action.post_item`
     * **CoreBundle**
+    * `Sylius\Bundle\CoreBundle\Console\Command\Model\PluginInfo`
+    * `Sylius\Bundle\CoreBundle\Console\Command\ShowAvailablePluginsCommand`
     * `Sylius\Bundle\CoreBundle\Form\Extension\CountryTypeExtension`
     * `Sylius\Bundle\CoreBundle\Form\Extension\CustomerTypeExtension`
     * `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
     * `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
+    * `Sylius\Bundle\CoreBundle\Form\EventSubscriber\AddUserFormSubscriber`
+    * `Sylius\Bundle\CoreBundle\Twig\StateMachineExtension`
     * `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
+    * `Sylius\Component\Core\Dashboard\DashboardStatistics`
+    * `Sylius\Component\Core\Dashboard\DashboardStatisticsProvider`
+    * `Sylius\Component\Core\Dashboard\Interval`
+    * `Sylius\Component\Core\Dashboard\SalesDataProvider`
+    * `Sylius\Component\Core\Dashboard\SalesDataProviderInterface`
+    * `Sylius\Component\Core\Dashboard\SalesSummary`
+    * `Sylius\Component\Core\Dashboard\SalesSummaryInterface`
     * **PayumBundle**
     * `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
     * `Sylius\Bundle\PayumBundle\Controller\PayumController`
@@ -1271,6 +1299,57 @@ If your app never changed the hasher name configuration, you don't need to confi
     * `Sylius\Bundle\UiBundle\Twig\TemplateEventExtension`
     * `Sylius\Bundle\UiBundle\Twig\TestFormAttributeExtension`
     * `Sylius\Bundle\UiBundle\Twig\TestHtmlAttributeExtension`
+
+### Routes
+
+* The following routes have been removed:
+    * `sylius_admin_dashboard_statistics`
+    * `sylius_admin_ajax_all_product_variants_by_codes`
+    * `sylius_admin_ajax_all_product_variants_by_phrase`
+    * `sylius_admin_ajax_customer_group_by_code`
+    * `sylius_admin_ajax_customer_groups_by_phrase`
+    * `sylius_admin_ajax_find_product_options`
+    * `sylius_admin_ajax_generate_product_slug`
+    * `sylius_admin_ajax_generate_taxon_slug`
+    * `sylius_admin_ajax_product_by_code`
+    * `sylius_admin_ajax_product_by_name_phrase`
+    * `sylius_admin_ajax_product_index`
+    * `sylius_admin_ajax_product_options_by_phrase`
+    * `sylius_admin_ajax_products_by_phrase`
+    * `sylius_admin_ajax_product_variants_by_codes`
+    * `sylius_admin_ajax_product_variants_by_phrase`
+    * `sylius_admin_ajax_taxon_by_code`
+    * `sylius_admin_ajax_taxon_by_name_phrase`
+    * `sylius_admin_ajax_taxon_leafs`
+    * `sylius_admin_ajax_taxon_root_nodes`
+    * `sylius_admin_dashboard_statistics`
+    * `sylius_admin_get_attribute_types`
+    * `sylius_admin_get_payment_gateways`
+    * `sylius_admin_get_product_attributes`
+    * `sylius_admin_partial_address_log_entry_index`
+    * `sylius_admin_partial_catalog_promotion_show`
+    * `sylius_admin_partial_channel_index`
+    * `sylius_admin_partial_customer_latest`
+    * `sylius_admin_partial_customer_show`
+    * `sylius_admin_partial_order_latest`
+    * `sylius_admin_partial_order_latest_in_channel`
+    * `sylius_admin_partial_product_show`
+    * `sylius_admin_partial_promotion_show`
+    * `sylius_admin_partial_taxon_show`
+    * `sylius_admin_partial_taxon_tree`
+    * `sylius_admin_render_attribute_forms`
+    * `sylius_shop_ajax_cart_add_item`
+    * `sylius_shop_ajax_cart_item_remove`
+    * `sylius_shop_ajax_user_check_action`
+    * `sylius_shop_partial_cart_summary`
+    * `sylius_shop_partial_cart_add_item`
+    * `sylius_shop_partial_channel_menu_taxon_index`
+    * `sylius_shop_partial_product_association_show`
+    * `sylius_shop_partial_product_index_latest`
+    * `sylius_shop_partial_product_review_latest`
+    * `sylius_shop_partial_product_show_by_slug`
+    * `sylius_shop_partial_taxon_index_by_code`
+    * `sylius_shop_partial_taxon_show_by_slug`
 
 * The following services have been renamed:
     * `sylius.twig.extension.form_test_attribute_array` => `sylius_twig_extra.twig.extension.test_form_attribute`
