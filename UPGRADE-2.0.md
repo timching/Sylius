@@ -1381,3 +1381,178 @@ sylius_shop_payum:
 ## Testing Suite
 
 * The `sylius.behat.api_security` has been replaced by `sylius.behat.api_admin_security` and `sylius.behat.api_shop_security` services.
+
+## Templates changes
+
+### Transition from SemanticUI to Bootstrap
+
+- All `.ui` prefixed classes have been replaced with Bootstrap classes.
+- JavaScript components relying on Semantic UI have been rewritten to utilize Bootstrap's JavaScript plugins.
+- Customized CSS has been replaced by Bootstrap's utility classes.
+
+### Abandoning jQuery
+
+Most of the existing JavaScript has been replaced by SymfonyUX with Stimulus, which includes live components.
+This change led to the removal of jQuery and a significant reduction of custom JavaScript in the project. 
+Check out the documentation for more information [here](https://ux.symfony.com/).
+
+### Abandoning partial routes
+
+All partial routes rendered in templates have been removed and replaced by rendering Twig components.
+
+### Sylius Twig Hooks
+
+Twig Hooks are a robust and powerful alternative to the Sonata Block Events and the old Sylius Template Events systems.
+
+#### Abandoning Sonata Blocks
+
+Sonata Blocks have been fully replaced with Twig Hooks.
+
+#### Evolving Sylius Template Events to Twig Hooks
+
+Sylius Twig Hooks is a new generation of template customization and extension, providing:
+
+- Built-in support for Twig templates, Twig Components, and Symfony Live Components.
+- Adjustability and autoprefixing hooks.
+- A configurable and easily manageable system for hookables.
+- A priority mechanism to control rendering order.
+- Simple enable/disable options for each hook.
+
+##### Key Improvements in Sylius Twig Hooks
+
+**Improved Structure**
+
+Previously, all template events were configured in a single, monolithic `events.yaml` file, making it difficult to navigate and maintain:
+
+```
+/app
+    /config
+        /app
+            /events.yaml
+```
+
+With Twig Hooks, the configuration has been reorganized into smaller, more manageable files. Each file corresponds to a specific part of the application, enhancing clarity and maintainability:
+
+```
+/app
+    /config
+        /app
+            /twig_hooks
+                /product
+                    /create.yaml
+                    /update.yaml
+                    /index.yaml
+                    /show.yaml
+```
+
+##### Detailed Comparison: Old vs. New configurations
+
+**Old configuration (Template Events)**
+
+The previous approach grouped all event blocks within `events.yaml`, which led to a cluttered and hard-to-manage configuration:
+
+```
+sylius_ui:
+    events:
+        sylius.admin.index:
+            blocks:
+                before_header_legacy:
+                    template: "@SyliusAdmin/Crud/Block/_legacySonataEvent.html.twig"
+                    priority: 25
+                    context:
+                        postfix: index.before_header
+                header:
+                    template: "@SyliusAdmin/Crud/Index/_header.html.twig"
+                    priority: 20
+                after_header_legacy:
+                    template: "@SyliusAdmin/Crud/Block/_legacySonataEvent.html.twig"
+                    priority: 15
+                    context:
+                        postfix: index.after_header
+                content:
+                    template: "@SyliusAdmin/Crud/Index/_content.html.twig"
+                    priority: 10
+                after_content:
+                    template: "@SyliusAdmin/Crud/Block/_legacySonataEvent.html.twig"
+                    priority: 5
+                    context:
+                        postfix: index.after_content
+```
+
+**New configuration (Twig Hooks)**
+
+The new system organizes hooks by specific parts of the application, simplifying customization and improving readability:
+
+```
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.common.index':
+            sidebar:
+                template: '@SyliusAdmin/shared/crud/common/sidebar.html.twig'
+                priority: 200
+            navbar:
+                template: '@SyliusAdmin/shared/crud/common/navbar.html.twig'
+                priority: 100
+            content:
+                template: '@SyliusAdmin/shared/crud/common/content.html.twig'
+                priority: 0
+
+        'sylius_admin.common.index.content':
+            flashes:
+                template: '@SyliusAdmin/shared/crud/common/content/flashes.html.twig'
+                priority: 300
+            header:
+                template: '@SyliusAdmin/shared/crud/common/content/header.html.twig'
+                priority: 200
+            grid:
+                template: '@SyliusAdmin/shared/crud/index/content/grid.html.twig'
+                priority: 100
+            footer:
+                template: '@SyliusAdmin/shared/crud/common/content/footer.html.twig'
+                priority: -100
+
+        'sylius_admin.common.index.content.header':
+            breadcrumbs:
+                template: '@SyliusAdmin/shared/crud/index/content/header/breadcrumbs.html.twig'
+                priority: 100
+            title_block:
+                template: '@SyliusAdmin/shared/crud/common/content/header/title_block.html.twig'
+                priority: 0
+
+        'sylius_admin.common.index.content.header.title_block':
+            title:
+                template: '@SyliusAdmin/shared/crud/common/content/header/title_block/title.html.twig'
+                priority: 100
+            actions:
+                template: '@SyliusAdmin/shared/crud/common/content/header/title_block/actions.html.twig'
+                priority: 0
+
+        'sylius_admin.common.index.content.grid':
+            filters:
+                template: '@SyliusAdmin/shared/crud/index/content/grid/filters.html.twig'
+                priority: 200
+            data_table:
+                template: '@SyliusAdmin/shared/crud/index/content/grid/data_table.html.twig'
+                priority: 100
+            no_data_block:
+                template: '@SyliusAdmin/shared/crud/index/content/grid/no_results.html.twig'
+                priority: 0
+
+        'sylius_admin.common.index.content.grid.no_results':
+            image:
+                template: '@SyliusAdmin/shared/crud/index/content/grid/no_results/image.html.twig'
+                priority: 300
+            title:
+                template: '@SyliusAdmin/shared/crud/index/content/grid/no_results/title.html.twig'
+                priority: 200
+            subtitle:
+                template: '@SyliusAdmin/shared/crud/index/content/grid/no_results/subtitle.html.twig'
+                priority: 100
+            action:
+                template: '@SyliusAdmin/shared/crud/index/content/grid/no_results/action.html.twig'
+                priority: 0
+```
+
+Twig Hooks cover both the admin and shop areas comprehensively, ensuring consistency across the entire application. 
+AdminBundle hooks start with the `sylius_admin` prefix, while ShopBundle hooks start with the `sylius_shop` prefix.
+
