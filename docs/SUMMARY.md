@@ -1,9 +1,10 @@
 # Table of contents
 
-* [Sylius Documentation](README.md)
-  * [Organization](sylius-documentation/organization/README.md)
-    * [Release Cycle](sylius-documentation/organization/release-cycle.md)
-    * [Backwards Compatibility Promise](sylius-documentation/organization/backwards-compatibility-promise.md)
+* [📓 Sylius 1.x Documentation](https://old-docs.sylius.com/en/1.13/)
+* [📖 Sylius 2.0 Documentation](README.md)
+  * [Organization](sylius-2.0-documentation/organization/README.md)
+    * [Release Cycle](sylius-2.0-documentation/organization/release-cycle.md)
+    * [Backwards Compatibility Promise](sylius-2.0-documentation/organization/backwards-compatibility-promise.md)
     * [Sylius Team](https://sylius.com/team/)
     * [Sylius Roadmap](https://sylius.com/roadmap/?utm\_source=docs)
 
@@ -123,7 +124,7 @@
 
 ## THE COOKBOOK
 
-* [The Cookbook](https://docs.sylius.com/en/1.13/cookbook/index.html)
+* [The Cookbook v.1.x](https://old-docs.sylius.com/en/1.13/cookbook/index.html)
 
 ## The Cookbook 2.0
 

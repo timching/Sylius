@@ -12,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Sylius Documentation
+# 📖 Sylius 2.0 Documentation
 
 <figure><img src=".gitbook/assets/sylius-logo_sylius-logo-light.png" alt="" width="563"><figcaption></figcaption></figure>
 
@@ -44,8 +44,8 @@ So why choose Sylius? Because it's more than just an e-commerce platform - it's 
 
 ### Organization
 
-* [Release Cycle](sylius-documentation/organization/release-cycle.md)
-* [Backwards Compatibility Promise](sylius-documentation/organization/backwards-compatibility-promise.md)
+* [Release Cycle](sylius-2.0-documentation/organization/release-cycle.md)
+* [Backwards Compatibility Promise](sylius-2.0-documentation/organization/backwards-compatibility-promise.md)
 * [Sylius Team](broken-reference)
 
 ### Getting Started with Sylius
