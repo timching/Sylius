@@ -46,11 +46,12 @@ So why choose Sylius? Because it's more than just an e-commerce platform - it's 
 
 * [Release Cycle](sylius-2.0-documentation/organization/release-cycle.md)
 * [Backwards Compatibility Promise](sylius-2.0-documentation/organization/backwards-compatibility-promise.md)
-* [Sylius Team](broken-reference)
+* [Sylius Team](https://sylius.com/team/)
+* [Sylius Roadmap](https://sylius.com/roadmap/)
 
 ### Getting Started with Sylius
 
-The essential guide for the Sylius newcomers who want to know its most important features, quickly see the power of customization and run their first Sylius shop within a few hours.
+The essential guide for the Sylius newcomers who want to know its most important features, quickly see the power of customization, and run their first Sylius shop within a few hours.
 
 * [Installation](getting-started-with-sylius/installation.md)
 * [Basic Configuration](getting-started-with-sylius/basic-configuration.md)
@@ -58,7 +59,7 @@ The essential guide for the Sylius newcomers who want to know its most important
 * [First Product](getting-started-with-sylius/first-product.md)
 * [Customizing the Shop](getting-started-with-sylius/customizing-the-shop.md)
 * [Customizing Business Logic](getting-started-with-sylius/customizing-business-logic.md)
-* [Using API](broken-reference)
+* [Using API](getting-started-with-sylius/using-api.md)
 * [Installing Plugins](getting-started-with-sylius/installing-plugins.md)
 * [Deployment](getting-started-with-sylius/deployment.md)
 * [Summary](getting-started-with-sylius/summary.md)
@@ -67,7 +68,6 @@ The essential guide for the Sylius newcomers who want to know its most important
 
 The Developer’s guide to leveraging the flexibility of Sylius. Here you will find all the concepts used in the Sylius platform. The Book helps to understand how Sylius works.
 
-* [Introduction](the-book/introduction-to-sylius.md)
 * [Installation](the-book/installation/)
 * [Architecture](the-book/architecture/)
 * [Configuration](the-book/configuration/)
@@ -98,3 +98,5 @@ Documentation sections referring to Sylius Plus features are:
   * Returns related [E-Mails](the-book/architecture/e-mails.md#sylius-plus-return-requests-emails)
 * [Multi-Source Inventory](the-book/products/multi-source-inventory.md)
 * [Loyalty](the-book/sylius-plus/loyalty.md)
+
+<figure><img src=".gitbook/assets/blackfire (1).png" alt="" width="356"><figcaption></figcaption></figure>

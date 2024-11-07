@@ -120,6 +120,7 @@
 * [Customizing Fixtures](the-customization-guide/customizing-fixtures/README.md)
   * [Customizing Fixture Suites](the-customization-guide/customizing-fixtures/customizing-fixture-suites.md)
 * [Customizing API](the-customization-guide/customizing-api.md)
+* [Customizing Serialization of API](the-customization-guide/customizing-serialization-of-api.md)
 * [Tips & Tricks](the-customization-guide/tips-and-tricks.md)
 
 ## THE COOKBOOK
