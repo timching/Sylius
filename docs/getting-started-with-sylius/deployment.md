@@ -18,4 +18,4 @@ Development usually takes most of the time in project implementation, but we sho
 
 Check out our deployment cookbook:
 
-* 👉 [Introduction to Sylius Cloud by Platform.sh](../the-cookbook-2.0/introduction-to-sylius-cloud-by-platform.sh.md)
+* 👉 [Introduction to Sylius Cloud by Platform.sh](https://old-docs.sylius.com/en/1.14/cookbook/deployment/introduction-to-sylius-cloud.html)
