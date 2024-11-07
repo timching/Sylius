@@ -255,3 +255,228 @@ All the `setter` methods have been removed from the commands above and also ther
 
 1. **ProductOptionValueTranslation**
     - A new resource configuration has been added for the `ProductOptionValueTranslation` resource it is now possible to manage translations for product option values.
+
+## Request Body and Response Updates
+
+### Request Body Changes
+
+#### ChannelPriceHistoryConfig
+Management for `ChannelPriceHistoryConfig` has been moved to the `Channel` resource. The `PUT` request for `Channel` now includes `channelPriceHistoryConfig` fields:
+
+**Updated `Channel` PUT Request Body:**
+```diff
+        "menuTaxon": "home-accessories",
+    +   "channelPriceHistoryConfig": {
+    +       "lowestPriceForDiscountedProductsCheckingPeriod": 30,
+    +       "lowestPriceForDiscountedProductsVisible": true,
+    +       "taxonsExcludedFromShowingLowestPrice": ["clearance", "seasonal"]
+        }
+```
+
+#### ShopBillingData
+`ShopBillingData` is now managed within the `Channel` resource and is no longer accessible directly. Retrieving `ShopBillingData` is now done through the `Channel` resource.
+
+#### ProductAttribute
+`position` is now included in the `ProductAttribute` request.
+
+```diff
+    {
+        "code": "BRAND_ATTRIBUTE",
+        "type": "text",
+        "configuration": ["visible"],
+    +   "position": 0,
+        "translatable": true,
+        "translations": {
+            "en_US": "Brand",
+            "fr_FR": "Marque",
+            "es_ES": "Marca"
+        }
+    }
+```
+
+#### ProductImage
+`position` has been added to the `ProductImage` request.
+
+```diff
+    {
+        "productVariants": ["https://example.com/product-variant-1"],
+        "type": "thumbnail",
+    +   "position": 0
+    }
+```
+
+### Response Changes
+
+#### ChannelPriceHistoryConfig
+**Updated Channels `shop` `GET` Responses:**
+```diff
+    +   "shopBillingData": {
+    +       "@type": "ShopBillingData",
+    +       "company": "Sylius Inc.",
+    +       "taxId": "123456789",
+    +       "countryCode": "US",
+    +       "street": "123 Commerce St.",
+    +       "city": "eCommerce City",
+    +       "postcode": "12345"
+    +   }
+```
+
+#### Order
+- `Id` has been removed from `shop` `GET` responses.
+- `Order number` has been removed from orders in `shop` item `GET`.
+- `Channel` has been added to orders in `shop` item `GET`.
+- `Customer email` is now exposed in the order `GET` response for `shop`.
+- `State` has been added to the order `GET` response for `shop`.
+- `customerIp` has been added to the admin serialization configuration.
+
+```diff
+    +   "channel": "/api/v2/shop/channels/WEB",
+    +   "customer": {
+    +       "@id": "/api/v2/shop/customers/123",
+    +       "@type": "Customer",
+    +       "email": "oliver@example.com"
+    +   },
+    +   "state": "cart",
+    +   "customerIp": "192.168.1.2",
+    -   "id": 1
+```
+
+#### OrderItemUnit
+The `sylius:admin:order_item_unit:show` serialization group has been removed as endpoints for `OrderItemUnit` are no longer exposed.
+
+#### Translations
+`Id` has been removed from serialization for all translation resources.
+
+**Example: `ShippingMethod` Get Response:**
+```diff
+    "translations": {
+        "en_US": {
+            "@id": "/api/v2/admin/shipping-method-translations/1",
+            "@type": "ShippingMethodTranslation",
+    -       "id": 1,
+            "name": "Standard Shipping",
+            "description": "Delivery within 5-7 business days"
+        }
+    }
+```
+
+#### ProductAssociationType
+`Id` is no longer exposed on the `shop` `GET` endpoint.
+
+```diff
+    {
+        "@context": "/api/v2/contexts/ProductAssociationType",
+        "@id": "/api/v2/shop/product-association-types/similar_products",
+        "@type": "ProductAssociationType",
+    -   "id": 1,
+        "code": "similar_products",
+        "name": "Similar Products"
+    }
+```
+
+#### ProductImage
+`position` has been added to the `ProductImage` response for both `shop` and `admin` views.
+
+```diff
+    {
+        "@context": "/api/v2/contexts/ProductImage",
+        "@id": "/api/v2/admin/products/MUG/images/1",
+        "@type": "ProductImage",
+        "id": 1,
+        "owner": "/api/v2/admin/products/MUG",
+        "type": "thumbnail",
+        "path": "https://example.com/images/sylius_original_thumbnail.jpg",
+        "productVariants": ["/api/v2/admin/product-variants/MUG_BLUE"],
+    +   "position": 0
+    }
+```
+
+#### ProductOption
+`Id` has been removed from serialization.
+
+```diff
+    {
+        "@context": "/api/v2/contexts/ProductOption",
+        "@id": "/api/v2/admin/product-options/COLOR",
+        "@type": "ProductOption",
+    -   "id": 1,
+        "code": "COLOR",
+        "position": 0,
+        "values": [
+            "/api/v2/admin/product-options/COLOR/values/COLOR_BLUE",
+            "/api/v2/admin/product-options/COLOR/values/COLOR_RED"
+        ],
+        "translations": {
+            "en_US": {
+                "@id": "/api/v2/admin/product-options/COLOR/translations/en_US",
+                "@type": "ProductOptionTranslation",
+                "name": "Color"
+            }
+        }
+    }
+```
+
+#### ProductOptionValue
+`Id` has been removed from serialization.
+
+```diff
+    {
+        "@context": "/api/v2/contexts/ProductOptionValue",
+        "@id": "/api/v2/admin/product-option-values/COLOR_BLUE",
+        "@type": "ProductOptionValue",
+    -   "id": "1",
+        "code": "COLOR_BLUE",
+        "option": "/api/v2/admin/product-options/COLOR",
+        "translations": {
+            "en_US": {
+                "value": "Blue"
+            }
+        },
+        "value": "Blue"
+    }
+```
+
+#### Province
+The `sylius:admin:province:index` serialization group has been added for the `index` response.
+
+#### ShopBillingData
+`Id` has been removed from serialization, and the `sylius:admin:shop_billing_data:show` serialization group has been removed. `Company`, `taxId`, `countryCode`, `street`, `city`, and `postcode` are now exposed on `channels` `admin` index and show views.
+
+**Example: Channel Get Response**
+```diff
+    "shopBillingData": {
+        "@type": "ShopBillingData",
+    -   "id": 1,
+        "company": "Web Channel Company",
+        "taxId": "WCH123456",
+        "countryCode": "EN",
+        "street": "123 Web St.",
+        "city": "Web City",
+        "postcode": "00000"
+    },
+```
+
+#### ZoneMember
+`Id` and `belongsTo` have been removed from serialization, and `code` has been added to the response for `zones` admin index and show. The `ZoneMember` get endpoint has been removed and is now accessible only through the `Zone`.
+
+**Example: Zone Get Response:**
+```diff
+    {
+        "@context": "/api/v2/contexts/Zone",
+        "@id": "/api/v2/admin/zones/WD",
+        "@type": "Zone",
+    -   "id": 1,
+        "code": "WD",
+        "name": "WORLD",
+        "type": "country",
+        "scope": "all",
+        "members": [
+    -       "/api/v2/admin/zone-members/@integer@",
+    -       "/api/v2/admin/zone-members/@integer@",
+    -       "/api/v2/admin/zone-members/@integer@"
+    +       {"@type": "ZoneMember", "code": "NL"},
+    +       {"@type": "ZoneMember", "code": "BE"},
+    +       {"@type": "ZoneMember", "code": "PL"}
+        ]
+    }
+```
