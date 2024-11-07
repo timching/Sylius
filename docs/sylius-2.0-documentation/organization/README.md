@@ -22,10 +22,8 @@ This chapter describes the rules and processes we use to organize our work.
 [backwards-compatibility-promise.md](backwards-compatibility-promise.md)
 {% endcontent-ref %}
 
-{% content-ref url="broken-reference" %}
-[Broken link](broken-reference)
-{% endcontent-ref %}
 
-{% content-ref url="broken-reference" %}
-[Broken link](broken-reference)
-{% endcontent-ref %}
+
+{% embed url="https://sylius.com/team/" %}
+
+{% embed url="https://sylius.com/roadmap/" %}
