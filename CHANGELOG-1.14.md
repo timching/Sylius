@@ -1,5 +1,16 @@
 # CHANGELOG FOR `1.14.X`
 
+## v1.14.0-RC.1 (2024-11-07)
+
+#### Details
+
+- [#17390](https://github.com/Sylius/Sylius/issues/17390) [Admin] Deprecate NotificationWidgetExtension ([@GSadee](https://github.com/GSadee))
+- [#17392](https://github.com/Sylius/Sylius/issues/17392) [Behat] Dehardcode the use of entities ([@GSadee](https://github.com/GSadee))
+- [#17401](https://github.com/Sylius/Sylius/issues/17401) [Documentation] Fix 2.0-dev installation instruction tip ([@GSadee](https://github.com/GSadee))
+- [#17408](https://github.com/Sylius/Sylius/issues/17408) [API] Use model class parameter instead of hardcoded class for ShippingMethodRule resource ([@GSadee](https://github.com/GSadee))
+- [#17417](https://github.com/Sylius/Sylius/issues/17417) [Docs] Add links to 2.x docs on the 1.x documentation ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#17380](https://github.com/Sylius/Sylius/issues/17380) [CoreBundle] Fix initial log creation for table sylius_channel_pricing_log_entry ([@jblairy](https://github.com/jblairy))
+
 ## v1.14.0-BETA.1 (2024-10-30)
 
 #### Details
