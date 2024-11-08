@@ -70,7 +70,7 @@ To define your database connection string, create the `.env.local` file with the
 {% tab title="MySQL" %}
 {% code title=".env.local" overflow="wrap" %}
 ```sh
-DATABASE_URL=DATABASE_URL=mysql://<username>:<password>@<host>/<your_database_name>_%kernel.environment%?serverVersion=<your_db_version>&charset=utf8
+DATABASE_URL=mysql://<username>:<password>@<host>/<your_database_name>_%kernel.environment%?serverVersion=<your_db_version>&charset=utf8
 ```
 {% endcode %}
 {% endtab %}
@@ -102,7 +102,7 @@ composer update
 ```
 {% endcode %}
 
-Otherwise, you may face the problem of having Symfony components of the wrong version installed.
+Otherwise, you may face the problem of having Symfony components installed in the wrong version.
 {% endhint %}
 
 Once you have the database configured, we can run the interactive installer by running the below command in the project's root directory:
