@@ -1,6 +1,6 @@
 # UPGRADE FROM `1.14` TO `2.0`
 
-## To start of
+## To start off
 
 Even if your app is barely customized, it will require some manual adjustments before it can run again. Depending on
 whether you use Symfony Flex, some of these changes may be applied automatically, but it’s important to check them
@@ -150,7 +150,7 @@ your app as necessary.
 
 #### Moved:
 
-* The `sylius/theme-bundle` dependency has been moved from CoreBundle to ShopBundle, so it will no longer be installed
+* The `sylius/theme-bundle` dependency has been moved from CoreBundle to ShopBundle.
 
 #### Removed:
 
@@ -223,7 +223,8 @@ your app as necessary.
 
 #### Optional
 
-* Removed from required and made suggested, install them in your application, if you still want to use Winzou State Machine:
+* Winzou State Machine repositories have been moved to the suggested section of composer.json,
+  if you still want to use them, install the following:
 
     * `winzou/state-machine`
     * `winzou/state-machine-bundle`
@@ -420,7 +421,7 @@ your app as necessary.
 #### Resource
 
 - Removed configuration nodes for resource options `sylius_*.resources.**.options`, such as `sylius_addressing.resources.address.options`.
-- Removed `sylius_inventory.checker` configuartion node has been removed
+- Removed `sylius_inventory.checker` configuration node.
 
 #### Autoconfiguration
 
@@ -432,35 +433,36 @@ your app as necessary.
 #### User Resetting Pin
 
 - Removed `sylius_user.resources.{name}.user.resetting.pin` configuration parameter.  
-  Also removed:
+  Due to that the related logic has also been removed, this includes:
     - `reset_password_pin` email
     - `Sylius\Bundle\UserBundle\Controller\UserController::requestPasswordResetPinAction` method
-    - Related services:
-        - `sylius.{user_type}_user.pin_generator.password_reset`
-        - `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
+    - `sylius.{user_type}_user.pin_generator.password_reset` services
+    - `sylius.{user_type}_user.pin_uniqueness_checker.password_reset` services
 
 #### Parameter Removals and Renaming
 
 - Removed:
     - `sylius.mongodb_odm.repository.class`
     - `sylius.phpcr_odm.repository.class`
-
-- Renamed:
-    - `sylius.message.admin_user_create.validation_groups`  
-      → `sylius_admin.command_handler.create_admin_user.validation_groups`
-
-- Removed:
     - `sylius.mailer.templates`
+- Renamed:
+    - `sylius.message.admin_user_create.validation_groups` to `sylius_admin.command_handler.create_admin_user.validation_groups`
 
 #### File Relocations
 
-- Winzou state machine configuration:
-    - Moved `state_machine.yml` from `@SyliusPaymentBundle/Resources/config/app` to `@SyliusPaymentBundle/Resources/config/app/state_machine`.
-    - Renamed to `sylius_payment.yaml`.
+- The state machine configurations of `PaymentBundle` have been moved and renamed:
+  
+Winzou state machine:
+```diff
+- `@SyliusPaymentBundle/Resources/config/app/state_machine.yml`
++ `@SyliusPaymentBundle/Resources/config/app/state_machine/sylius_payment.yaml`
+```
 
-- Symfony workflow configuration:
-    - Moved `state_machine.yaml` from `@SyliusPaymentBundle/Resources/config/workflow` to `@SyliusPaymentBundle/Resources/config/app/workflow`.
-    - Renamed to `sylius_payment.yaml`.
+Symfony workflow:
+```diff
+- `@SyliusPaymentBundle/Resources/config/workflow/state_machine.yaml`
++ `@SyliusPaymentBundle/Resources/config/app/workflow/sylius_[resource].yaml`
+```
 
 #### Zone Validation Groups
 
@@ -533,13 +535,12 @@ sylius_grid:
 
 #### Password Encoder & Salt
 
-The encoder and salt has been removed from the User entities. It will use the password hasher configured on Symfony
-security configuration.
+The encoder and salt have been removed from the User entities. The password hasher configured on Symfony security configuration is in use instead.
 
 This "encoder" is configured via
 the [Symfony security password hasher](https://symfony.com/doc/current/security/passwords.html#configuring-a-password-hasher).
 
-You may have already something like that configuration bellow.
+For example:
 
 ```yaml
 # config/packages/security.yaml
@@ -550,7 +551,7 @@ security:
         Sylius\Component\User\Model\UserInterface: argon2i
 ```
 
-Check if you have an encoder configured in the `sylius_user` package configuration.
+Also, check if you have an encoder configured in the `sylius_user` package configuration.
 
 ```yaml
 sylius_user:
@@ -567,7 +568,7 @@ sylius_user:
 ```
 
 Check your user hashed passwords in your production database.
-In modern Symfony projects, the hasher name is stored on the password.
+In modern Symfony projects, the hasher name is stored along with the password.
 
 Example:
 `$argon2i$v=19$m=65536,t=4,p=1$VVJuMnpUUWhRY1daN1ppMA$2Tx6l3I+OUx+PUPn+vZz1jI3Z6l6IHh2kpG0NdpmYWE`
@@ -643,7 +644,6 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 #### Classes and Interfaces
 
 1. Removed
-
 
 * `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
 * `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
@@ -915,7 +915,6 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 | `Sylius\Bundle\PayumBundle\Validator\GatewayFactoryExistsValidator`                | `sylius.validator.gateway_factory_exists`                                |
 | `Sylius\Bundle\PayumBundle\Validator\GroupsGenerator\GatewayConfigGroupsGenerator` | `sylius.validator.groups_generator.gateway_config`                       |
 
-
 1. Replaced
 
 | Old Name                                                           | New Name                                                         |
@@ -974,7 +973,7 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 - **Currency**:
     - `Sylius\Bundle\CurrencyBundle\Doctrine\ORM\CurrencyRepository`
 
-##### Repository Namespace Changes
+##### Repository Inheritance Changes
 
 - **Addressing**:
     - `Sylius\Bundle\CoreBundle\Doctrine\ORM\AddressRepository` now extends `Sylius\Bundle\AddressingBundle\Doctrine\ORM\AddressRepository`.
@@ -993,9 +992,9 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
     - `locked`
     - `expiresAt`
     - `credentialsExpireAt`
-- These changes affect both the ShopUser and AdminUser models, as well as the relevant columns in the database tables.
+- These changes affect the ShopUser and AdminUser models, and any custom user type extending the `Sylius\Component\User\Model\User` model, as well as the relevant columns in the database tables.
 
-#### Aliases
+#### Service Aliases
 
 * Aliases introduced in Sylius 1.14 have now become the primary service IDs in Sylius 2.0. The old service IDs have been
   removed, and all references must be updated accordingly:
@@ -1587,18 +1586,13 @@ Similarly, use form types from `ShopBundle` for the Shop context.
 ### Payment method gateways
 
 * Stripe and Paypal Express Checkout gateways have been removed.
-The only one included in core is `Offline`. Gateways are now available as separate plugins.
+  The only remaining by default gateway in core is `offline`. Use sylius plugins for the gateways of your choosing.
 
 ### Theming
 
 * Channel's `themeName` form field existence is made optional and depends on `ShopBundle` presence.
 * The `Sylius\Bundle\CoreBundle\Theme\ChannelBasedThemeContext` has been moved to 
   the `Sylius\Bundle\ShopBundle\Theme\ChannelBasedThemeContext`.
-
-### Testing Suite
-
-* The `sylius.behat.api_security` has been replaced by `sylius.behat.api_admin_security` and `sylius.behat.api_shop_security` services.
-* We removed `Psalm`, the `PHPStan` is now the only static analysis tool used in the project.
 
 ### Frontend
 
@@ -1624,11 +1618,11 @@ The only one included in core is `Offline`. Gateways are now available as separa
 
 #### Transition from SemanticUI to Bootstrap
 
-- All `.ui` prefixed classes have been replaced with Bootstrap classes.
+- All CSS classes of SemanticUI have been replaced with Bootstrap classes.
 - JavaScript components relying on Semantic UI have been rewritten to utilize Bootstrap's JavaScript plugins.
 - Customized CSS has been replaced by Bootstrap's utility classes.
 
-#### Abandoning jQuery
+#### Removal of jQuery
 
 Most of the existing JavaScript has been replaced by SymfonyUX with Stimulus, which includes live components.
 This change led to the removal of jQuery and a significant reduction of custom JavaScript in the project. 
@@ -1642,9 +1636,9 @@ All partial routes rendered in templates have been removed and replaced by rende
 
 Twig Hooks are a robust and powerful alternative to the Sonata Block Events and the old Sylius Template Events systems.
 
-##### Abandoning Sonata Blocks
+##### Removal of Sonata Blocks
 
-Sonata Blocks have been fully replaced with Twig Hooks.
+Sonata Blocks have been fully removed as they were not actively maintained/supported for a long time.
 
 ##### Evolving Sylius Template Events to Twig Hooks
 
@@ -1659,6 +1653,8 @@ Sylius Twig Hooks is a new generation of template customization and extension, p
 1. Key Improvements in Sylius Twig Hooks
 
 **Improved Structure**
+
+- **Hooks**
 
 Previously, all template events were configured in a single, monolithic `events.yaml` file, making it difficult to navigate and maintain:
 
@@ -1681,6 +1677,41 @@ With Twig Hooks, the configuration has been reorganized into smaller, more manag
                     /update.yaml
                     /index.yaml
                     /show.yaml
+```
+
+- **Templates**
+
+The structure of the template directories has also been improved. Previously, templates were organized in a less intuitive way, with some structures inconsistent with the template event definitions:
+
+```
+/resources
+    /views
+        /AdminUser
+        /Crud
+        /Product
+            /Form
+            /_avatarImage.html.twig
+            /_form.html.twig
+```
+
+Now, the templates are organized in a more consistent manner, with all templates grouped by resource and aligned with hook naming conventions:
+
+```
+/templates
+    /product
+        /form
+            /sections
+                /translations
+                    description.html.twig
+                    meta_description.html.twig
+                    meta_keywords.html.twig
+                    name.html.twig
+                    short_description.html.twig
+                    slug.html.twig
+                /translations.html.twig
+        /show
+    /shared
+    /another_resource
 ```
 
 1. Detailed Comparison: Old vs. New configurations
@@ -1794,3 +1825,9 @@ sylius_twig_hooks:
 Twig Hooks cover both the admin and shop areas comprehensively, ensuring consistency across the entire application. 
 AdminBundle hooks start with the `sylius_admin` prefix, while ShopBundle hooks start with the `sylius_shop` prefix.
 
+For more information visit the [Sylius Stack](https://github.com/Sylius/Stack).
+
+### Testing Suite
+
+* The `sylius.behat.api_security` has been replaced by `sylius.behat.api_admin_security` and `sylius.behat.api_shop_security` services.
+* We removed `Psalm`, the `PHPStan` is now the only static analysis tool used in the project.
