@@ -1,2 +1,0 @@
-imports:
-    - { resource: "../test_cached/web_profiler.yaml" }
