@@ -73,7 +73,7 @@ final readonly class PaymentRequestContext implements Context
         /** @var PaymentRequestInterface[] $paymentRequests */
         $paymentRequests = $this->paymentRequestRepository->findBy(
             [
-                'action' => $action
+                'action' => $action,
             ],
             ['createdAt' => 'ASC'],
             1,
