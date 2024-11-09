@@ -43,5 +43,4 @@ Sylius\Bundle\PayumBundle\Model\GatewayConfig:
     gateway_offline:
         gatewayName: 'Offline'
         factoryName: 'offline'
-        usePayum: true
         config: []

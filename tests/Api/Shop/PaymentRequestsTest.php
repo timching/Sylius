@@ -66,7 +66,7 @@ final class PaymentRequestsTest extends JsonApiTestCase
      */
     public function it_creates_a_payment_request(array $fixturesPaths, string $responsePath): void
     {
-        $this->loadFixturesFromFiles($fixturesPaths);
+        $fixtures = $this->loadFixturesFromFiles($fixturesPaths);
 
         $tokenValue = 'nAWw2jewpA';
         $order = $this->placeOrder($tokenValue, 'oliver@doe.com');
@@ -269,8 +269,8 @@ final class PaymentRequestsTest extends JsonApiTestCase
                 'cart.yaml',
                 'country.yaml',
                 'shipping_method.yaml',
-                'payment_method.yaml',
                 'gateway_config_payment_request.yaml',
+                'payment_method.yaml',
             ],
             'shop/payment_request/post_payment_request',
         ];
@@ -294,8 +294,8 @@ final class PaymentRequestsTest extends JsonApiTestCase
             [
                 'authentication/shop_user.yaml',
                 'channel/channel.yaml',
-                'payment_method.yaml',
                 'gateway_config_payment_request.yaml',
+                'payment_method.yaml',
                 'payment_request/payment_request.yaml',
                 'payment_request/order_with_customer.yaml',
             ],
