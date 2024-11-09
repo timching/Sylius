@@ -262,25 +262,20 @@ final class PaymentRequestsTest extends JsonApiTestCase
 
     public function createPaymentRequestProvider(): iterable
     {
-        $environment = getenv('APP_ENV');
+        yield 'Payment request' => [
+            [
+                'authentication/shop_user.yaml',
+                'channel/channel.yaml',
+                'cart.yaml',
+                'country.yaml',
+                'shipping_method.yaml',
+                'payment_method.yaml',
+                'gateway_config_payment_request.yaml',
+            ],
+            'shop/payment_request/post_payment_request',
+        ];
 
-        if ($environment === 'test_cached_payum') {
-            yield [
-                [
-                    'authentication/shop_user.yaml',
-                    'channel/channel.yaml',
-                    'cart.yaml',
-                    'country.yaml',
-                    'shipping_method.yaml',
-                    'payment_method.yaml',
-                ],
-                'shop/payment_request/post_payment_request_payum',
-            ];
-
-            return;
-        }
-
-        yield [
+        yield 'Payum' => [
             [
                 'authentication/shop_user.yaml',
                 'channel/channel.yaml',
@@ -289,38 +284,33 @@ final class PaymentRequestsTest extends JsonApiTestCase
                 'shipping_method.yaml',
                 'payment_method.yaml',
             ],
-            'shop/payment_request/post_payment_request',
+            'shop/payment_request/post_payment_request_payum',
         ];
     }
 
-    public function updatePaymentRequestProvider(): iterable
+    public static function updatePaymentRequestProvider(): iterable
     {
-        $environment = getenv('APP_ENV');
-
-        if ($environment === 'test_cached_payum') {
-            yield [
-                [
-                    'authentication/shop_user.yaml',
-                    'channel/channel.yaml',
-                    'payment_method.yaml',
-                    'payment_request/payment_request_payum.yaml',
-                    'payment_request/order_with_customer.yaml',
-                ],
-                'shop/payment_request/put_payment_request_payum',
-            ];
-
-            return;
-        }
-
-        yield [
+        yield 'Payment Request' => [
             [
                 'authentication/shop_user.yaml',
                 'channel/channel.yaml',
                 'payment_method.yaml',
+                'gateway_config_payment_request.yaml',
                 'payment_request/payment_request.yaml',
                 'payment_request/order_with_customer.yaml',
             ],
             'shop/payment_request/put_payment_request',
+        ];
+
+        yield 'Payum' => [
+            [
+                'authentication/shop_user.yaml',
+                'channel/channel.yaml',
+                'payment_method.yaml',
+                'payment_request/payment_request_payum.yaml',
+                'payment_request/order_with_customer.yaml',
+            ],
+            'shop/payment_request/put_payment_request_payum',
         ];
     }
 }
