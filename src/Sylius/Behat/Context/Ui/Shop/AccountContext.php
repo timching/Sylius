@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sylius\Behat\Context\Ui\Shop;
 
 use Behat\Behat\Context\Context;
+use Behat\Mink\Exception\ElementNotFoundException;
 use FriendsOfBehat\PageObjectExtension\Page\UnexpectedPageException;
 use Sylius\Behat\NotificationType;
 use Sylius\Behat\Page\Shop\Account\ChangePasswordPageInterface;
@@ -302,21 +303,22 @@ final readonly class AccountContext implements Context
      */
     public function iChangeMyPaymentMethodTo(PaymentMethodInterface $paymentMethod): void
     {
-        /** @var OrderInterface $order */
-        $order = $this->sharedStorage->get('order');
-
-        $this->orderIndexPage->changePaymentMethod($order);
         $this->orderShowPage->choosePaymentMethod($paymentMethod);
         $this->orderShowPage->pay();
     }
 
     /**
-     * @Then I try to change my payment method to :paymentMethod
+     * @When I try to change my payment method to :paymentMethod
      */
     public function iChoosePaymentMethod(PaymentMethodInterface $paymentMethod): void
     {
-        $this->orderShowPage->choosePaymentMethod($paymentMethod);
-        $this->orderShowPage->pay();
+        try {
+            $this->orderShowPage->choosePaymentMethod($paymentMethod);
+        } catch (ElementNotFoundException) {
+            return;
+        }
+
+        throw new \InvalidArgumentException('The payment method has been changed, but it should not be the case.');
     }
 
     /**

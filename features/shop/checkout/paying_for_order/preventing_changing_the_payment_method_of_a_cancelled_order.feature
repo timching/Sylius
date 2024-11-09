@@ -15,10 +15,10 @@ Feature: Preventing changing the payment method of a cancelled order
         And I bought a single "Angel T-Shirt"
         And I addressed it to "Lucifer Morningstar", "Seaside Fwy", "90802" "Los Angeles" in the "United States" with identical billing address
         And I chose "Free" shipping method with "Cash on Delivery" payment
-        And I am changing this order's payment method
         And this order was cancelled
 
     @api @ui
     Scenario: Being prevented from changing the payment method of a cancelled order
-        When I try to change my payment method to "Bank Transfer"
+        When I want to browse order details for this order
+        And I try to change my payment method to "Bank Transfer"
         Then I should be notified that I can no longer change payment method of this order

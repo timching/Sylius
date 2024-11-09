@@ -61,9 +61,9 @@ final readonly class PaymentRequestContext implements Context
     }
 
     /**
-     * @Then my payment request with action :action for payment method :paymentMethod should have state :state
+     * @Then a payment request with action :action for payment method :paymentMethod should have state :state
      */
-    public function myPaymentRequestShouldBeCancelled(string $action, PaymentMethodInterface $paymentMethod, string $state): void
+    public function aPaymentRequestWithActionForPaymentMethodShouldHaveState(string $action, PaymentMethodInterface $paymentMethod, string $state): void
     {
         $request = $this->getRequestForPaymentRequestWithAction($action);
         Assert::notNull($request, sprintf('Payment request with action %s not found', $action));

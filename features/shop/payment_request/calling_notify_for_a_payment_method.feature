@@ -13,13 +13,28 @@ Feature: Calling notify for a payment method
 
     @ui
     Scenario: I want to send HTTP request to the payment method notify and succeeded
+        Given this payment method is not using Payum
         When I call the payment method notify page with the code "offline"
-        Then a payment request with "notify" action and state "completed" should exists
+        Then a payment request with action "notify" for payment method "Offline" should have state "completed"
         And the response status code should be 204
         And the response content should be empty
 
     @ui
     Scenario: I want to send HTTP request to the payment method notify and failed
+        Given this payment method is not using Payum
+        When I call the payment method notify page with the code "not_existing"
+        Then no payment request with "notify" action should exists
+        And the response status code should be 404
+
+    @ui
+    Scenario: Using Payum I want to send HTTP request to the payment method notify and succeeded
+        When I call the payment method notify page with the code "offline"
+        Then a payment request with action "notify" for payment method "Offline" should have state "completed"
+        And the response status code should be 204
+        And the response content should be empty
+
+    @ui
+    Scenario: Using Payum I want to send HTTP request to the payment method notify and failed
         When I call the payment method notify page with the code "not_existing"
         Then no payment request with "notify" action should exists
         And the response status code should be 404

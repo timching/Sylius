@@ -14,16 +14,33 @@ Feature: Calling notify for a payment method
 
     @ui
     Scenario: I want to send HTTP request to the payment request notify and succeeded
-        Given there is a "new" "notify" payment request for order "#000001" using the "Offline" payment method
+        Given this payment method is not using Payum
+        And there is a "new" "notify" payment request for order "#000001" using the "Offline" payment method
         When I call the payment request notify page for this payment request
-        Then a payment request with "notify" action and state "completed" should exists
+        Then a payment request with action "notify" for payment method "Offline" should have state "completed"
         And the response status code should be 204
         And the response content should be empty
 
     @ui
     Scenario: I want to send HTTP request to the payment method notify and failed
+        Given this payment method is not using Payum
+        And there is a "completed" "notify" payment request for order "#000001" using the "Offline" payment method
+        When I call the payment request notify page for this payment request
+        Then a payment request with action "notify" for payment method "Offline" should have state "completed"
+        And the response status code should be 404
+
+    @ui
+    Scenario: Using Payum I want to send HTTP request to the payment request notify and succeeded
+        Given there is a "new" "notify" payment request for order "#000001" using the "Offline" payment method
+        When I call the payment request notify page for this payment request
+        Then a payment request with action "notify" for payment method "Offline" should have state "completed"
+        And the response status code should be 204
+        And the response content should be empty
+
+    @ui
+    Scenario: Using Payum I want to send HTTP request to the payment method notify and failed
         Given there is a "completed" "notify" payment request for order "#000001" using the "Offline" payment method
         When I call the payment request notify page for this payment request
-        Then a payment request with "notify" action and state "completed" should exists
+        Then a payment request with action "notify" for payment method "Offline" should have state "completed"
         And the response status code should be 404
 

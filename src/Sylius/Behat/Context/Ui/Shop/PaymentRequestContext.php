@@ -17,6 +17,7 @@ use Behat\Behat\Context\Context;
 use Doctrine\Persistence\ObjectManager;
 use Sylius\Behat\Page\Shop\PaymentRequest\PaymentMethodNotifyPageInterface;
 use Sylius\Behat\Page\Shop\PaymentRequest\PaymentRequestNotifyPage;
+use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Payment\Model\PaymentRequestInterface;
 use Sylius\Component\Payment\Repository\PaymentRequestRepositoryInterface;
 use Webmozart\Assert\Assert;
@@ -63,15 +64,17 @@ final readonly class PaymentRequestContext implements Context
     }
 
     /**
-     * @Then /^a payment request with "([^"]*)" action and state "([^"]*)" should exists$/
+     * @Then a payment request with action :action for payment method :paymentMethod should have state :state
      */
-    public function aPaymentRequestWithActionAndStateCompletedShouldExists(string $action, string $state): void
+    public function aPaymentRequestWithActionForPaymentMethodShouldHaveState(string $action, PaymentMethodInterface $paymentMethod, string $state): void
     {
         $this->objectManager->clear(); // avoiding doctrine cache
 
         /** @var PaymentRequestInterface[] $paymentRequests */
         $paymentRequests = $this->paymentRequestRepository->findBy(
-            ['action' => $action],
+            [
+                'action' => $action
+            ],
             ['createdAt' => 'ASC'],
             1,
         );
@@ -79,6 +82,7 @@ final readonly class PaymentRequestContext implements Context
         Assert::count($paymentRequests, 1);
         $paymentRequest = $paymentRequests[0];
         Assert::notNull($paymentRequest);
+        Assert::eq($paymentRequest->getMethod()->getId(), $paymentMethod->getId());
         Assert::eq($paymentRequest->getState(), $state);
     }
 
