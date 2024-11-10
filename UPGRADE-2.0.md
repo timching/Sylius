@@ -32,7 +32,7 @@ sylius_payum:
 -               model: App\Entity\Payment\GatewayConfig
 ```
 
-* API firewalls have been renamed and user checkers have been configured on firewalls
+* API firewalls have been renamed and user checkers have been configured on them
   with `security.user_checker.chain.<firewall>` service:
 
 ```diff
@@ -120,16 +120,16 @@ Therefore, you need to add the following configuration to your .env file:
 
 ### Migrations
 
-Doctrine migrations have been regenerated, meaning all previous migration files have been removed and their content is now in a single migration file.
-To apply the new migration and get rid of the old entries run migrations as usual:
+Doctrine migrations have been regenerated, meaning all previous migration files have been removed and their content 
+is now in a single migration file. To apply the new migration and get rid of the old entries run migrations as usual:
 
 ```bash
     bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-### PHP 8.2 support
+### PHP support
 
-Sylius 2.0 comes with a bump of minimum PHP version to 8.2. 
+Sylius 2.0 comes with a bump of minimum supported PHP version to 8.2. 
 
 ### Symfony support
 
@@ -509,30 +509,6 @@ sylius_grid:
 +                       fields: [product.channels.id]
 ```
 
-#### Security
-
-* API firewalls have been renamed and user checkers have been configured on
-  them with `security.user_checker.chain.<firewall>` services:
-
-    ```diff
-    security:
-        firewalls:
-            admin:
-                ...
-    +           user_checker: security.user_checker.chain.admin
-    -       new_api_admin_user:
-    +       api_admin:
-                ...
-    +           user_checker: security.user_checker.chain.api_admin
-    -       new_api_shop_user:
-    +       api_shop:
-                ...
-    +           user_checker: security.user_checker.chain.api_shop
-            shop:
-                ...
-    +           user_checker: security.user_checker.chain.shop
-    ```
-
 #### Password Encoder & Salt
 
 The encoder and salt have been removed from the User entities. The password hasher configured on Symfony security configuration is in use instead.
@@ -635,7 +611,8 @@ If your app never changed the hasher name configuration, you don't need to confi
 
 #### Container
 
-In Sylius 2.0, we have changed the visibility of services to `private` by default. This change enhances the performance and maintainability of the application and also follows Symfony's best practices for service encapsulation.
+In Sylius 2.0, we have changed the visibility of services to `private` by default. This change enhances the performance 
+and maintainability of the application and also follows Symfony's best practices for service encapsulation.
 
 **Exceptions:**
 - Services required by Symfony to be `public` (e.g., controllers, event listeners) remain public.
@@ -923,14 +900,19 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 
 1. Definition location changed
 
-  * The `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionAction\PercentageDiscountActionConfigurationType` was moved to the `CoreBundle` from `PromotionBundle`.
-  * The `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionScopeType` was moved from the `CoreBundle` to the `PromotionBundle`.
+  * The `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionAction\PercentageDiscountActionConfigurationType` 
+    was moved to the `CoreBundle` from `PromotionBundle`.
+  * The `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionScopeType` was moved from the `CoreBundle` 
+    to the `PromotionBundle`.
 
 #### Class changes
 
-1. Added `Sylius\Component\Order\Context\ResettableCartContextInterface`, which extends `Sylius\Component\Order\Context\CartContextInterface` and `Symfony\Contracts\Service\ResetInterface`.
+1. Added `Sylius\Component\Order\Context\ResettableCartContextInterface`, which extends `Sylius\Component\Order\Context\CartContextInterface` 
+   and `Symfony\Contracts\Service\ResetInterface`.
 
-1. Replaced `sylius/calendar` with `symfony/clock`. All instances of `Sylius\Calendar\Provider\DateTimeProviderInterface` are now replaced by `Symfony\Component\Clock\ClockInterface`.  
+1. Replaced `sylius/calendar` with `symfony/clock`. All instances of `Sylius\Calendar\Provider\DateTimeProviderInterface` 
+   are now replaced by `Symfony\Component\Clock\ClockInterface`.
+
   Affected classes:
     - `Sylius\Bundle\CoreBundle\CatalogPromotion\Announcer\CatalogPromotionAnnouncer`
     - `Sylius\Bundle\CoreBundle\MessageHandler\Admin\Account\RequestResetPasswordEmailHandler`
@@ -992,7 +974,8 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
     - `locked`
     - `expiresAt`
     - `credentialsExpireAt`
-- These changes affect the ShopUser and AdminUser models, and any custom user type extending the `Sylius\Component\User\Model\User` model, as well as the relevant columns in the database tables.
+- These changes affect the ShopUser and AdminUser models, and any custom user type extending the `Sylius\Component\User\Model\User` model, 
+  as well as the relevant columns in the database tables.
 
 #### Service Aliases
 
@@ -1596,7 +1579,8 @@ Similarly, use form types from `ShopBundle` for the Shop context.
 
 ### Frontend
 
-* Unused, legacy node packages have been removed, while the required ones have been updated to newer versions. To ensure a smooth transition, it is recommended to delete the `node_modules` directory and reinstall the packages.
+* Unused, legacy node packages have been removed, while the required ones have been updated to newer versions. 
+  To ensure a smooth transition, it is recommended to delete the `node_modules` directory and reinstall the packages.
 * The recommended Node.js versions are 20 or 22, as support for version 18 has been dropped.
 * `use_webpack` option was removed from the `sylius_ui` configuration, and the Webpack has become the only module
   bundler provided by Sylius.
@@ -1665,7 +1649,8 @@ Previously, all template events were configured in a single, monolithic `events.
             /events.yaml
 ```
 
-With Twig Hooks, the configuration has been reorganized into smaller, more manageable files. Each file corresponds to a specific part of the application, enhancing clarity and maintainability:
+With Twig Hooks, the configuration has been reorganized into smaller, more manageable files. Each file corresponds 
+to a specific part of the application, enhancing clarity and maintainability:
 
 ```
 /app
@@ -1681,7 +1666,8 @@ With Twig Hooks, the configuration has been reorganized into smaller, more manag
 
 - **Templates**
 
-The structure of the template directories has also been improved. Previously, templates were organized in a less intuitive way, with some structures inconsistent with the template event definitions:
+The structure of the template directories has also been improved. Previously, templates were organized in a less intuitive way, 
+with some structures inconsistent with the template event definitions:
 
 ```
 /resources
@@ -1694,7 +1680,8 @@ The structure of the template directories has also been improved. Previously, te
             /_form.html.twig
 ```
 
-Now, the templates are organized in a more consistent manner, with all templates grouped by resource and aligned with hook naming conventions:
+Now, the templates are organized in a more consistent manner, with all templates grouped by resource and aligned 
+with hook naming conventions:
 
 ```
 /templates
