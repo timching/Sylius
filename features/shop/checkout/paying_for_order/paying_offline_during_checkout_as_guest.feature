@@ -13,6 +13,16 @@ Feature: Paying Offline during checkout as guest
 
     @api @ui @javascript
     Scenario: Successfully placing an order
+        Given this payment method is not using Payum
+        And I have product "PHP T-Shirt" in the cart
+        When I complete addressing step with email "john@example.com" and "United States" based billing address
+        And I proceed with "Free" shipping method
+        And I choose "Offline" payment method
+        And I confirm my order
+        Then I should see the thank you page
+
+    @api @ui @javascript
+    Scenario: Using Payum successfully placing an order
         Given I have product "PHP T-Shirt" in the cart
         When I complete addressing step with email "john@example.com" and "United States" based billing address
         And I proceed with "Free" shipping method
@@ -22,6 +32,14 @@ Feature: Paying Offline during checkout as guest
 
     @no-api @ui @javascript
     Scenario: Successfully placing an order using custom locale
+        Given this payment method is not using Payum
+        And I have product "PHP T-Shirt" in the cart
+        When I proceed through checkout process in the "French (France)" locale with email "john@example.com"
+        And I confirm my order
+        Then I should see the thank you page in "French (France)"
+
+    @no-api @ui @javascript
+    Scenario: Using Payum successfully placing an order using custom locale
         Given I have product "PHP T-Shirt" in the cart
         When I proceed through checkout process in the "French (France)" locale with email "john@example.com"
         And I confirm my order
@@ -29,6 +47,15 @@ Feature: Paying Offline during checkout as guest
 
     @api @no-ui
     Scenario: Successfully placing an order using custom locale
+        Given this payment method is not using Payum
+        And I pick up cart in the "French (France)" locale
+        And I add product "PHP T-Shirt" to the cart
+        When I proceed through checkout process
+        And I confirm my order
+        Then my order's locale should be "French (France)"
+
+    @api @no-ui
+    Scenario: Using Payum successfully placing an order using custom locale
         Given I pick up cart in the "French (France)" locale
         And I add product "PHP T-Shirt" to the cart
         When I proceed through checkout process

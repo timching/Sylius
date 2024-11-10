@@ -88,7 +88,6 @@ final class CustomersTest extends JsonApiTestCase
         $this->assertResponseCode($this->client->getResponse(), Response::HTTP_NOT_FOUND);
     }
 
-
     /** @test */
     public function it_registers_a_new_customer(): void
     {
