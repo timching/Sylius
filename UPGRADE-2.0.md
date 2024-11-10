@@ -1,48 +1,158 @@
 # UPGRADE FROM `1.14` TO `2.0`
 
-## Migrations
+## To start off
 
-    Doctrine migrations have been regenerated, meaning all previous migration files have been removed and their content is now in a single migration file.
-    To apply the new migration and get rid of the old entries run migrations as usual:
+Even if your app is barely customized, it will require some manual adjustments before it can run again. Depending on
+whether you use Symfony Flex, some of these changes may be applied automatically, but it’s important to check them
+manually regardless.
+
+* Packages configuration changes:
+
+```diff
+# config/packages/_sylius.yaml
+
+imports:
+...
++   - { resource: "@SyliusPayumBundle/Resources/config/app/config.yaml" }
+
+...
+
+sylius_payment:
+    resources:
++       gateway_config:
++           classes:
++               model: App\Entity\Payment\GatewayConfig
+
+...
+
+sylius_payum:
+    resources:
+-       gateway_config:
+-           classes:
+-               model: App\Entity\Payment\GatewayConfig
+```
+
+* API firewalls have been renamed and user checkers have been configured on them
+  with `security.user_checker.chain.<firewall>` service:
+
+```diff
+# config/packages/security.yaml
+
+security:
+    firewalls:
+        admin:
+            ...
++           user_checker: security.user_checker.chain.admin
+-       new_api_admin_user:
++       api_admin:
+            ...
++           user_checker: security.user_checker.chain.api_admin
+-       new_api_shop_user:
++       api_shop:
+            ...
++           user_checker: security.user_checker.chain.api_shop
+        shop:
+            ...
++           user_checker: security.user_checker.chain.shop
+```
+
+* Routing changes (note that these shop routes are not localized with the prefix: /{_locale} configuration entry):
+
+Shop:
+
+```diff
+# config/routes/sylius_shop.yaml
+
+sylius_shop_payum:
+-   resource: "@SyliusShopBundle/Resources/config/routing/payum.yml"
++   resource: "@SyliusPayumBundle/Resources/config/routing/integrations/sylius_shop.yaml"
+
+sylius_payment_notify:
++   resource: "@SyliusPaymentBundle/Resources/config/routing/integrations/sylius.yaml"
+
+```
+
+API:
+
+```diff
+# config/routes/sylius_api.yaml
+
+sylius_api:
+    resource: "@SyliusApiBundle/Resources/config/routing.yml"
+-   prefix: "%sylius.security.new_api_route%"
++   prefix: "%sylius.security.api_route%"
+
+```
+
+* Bundle configuration changes:
+
+```diff
+# config/bundles.php
+
+<?php
+
+return [
+-   Sylius\Calendar\SyliusCalendarBundle::class => ['all' => true],
+-   winzou\Bundle\StateMachineBundle\winzouStateMachineBundle::class => ['all' => true],
+-   Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle::class => ['all' => true],
+-   JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
+-   FOS\RestBundle\FOSRestBundle::class => ['all' => true],
+-   ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
+-   SyliusLabs\Polyfill\Symfony\Security\Bundle\SyliusLabsPolyfillSymfonySecurityBundle::class => ['all' => true],
++   ApiPlatform\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
++   Sylius\TwigHooks\SyliusTwigHooksBundle::class => ['all' => true],
++   Symfony\UX\TwigComponent\TwigComponentBundle::class => ['all' => true],
++   Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
++   Symfony\UX\LiveComponent\LiveComponentBundle::class => ['all' => true],
++   Symfony\UX\Autocomplete\AutocompleteBundle::class => ['all' => true],
+];
+
+* New Symfony/Messenger transports for handling payment requests have been added. 
+Therefore, you need to add the following configuration to your .env file:
+
+```diff
+###> symfony/messenger ###
+...
++ SYLIUS_MESSENGER_TRANSPORT_PAYMENT_REQUEST_DSN=sync://
++ SYLIUS_MESSENGER_TRANSPORT_PAYMENT_REQUEST_FAILED_DSN=sync://
+###< symfony/messenger ###
+```
+
+### Migrations
+
+Doctrine migrations have been regenerated, meaning all previous migration files have been removed and their content 
+is now in a single migration file. To apply the new migration and get rid of the old entries run migrations as usual:
 
 ```bash
     bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-## Configuration
+### PHP support
 
-* Messenger:
-    * The `sylius_default.bus` and `sylius_event.bus` configuration options were removed. Use `sylius.command_bus` and
-      `sylius.event_bus` for commands and events respectively.
+Sylius 2.0 comes with a bump of minimum supported PHP version to 8.2. 
 
-* SyliusStateMachineAbstraction:
-    * The `sylius_state_machine_abstraction.default_adapter` option has been changed from `winzou_state_machine` to `symfony_workflow`.
+### Symfony support
 
-* Resource:
-    * The configuration nodes for resource options `sylius_*.resources.**.options` (`sylius_addressing.resources.address.options` etc.)
-      were removed from all resource definitions in all bundles.
+The support of Symfony 5.4 has been dropped.
+Sylius 2.0 supports both Symfony 6.4 and 7.1
 
-* The `sylius_core.autoconfigure_with_attributes` and `sylius_order.autoconfigure_with_attributes` configuration parameters 
-  have been removed. If you want to autoconfigure order processors and cart contexts, use corresponding attributes 
-  instead of interfaces: 
-  
-  * `Sylius\Bundle\OrderBundle\Attribute\AsCartContext`
-  * `Sylius\Bundle\OrderBundle\Attribute\AsOrderProcessor`
+## Main Update
 
-* The `sylius_user.resources.{name}.user.resetting.pin` configuration parameter has been removed.
-  The corresponding email `reset_password_pin` and `Sylius\Bundle\UserBundle\Controller\UserController::requestPasswordResetPinAction`
-  method have been removed. The related services have been removed as well:
+Once you’ve applied these initial changes, your app should be able to run. However, depending on the customizations
+you’ve made, you may need to make some additional adjustments. Carefully review the following changes and apply them to
+your app as necessary.
 
-    * `sylius.{user_type}_user.pin_generator.password_reset`
-    * `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
+### Dependencies
 
-## Dependencies
-
-### Replaced:
+#### Replaced:
 
 * The `swiftmailer/swiftmailer` dependency has been removed. Use `symfony/mailer` instead.
 
-### Removed:
+#### Moved:
+
+* The `sylius/theme-bundle` dependency has been moved from CoreBundle to ShopBundle.
+
+#### Removed:
 
 * Removed from main composer.json:
 
@@ -111,57 +221,766 @@
         * `sylius-labs/polyfill-symfony-event-dispatcher`
         * `sylius-labs/polyfill-symfony-framework-bundle`
 
-### Optional
+#### Optional
 
-* Removed from required and made suggested, install them in your application, if you still want to use Winzou State Machine:
+* Winzou State Machine repositories have been moved to the suggested section of composer.json,
+  if you still want to use them, install the following:
 
     * `winzou/state-machine`
     * `winzou/state-machine-bundle`
 
-## Service Container
+### Constructors signature changes
 
-In Sylius 2.0, we have changed the visibility of services to `private` by default. This change enhances the performance and maintainability of the application and also follows Symfony's best practices for service encapsulation.
+1. The following constructor signatures have been changed:
+
+   `Sylius\Bundle\CoreBundle\Twig\CheckoutStepsExtension`
+    ```diff
+    
+    use Sylius\Component\Core\Checker\OrderPaymentMethodSelectionRequirementCheckerInterface;
+    use Sylius\Component\Core\Checker\OrderShippingMethodSelectionRequirementCheckerInterface;
+
+        public function __construct(
+    -       private readonly CheckoutStepsHelper|OrderPaymentMethodSelectionRequirementCheckerInterface $checkoutStepsHelper,
+    -       private readonly ?OrderShippingMethodSelectionRequirementCheckerInterface $orderShippingMethodSelectionRequirementChecker = null,
+    +       private readonly OrderPaymentMethodSelectionRequirementCheckerInterface $orderPaymentMethodSelectionRequirementChecker,
+    +       private readonly OrderShippingMethodSelectionRequirementCheckerInterface $orderShippingMethodSelectionRequirementChecker,
+        )
+    ```
+
+   `Sylius\Bundle\CoreBundle\Twig\PriceExtension`
+    ```diff
+    
+    use Sylius\Component\Core\Calculator\ProductVariantPricesCalculatorInterface;
+
+        public function __construct(
+    -       private readonly PriceHelper|ProductVariantPricesCalculatorInterface $helper,
+    +       private readonly ProductVariantPricesCalculatorInterface $productVariantPricesCalculator,
+        )
+    ```
+
+   `Sylius\Bundle\CoreBundle\Twig\VariantResolverExtension`
+    ```diff
+    
+    use Sylius\Component\Product\Resolver\ProductVariantResolverInterface;
+
+        public function __construct(
+    -       private readonly ProductVariantResolverInterface|VariantResolverHelper $helper,
+    +       private readonly ProductVariantResolverInterface $productVariantResolver,
+        )
+    ```
+
+   `Sylius\Bundle\CurrencyBundle\Twig\CurrencyExtension`
+    ```diff
+
+        public function __construct(
+    -       private ?CurrencyHelperInterface $helper = null,
+        )
+    ```
+
+   `Sylius\Bundle\InventoryBundle\Twig\InventoryExtension`
+    ```diff
+    use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
+
+        public function __construct(
+    -       private AvailabilityCheckerInterface|InventoryHelper $helper,
+    +       private AvailabilityCheckerInterface $availabilityChecker,
+        )
+    ```
+
+   `Sylius\Bundle\LocaleBundle\Twig\LocaleExtension`
+    ```diff
+    use Sylius\Component\Locale\Context\LocaleContextInterface;
+    use Sylius\Component\Locale\Converter\LocaleConverterInterface;
+
+        public function __construct(
+    -       private LocaleConverterInterface|LocaleHelperInterface $localeHelper,
+    -       private ?LocaleContextInterface $localeContext = null,
+    +       private LocaleConverterInterface $localeConverter,
+    +       private LocaleContextInterface $localeContext,
+        )
+    ```
+
+   `Sylius\Bundle\MoneyBundle\Twig\ConvertMoneyExtension`
+    ```diff
+    use Sylius\Component\Currency\Converter\CurrencyConverterInterface;
+
+        public function __construct(
+    -       private ConvertMoneyHelperInterface|CurrencyConverterInterface $helper,
+    +       private CurrencyConverterInterface $currencyConverter,
+        )
+    ```
+
+   `Sylius\Bundle\MoneyBundle\Twig\FormatMoneyExtension`
+    ```diff
+    use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
+
+        public function __construct(
+    -       private private FormatMoneyHelperInterface|MoneyFormatterInterface $helper,
+    +       private MoneyFormatterInterface $moneyFormatter,
+        )
+    ```
+
+   `Sylius\Bundle\OrderBundle\Twig\AggregateAdjustmentsExtension`
+    ```diff
+    use Sylius\Component\Order\Aggregator\AdjustmentsAggregatorInterface;
+
+        public function __construct(
+    -       private AdjustmentsAggregatorInterface|AdjustmentsHelper $adjustmentsHelper,
+    +       private AdjustmentsAggregatorInterface $adjustmentsAggregator,
+        )
+    ```
+
+   `Sylius\Bundle\AdminBundle\Controller\DashboardController`
+    ```diff
+        public function __construct(
+            private ChannelRepositoryInterface $channelRepository,
+            private Environment $templatingEngine,
+            private RouterInterface $router,
+    -       private ?StatisticsDataProviderInterface $statisticsDataProvider = null,
+        )
+    ```
+
+   `Sylius\Bundle\AdminBundle\EventListener\AdminFilterSubscriber`
+    ```diff
+    - use Sylius\Bundle\UiBundle\Storage\FilterStorageInterface;
+    + use Sylius\Bundle\GridBundle\Storage\FilterStorageInterface;
+
+        public function __construct(private FilterStorageInterface $filterStorage)
+    ```
+
+   `Sylius\Bundle\AdminBundle\Controller\RedirectHandler`
+    ```diff
+    - use Sylius\Bundle\UiBundle\Storage\FilterStorageInterface;
+    + use Sylius\Bundle\GridBundle\Storage\FilterStorageInterface;
+
+        public function __construct(
+            private RedirectHandlerInterface $decoratedRedirectHandler,
+            private FilterStorageInterface $filterStorage,
+        )
+    ```
+
+   `Sylius\Bundle\UiBundle\Twig\RedirectPathExtension`
+    ```diff
+    - use Sylius\Bundle\UiBundle\Storage\FilterStorageInterface;
+    + use Sylius\Bundle\GridBundle\Storage\FilterStorageInterface;
+
+        public function __construct(
+            private FilterStorageInterface $filterStorage,
+            private RouterInterface $router,
+        )
+    ```
+
+   `Sylius\Bundle\PayumBundle\Form\Extension\CryptedGatewayConfigTypeExtension`
+    ```diff
+    + use Sylius\Bundle\PayumBundle\Checker\PayumGatewayConfigEncryptionCheckerInterface;
+
+        public function __construct(
+    +       private readonly PayumGatewayConfigEncryptionCheckerInterface $encryptionChecker,
+            private ?CypherInterface $cypher = null,
+        )
+    ```
+   
+    `Sylius\Bundle\CoreBundle\Form\Type\Checkout\AddressType`
+    ```diff
+        public function __construct(
+    +       private readonly AddressComparatorInterface $addressComparator,
+            string $dataClass,
+            array $validationGroups = []
+    -       private readonly AddressComparatorInterface $addressComparator = null,
+        )
+    ```
+
+   `Sylius\Component\Core\OrderProcessing\OrderPaymentProcessor`
+    ```diff
+        public function __construct(
+            private OrderPaymentProviderInterface $orderPaymentProvider,
+    -       private string $targetState = PaymentInterface::STATE_CART,
+            private OrderPaymentsRemoverInterface $orderPaymentsRemover,
+            private array $unprocessableOrderStates,
+    +       private string $targetState = PaymentInterface::STATE_CART,
+        )
+    ```
+
+1. Change across the codebase:
+    ```diff
+    -   private StateMachineInterface $stateMachineFactory,
+    +   private StateMachineInterface $stateMachine,
+    ```
+
+### Configuration Changes
+
+#### Messenger
+
+- Removed `sylius_default.bus` and `sylius_event.bus` configurations.  
+  Use `sylius.command_bus` and `sylius.event_bus` for commands and events, respectively.
+
+#### Sylius State Machine Abstraction
+
+- Changed `sylius_state_machine_abstraction.default_adapter` from `winzou_state_machine` to `symfony_workflow`.
+
+#### Resource
+
+- Removed configuration nodes for resource options `sylius_*.resources.**.options`, such as `sylius_addressing.resources.address.options`.
+- Removed `sylius_inventory.checker` configuration node.
+
+#### Autoconfiguration
+
+- Removed `sylius_core.autoconfigure_with_attributes` and `sylius_order.autoconfigure_with_attributes`.  
+  Use the following attributes instead of interfaces for autoconfiguration:
+    - `Sylius\Bundle\OrderBundle\Attribute\AsCartContext`
+    - `Sylius\Bundle\OrderBundle\Attribute\AsOrderProcessor`
+
+#### User Resetting Pin
+
+- Removed `sylius_user.resources.{name}.user.resetting.pin` configuration parameter.  
+  Due to that the related logic has also been removed, this includes:
+    - `reset_password_pin` email
+    - `Sylius\Bundle\UserBundle\Controller\UserController::requestPasswordResetPinAction` method
+    - `sylius.{user_type}_user.pin_generator.password_reset` services
+    - `sylius.{user_type}_user.pin_uniqueness_checker.password_reset` services
+
+#### Parameter Removals and Renaming
+
+- Removed:
+    - `sylius.mongodb_odm.repository.class`
+    - `sylius.phpcr_odm.repository.class`
+    - `sylius.mailer.templates`
+- Renamed:
+    - `sylius.message.admin_user_create.validation_groups` to `sylius_admin.command_handler.create_admin_user.validation_groups`
+
+#### File Relocations
+
+- The state machine configurations of `PaymentBundle` have been moved and renamed:
+  
+Winzou state machine:
+```diff
+- `@SyliusPaymentBundle/Resources/config/app/state_machine.yml`
++ `@SyliusPaymentBundle/Resources/config/app/state_machine/sylius_payment.yaml`
+```
+
+Symfony workflow:
+```diff
+- `@SyliusPaymentBundle/Resources/config/workflow/state_machine.yaml`
++ `@SyliusPaymentBundle/Resources/config/app/workflow/sylius_[resource].yaml`
+```
+
+#### Zone Validation Groups
+
+- Added a new parameter to specify validation groups for zones.  
+  Configure custom validation groups for zone members in `config/packages/_sylius.yaml`.  
+  Example:
+
+  ```yaml
+  sylius_addressing:
+    zone_member:
+      validation_groups:
+        country:
+          - 'sylius'
+          - 'sylius_zone_member_country'
+        zone:
+          - 'sylius'
+          - 'sylius_zone_member_zone'
+  ```
+
+#### LiipImagineBundle Default Resolver and Loader
+
+- Changed the default resolver and loader names for `LiipImagineBundle` from **default** to **sylius_image** ([reference](https://github.com/Sylius/Sylius/pull/12543)).  
+  To modify these defaults, configure `cache` and/or `data_loader` parameters under the `liip_imagine` key.
+
+#### Grids
+
+The experimental `entities` filter has been removed. It has been replaced by the generic `entity` one.
+
+```diff
+sylius_grid:
+    grids:
+        # ...
+        sylius_admin_catalog_promotion:
+            # ...
+            filters:
+                channel:
+-                   type: entities
++                   type: entity
+                    label: sylius.ui.channel
+                    form_options:
+                        class: "%sylius.model.channel.class%"
+                    options:
+-                       field: product.channels.id
++                       fields: [product.channels.id]
+```
+
+#### Password Encoder & Salt
+
+The encoder and salt have been removed from the User entities. The password hasher configured on Symfony security configuration is in use instead.
+
+This "encoder" is configured via
+the [Symfony security password hasher](https://symfony.com/doc/current/security/passwords.html#configuring-a-password-hasher).
+
+For example:
+
+```yaml
+# config/packages/security.yaml
+security:
+    # ...
+
+    password_hashers:
+        Sylius\Component\User\Model\UserInterface: argon2i
+```
+
+Also, check if you have an encoder configured in the `sylius_user` package configuration.
+
+```yaml
+sylius_user:
+    # ...
+
+    encoder: plaintext # Remove this line
+
+    # ...
+    resources:
+        oauth:
+            user:
+                encoder: false # Remove this line
+                classes: Sylius\Component\User\Model\UserOAuth
+```
+
+Check your user hashed passwords in your production database.
+In modern Symfony projects, the hasher name is stored along with the password.
+
+Example:
+`$argon2i$v=19$m=65536,t=4,p=1$VVJuMnpUUWhRY1daN1ppMA$2Tx6l3I+OUx+PUPn+vZz1jI3Z6l6IHh2kpG0NdpmYWE`
+
+If some of your users do not have the hasher name stored in the password field you may need to configure the
+"migrate_from" option by following the documentation:
+https://symfony.com/doc/current/security/passwords.html#configure-a-new-hasher-using-migrate-from
+
+Note:
+If your app never changed the hasher name configuration, you don't need to configure this "migrate_from" configuration.
+
+#### Routes
+
+* The following routes have been removed:
+    * `sylius_admin_dashboard_statistics`
+    * `sylius_admin_ajax_all_product_variants_by_codes`
+    * `sylius_admin_ajax_all_product_variants_by_phrase`
+    * `sylius_admin_ajax_customer_group_by_code`
+    * `sylius_admin_ajax_customer_groups_by_phrase`
+    * `sylius_admin_ajax_find_product_options`
+    * `sylius_admin_ajax_generate_product_slug`
+    * `sylius_admin_ajax_generate_taxon_slug`
+    * `sylius_admin_ajax_product_by_code`
+    * `sylius_admin_ajax_product_by_name_phrase`
+    * `sylius_admin_ajax_product_index`
+    * `sylius_admin_ajax_product_options_by_phrase`
+    * `sylius_admin_ajax_products_by_phrase`
+    * `sylius_admin_ajax_product_variants_by_codes`
+    * `sylius_admin_ajax_product_variants_by_phrase`
+    * `sylius_admin_ajax_taxon_by_code`
+    * `sylius_admin_ajax_taxon_by_name_phrase`
+    * `sylius_admin_ajax_taxon_leafs`
+    * `sylius_admin_ajax_taxon_root_nodes`
+    * `sylius_admin_dashboard_statistics`
+    * `sylius_admin_get_attribute_types`
+    * `sylius_admin_get_payment_gateways`
+    * `sylius_admin_get_product_attributes`
+    * `sylius_admin_partial_address_log_entry_index`
+    * `sylius_admin_partial_catalog_promotion_show`
+    * `sylius_admin_partial_channel_index`
+    * `sylius_admin_partial_customer_latest`
+    * `sylius_admin_partial_customer_show`
+    * `sylius_admin_partial_order_latest`
+    * `sylius_admin_partial_order_latest_in_channel`
+    * `sylius_admin_partial_product_show`
+    * `sylius_admin_partial_promotion_show`
+    * `sylius_admin_partial_taxon_show`
+    * `sylius_admin_partial_taxon_tree`
+    * `sylius_admin_render_attribute_forms`
+    * `sylius_shop_ajax_cart_add_item`
+    * `sylius_shop_ajax_cart_item_remove`
+    * `sylius_shop_ajax_user_check_action`
+    * `sylius_shop_partial_cart_summary`
+    * `sylius_shop_partial_cart_add_item`
+    * `sylius_shop_partial_channel_menu_taxon_index`
+    * `sylius_shop_partial_product_association_show`
+    * `sylius_shop_partial_product_index_latest`
+    * `sylius_shop_partial_product_review_latest`
+    * `sylius_shop_partial_product_show_by_slug`
+    * `sylius_shop_partial_taxon_index_by_code`
+    * `sylius_shop_partial_taxon_show_by_slug`
+
+### Services, classes and interfaces changes
+
+#### Container
+
+In Sylius 2.0, we have changed the visibility of services to `private` by default. This change enhances the performance 
+and maintainability of the application and also follows Symfony's best practices for service encapsulation.
 
 **Exceptions:**
 - Services required by Symfony to be `public` (e.g., controllers, event listeners) remain public.
 - Services used in `ResourceController` must be `public` as they are accessed directly from the container.
 
-## Codebase
+#### Classes and Interfaces
 
-* Doctrine MongoDB and PHPCR is no longer supported in ResourceBundle and GridBundle:
+1. Removed
 
-* The following classes were removed:
+* `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
+* `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
+* `Sylius\Bundle\CoreBundle\DependencyInjection\Compiler\LiipImageFiltersPass`
+* `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\DataSource`
+* `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\Driver`
+* `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExpressionBuilder`
+* `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExpressionBuilderInterface`
+* `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExpressionVisitor`
+* `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExtraComparison`
+* `Sylius\Bundle\ResourceBundle\DependencyInjection\Driver\Doctrine\DoctrineODMDriver`
+* `Sylius\Bundle\ResourceBundle\DependencyInjection\Driver\Doctrine\DoctrinePHPCRDriver`
+* `Sylius\Bundle\ResourceBundle\Doctrine\ODM\MongoDB\DocumentRepository`
+* `Sylius\Bundle\ResourceBundle\Doctrine\ODM\MongoDB\TranslatableRepository`
+* `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\DocumentRepository`
+* `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\EventListener\DefaultParentListener`
+* `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\EventListener\NameFilterListener`
+* `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\EventListener\NameResolverListener`
+* `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\Form\Builder\DefaultFormBuilder`
+* `Sylius\Bundle\ResourceBundle\EventListener\ODMMappedSuperClassSubscriber`
+* `Sylius\Bundle\ResourceBundle\EventListener\ODMRepositoryClassSubscriber`
+* `Sylius\Bundle\ResourceBundle\EventListener\ODMTranslatableListener`
+* `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
+* `Sylius\Bundle\AdminBundle\Controller\NotificationController`
+* `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
+* `Sylius\Bundle\CoreBundle\Templating\Helper\CheckoutStepsHelper`
+* `Sylius\Bundle\CoreBundle\Templating\Helper\PriceHelper`
+* `Sylius\Bundle\CoreBundle\Templating\Helper\VariantResolverHelper`
+* `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelper`
+* `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelperInterface`
+* `Sylius\Bundle\InventoryBundle\Templating\Helper\InventoryHelper`
+* `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelper`
+* `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelperInterface`
+* `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelper`
+* `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelperInterface`
+* `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelper`
+* `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelperInterface`
+* `Sylius\Bundle\OrderBundle\Templating\Helper\AdjustmentsHelper`
+* `Sylius\Bundle\ProductBundle\Controller\ProductAttributeController`
+* `Sylius\Bundle\UserBundle\Security\UserLogin`
+* `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
+* `Sylius\Bundle\UserBundle\Security\UserPasswordHasher`
+* `Sylius\Bundle\UserBundle\Security\UserPasswordHasherInterface`
+* `Sylius\Component\User\Security\Generator\UniquePinGenerator`
+* `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
+* `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionActionTypeExtension`
+* `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionScopeTypeExtension`
+* `Sylius\Bundle\AdminBundle\Menu\CustomerShowMenuBuilder`
+* `Sylius\Bundle\AdminBundle\Menu\OrderShowMenuBuilder`
+* `Sylius\Bundle\AdminBundle\Menu\ProductFormMenuBuilder`
+* `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
+* `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
+* `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
+* `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProvider`
+* `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
+* `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\RouteNameResolver`
+* `Sylius\Bundle\ApiBundle\ApiPlatform\Factory\MergingExtractorResourceMetadataFactory`
+* `Sylius\Bundle\ApiBundle\Exception\ChannelCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\PaymentMethodCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\ProductAttributeCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\ProductCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\ProductVariantCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\PromotionCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\PromotionCouponCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\ProvinceCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\ShippingMethodCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\TaxonCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Exception\ZoneCannotBeRemoved`
+* `Sylius\Bundle\ApiBundle\Validator\ResourceApiInputDataPropertiesValidator`
+* `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
+* `Sylius\Bundle\ApiBundle\DataTransformer\CommandAwareInputDataTransformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\CommandDataTransformerInterface`
+* `Sylius\Bundle\CoreBundle\Console\Command\Model\PluginInfo`
+* `Sylius\Bundle\CoreBundle\Form\Extension\CountryTypeExtension`
+* `Sylius\Bundle\CoreBundle\Form\Extension\CustomerTypeExtension`
+* `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
+* `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
+* `Sylius\Bundle\CoreBundle\Form\EventSubscriber\AddUserFormSubscriber`
+* `Sylius\Bundle\CoreBundle\Twig\StateMachineExtension`
+* `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
+* `Sylius\Component\Core\Dashboard\DashboardStatistics`
+* `Sylius\Component\Core\Dashboard\DashboardStatisticsProvider`
+* `Sylius\Component\Core\Dashboard\Interval`
+* `Sylius\Component\Core\Dashboard\SalesDataProvider`
+* `Sylius\Component\Core\Dashboard\SalesSummary`
+* `Sylius\Component\Core\Dashboard\SalesSummaryInterface`
+* `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
+* `Sylius\Bundle\PayumBundle\Controller\PayumController`
+* `Sylius\Bundle\PayumBundle\Form\Type\PaypalGatewayConfigurationType`
+* `Sylius\Bundle\PayumBundle\Form\Type\StripeGatewayConfigurationType`
+* `Sylius\Bundle\UiBundle\ContextProvider\DefaultContextProvider`
+* `Sylius\Bundle\UiBundle\Registry\TemplateBlock`
+* `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistry`
+* `Sylius\Bundle\UiBundle\Renderer\DelegatingTemplateEventRenderer`
+* `Sylius\Bundle\UiBundle\Renderer\TwigTemplateBlockRenderer`
+* `Sylius\Bundle\UiBundle\Storage\FilterStorageInterface`
+* `Sylius\Bundle\UiBundle\Twig\SortByExtension`
+* `Sylius\Bundle\UiBundle\Twig\TemplateEventExtension`
+* `Sylius\Bundle\UiBundle\Twig\TestFormAttributeExtension`
+* `Sylius\Bundle\UiBundle\Twig\TestHtmlAttributeExtension`
+* `Sylius\Bundle\PromotionBundle\Validator\CatalogPromotionAction\ActionValidatorInterface`
+* `Sylius\Bundle\PromotionBundle\Validator\CatalogPromotionScope\ScopeValidatorInterface`
+* `Sylius\Component\Core\Promotion\Updater\Rule\TotalOfItemsFromTaxonRuleUpdater`
+* `Sylius\Bundle\AdminBundle\EmailManager\OrderEmailManager`
+* `Sylius\Bundle\AdminBundle\EmailManager\ShipmentEmailManager`
+* `Sylius\Bundle\ShopBundle\EmailManager\ContactEmailManager`
+* `Sylius\Bundle\ShopBundle\EmailManager\OrderEmailManager`
+* `Sylius\Bundle\ProductBundle\Form\Type\ProductOptionChoiceType`
+* `Sylius\Component\Core\Promotion\Updater\Rule\ProductAwareRuleUpdaterInterface`
+* `Sylius\Component\Promotion\Checker\Rule\CartQuantityRuleChecker`
+* `Sylius\Bundle\CoreBundle\CatalogPromotion\Command\RemoveInactiveCatalogPromotion`
+* `Sylius\Bundle\CoreBundle\Provider\SessionProvider`
+* `Sylius\Component\Core\SyliusLocaleEvents`
+* `Sylius\Bundle\ShopBundle\Twig\OrderTaxesTotalExtension`
 
-    * `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
-    * `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
-    * `Sylius\Bundle\CoreBundle\DependencyInjection\Compiler\LiipImageFiltersPass`
-    * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\DataSource`
-    * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\Driver`
-    * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExpressionBuilder`
-    * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExpressionBuilderInterface`
-    * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExpressionVisitor`
-    * `Sylius\Bundle\GridBundle\Doctrine\PHPCRODM\ExtraComparison`
-    * `Sylius\Bundle\ResourceBundle\DependencyInjection\Driver\Doctrine\DoctrineODMDriver`
-    * `Sylius\Bundle\ResourceBundle\DependencyInjection\Driver\Doctrine\DoctrinePHPCRDriver`
-    * `Sylius\Bundle\ResourceBundle\Doctrine\ODM\MongoDB\DocumentRepository`
-    * `Sylius\Bundle\ResourceBundle\Doctrine\ODM\MongoDB\TranslatableRepository`
-    * `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\DocumentRepository`
-    * `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\EventListener\DefaultParentListener`
-    * `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\EventListener\NameFilterListener`
-    * `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\EventListener\NameResolverListener`
-    * `Sylius\Bundle\ResourceBundle\Doctrine\ODM\PHPCR\Form\Builder\DefaultFormBuilder`
-    * `Sylius\Bundle\ResourceBundle\EventListener\ODMMappedSuperClassSubscriber`
-    * `Sylius\Bundle\ResourceBundle\EventListener\ODMRepositoryClassSubscriber`
-    * `Sylius\Bundle\ResourceBundle\EventListener\ODMTranslatableListener`
+1. Renamed
 
-* The following services were removed:
+| Old Name                                                                               | New Name                                                                                |
+|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| `Sylius\Bundle\ApiBundle\CommandHandler\Account\ResendVerificationEmailHandler`        | `Sylius\Bundle\ApiBundle\CommandHandler\Account\RequestShopUserVerificationHandler`     |
+| `Sylius\Bundle\ApiBundle\CommandHandler\Account\SendAccountVerificationEmailHandler`   | `Sylius\Bundle\ApiBundle\CommandHandler\Account\SendShopUserVerificationEmailHandler`   |
+| `Sylius\Bundle\ApiBundle\CommandHandler\Account\VerifyCustomerAccountHandler`          | `Sylius\Bundle\ApiBundle\CommandHandler\Account\VerifyShopUserHandler`                  |
 
-    * `sylius.event_subscriber.odm_mapped_super_class`
-    * `sylius.event_subscriber.odm_repository_class`
-    * `sylius.grid_driver.doctrine.phpcrodm`
-    * `sylius.listener.api_postgresql_driver_exception_listener`
+1. Moved
 
-* Aliases introduced in Sylius 1.14 have now become the primary service IDs in Sylius 2.0. The old service IDs have been removed, and all references must be updated accordingly:
+| From                                                                               | To                                                                                |
+|------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| `Sylius\Bundle\PayumBundle\Validator\GatewayFactoryExistsValidator`                | `Sylius\Bundle\PaymentBundle\Validator\Constraints\GatewayFactoryExistsValidator` |
+| `Sylius\Bundle\PayumBundle\Validator\GroupsGenerator\GatewayConfigGroupsGenerator` | `Sylius\Bundle\PaymentBundle\Validator\Constraints\GatewayConfigGroupsGenerator`  |
+| `Sylius\Component\Promotion\Checker\Rule\ItemTotalRuleChecker`                     | `Sylius\Component\Core\Promotion\Checker\Rule\ItemTotalRuleChecker`               | 
+
+#### Services and Aliases
+
+1. Removed
+
+* `sylius.event_subscriber.odm_mapped_super_class`
+* `sylius.event_subscriber.odm_repository_class`
+* `sylius.grid_driver.doctrine.phpcrodm`
+* `sylius.listener.api_postgresql_driver_exception_listener`
+* `sylius.security.password_hasher`
+* `sylius.security.user_login`
+* `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
+* `Sylius\Component\User\Security\UserPasswordHasherInterface`
+* `sylius.controller.admin.notification`
+* `Sylius\Buxndle\AdminBundle\Form\Extension\CatalogPromotionActionTypeExtension`
+* `sylius.controller.admin.dashboard.statistics`
+* `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionScopeTypeExtension`
+* `sylius.admin.menu_builder.customer.show`
+* `sylius.admin.menu_builder.order.show`
+* `sylius.admin.menu_builder.product_form`
+* `sylius.admin.menu_builder.product_variant_form`
+* `sylius.admin.menu_builder.promotion.update`
+* `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProviderInterface`
+* `Sylius\Bundle\ApiBundle\ApiPlatform\ApiResourceConfigurationMerger`
+* `api_platform.route_name_resolver.cached`
+* `api_platform.route_name_resolver`
+* `api_platform.metadata.resource.metadata_factory.yaml`
+* `Sylius\Bundle\ApiBundle\ApiPlatform\Metadata\Merger\LegacyResourceMetadataMerger`
+* `Sylius\Bundle\ApiBundle\ApiPlatform\ResourceMetadataPropertyValueResolver`
+* `Sylius\Bundle\ApiBundle\Controller\GetAddressLogEntryCollectionAction`
+* `Sylius\Bundle\ApiBundle\Controller\GetOrderAdjustmentsAction`
+* `Sylius\Bundle\ApiBundle\Controller\UploadAvatarImageAction`
+* `Sylius\Bundle\ApiBundle\Controller\UploadProductImageAction`
+* `Sylius\Bundle\ApiBundle\Controller\UploadTaxonImageAction`
+* `Sylius\Bundle\ApiBundle\DataPersister\AddressDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\AdminUserDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\ChannelDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\CountryDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\CustomerDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\LocaleDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\MessengerDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\PaymentMethodDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\ProductAttributeDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\ProductDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\ProductTaxonDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\ProductVariantDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\PromotionCouponDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\PromotionDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\ShippingMethodDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\TranslatableDataPersister`
+* `Sylius\Bundle\ApiBundle\DataPersister\ZoneDataPersister`
+* `Sylius\Bundle\ApiBundle\DataProvider\AccountResetPasswordItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\AdminOrderItemAdjustmentsSubresourceDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\AdminResetPasswordItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\ChannelAwareItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\ChannelsCollectionDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\CustomerItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\OrderAdjustmentsSubresourceDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\OrderItemAdjustmentsSubresourceDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\OrderItemItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\OrderItemUnitItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\PaymentItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\PaymentMethodsCollectionDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\ProductAttributesSubresourceDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\ProductItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\ShipmentItemDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\ShippingMethodsCollectionDataProvider`
+* `Sylius\Bundle\ApiBundle\DataProvider\VerifyCustomerAccountItemDataProvider`
+* `Sylius\Bundle\ApiBundle\Filter\Doctrine\PromotionCouponPromotionFilter`
+* `Sylius\Bundle\ApiBundle\Filter\PaymentMethodFilter`
+* `Sylius\Bundle\ApiBundle\Filter\ShippingMethodFilter`
+* `Sylius\Bundle\ApiBundle\QueryHandler\GetAddressLogEntryCollectionHandler`
+* `Sylius\Bundle\ApiBundle\Serializer\FlattenExceptionNormalizer`
+* `Sylius\Bundle\ApiBundle\SerializerContextBuilder\ReadOperationContextBuilder`
+* `Sylius\Bundle\ApiBundle\Validator\Constraints\AccountVerificationTokenEligibilityValidator`
+* `Sylius\Bundle\ApiBundle\Validator\ResourceInputDataPropertiesValidatorInterface`
+* `Sylius\Bundle\ApiBundle\DataTransformer\ChannelCodeAwareInputCommandDataTransformer`
+* `sylius.api.data_transformer.command_aware_input_data_transformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\LocaleCodeAwareInputCommandDataTransformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailAwareCommandDataTransformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailIfNotSetAwareCommandDataTransformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInShopUserIdAwareCommandDataTransformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\OrderTokenValueAwareInputCommandDataTransformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\ShipmentIdAwareInputCommandDataTransformer`
+* `Sylius\Bundle\ApiBundle\DataTransformer\SubresourceIdAwareCommandDataTransformer`
+* `api_platform.action.post_item`
+* `Sylius\Bundle\CoreBundle\Console\Command\ShowAvailablePluginsCommand`
+* `sylius.form.extension.type.country`
+* `sylius.form.extension.type.customer`
+* `sylius.form.extension.type.locale`
+* `sylius.grid_filter.entities`
+* `sylius.dashboard.statistics_provider`
+* `Sylius\Component\Core\Dashboard\SalesDataProviderInterface`
+* `sylius.payum_action.paypal_express_checkout.convert_payment`
+* `sylius.controller.payum`
+* `sylius.form.type.gateway_configuration.stripe`
+* `Sylius\Bundle\UiBundle\Console\Command\DebugTemplateEventCommand`
+* `Sylius\Bundle\UiBundle\ContextProvider\ContextProviderInterface`
+* `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockDataCollector`
+* `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockRenderingHistory`
+* `Sylius\Bundle\UiBundle\DataCollector\TraceableTemplateBlockRenderer`
+* `Sylius\Bundle\UiBundle\DataCollector\TraceableTemplateEventRenderer`
+* `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistryInterface`
+* `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateBlockRenderer`
+* `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateEventRenderer`
+* `Sylius\Bundle\UiBundle\Renderer\TemplateBlockRendererInterface`
+* `Sylius\Bundle\UiBundle\Renderer\TemplateEventRendererInterface`
+* `Sylius\Bundle\UiBundle\Storage\FilterStorage`
+* `Sylius\Bundle\UiBundle\Twig\LegacySonataBlockExtension`
+* `sylius.twig.extension.template_event`
+* `Sylius\Bundle\PromotionBundle\Validator\CatalogPromotionActionValidator`
+* `Sylius\Bundle\PromotionBundle\Validator\CatalogPromotionScopeValidator`
+* `Sylius\Component\Promotion\Generator\PromotionCouponGeneratorInstructionInterface`
+* `sylius.promotion_rule_updater.total_of_items_from_taxon`
+* `Sylius\Component\Core\Promotion\Updater\Rule\ContainsProductRuleUpdater`
+* `Sylius\Bundle\AdminBundle\EmailManager\OrderEmailManagerInterface`
+* `sylius.email_manager.shipment`
+* `Sylius\Bundle\AdminBundle\EmailManager\ShipmentEmailManagerInterface`
+* `Sylius\Bundle\ShopBundle\EmailManager\ContactEmailManagerInterface`
+* `sylius.email_manager.contact`
+* `sylius.email_manager.order`
+* `Sylius\Bundle\ShopBundle\EmailManager\OrderEmailManagerInterface`
+* `sylius.form.type.product_option_choice`
+* `Sylius\Bundle\ShopBundle\Calculator\OrderItemsSubtotalCalculatorInterface`
+* `sylius.calculator.order_items_subtotal`
+* `Sylius\Bundle\CoreBundle\CatalogPromotion\CommandHandler\RemoveInactiveCatalogPromotionHandler`
+* `sylius.http_message_factory`
+* `sylius.twig.extension.taxes`
+
+1. Renamed
+
+| Old Name                                                                           | New Name                                                                 |
+|------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| `sylius.twig.extension.form_test_attribute_array`                                  | `sylius_twig_extra.twig.extension.test_form_attribute`                   |
+| `sylius.twig.extension.form_test_attribute_name`                                   | `sylius_twig_extra.twig.extension.test_html_attribute`                   |
+| `sylius.twig.extension.sort_by`                                                    | `sylius_twig_extra.twig.extension.sort_by`                               |
+| `Sylius\Bundle\UiBundle\Twig\RouteExistsExtension`                                 | `sylius_twig_extra.twig.extension.route_exists`                          |
+| `sylius.form_registry.payum_gateway_config`                                        | `sylius.form_registry.payment_gateway_config` (moved to `PaymentBundle`) |
+| `Sylius\Bundle\PayumBundle\Validator\GatewayFactoryExistsValidator`                | `sylius.validator.gateway_factory_exists`                                |
+| `Sylius\Bundle\PayumBundle\Validator\GroupsGenerator\GatewayConfigGroupsGenerator` | `sylius.validator.groups_generator.gateway_config`                       |
+
+1. Replaced
+
+| Old Name                                                           | New Name                                                         |
+|--------------------------------------------------------------------|------------------------------------------------------------------|
+| `Sylius\Bundle\AdminBundle\EventListener\ResourceDeleteSubscriber` | `Sylius\Bundle\AdminBundle\EventListener\ResourceDeleteListener` |
+
+1. Definition location changed
+
+  * The `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionAction\PercentageDiscountActionConfigurationType` 
+    was moved to the `CoreBundle` from `PromotionBundle`.
+  * The `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionScopeType` was moved from the `CoreBundle` 
+    to the `PromotionBundle`.
+
+#### Class changes
+
+1. Added `Sylius\Component\Order\Context\ResettableCartContextInterface`, which extends `Sylius\Component\Order\Context\CartContextInterface` 
+   and `Symfony\Contracts\Service\ResetInterface`.
+
+1. Replaced `sylius/calendar` with `symfony/clock`. All instances of `Sylius\Calendar\Provider\DateTimeProviderInterface` 
+   are now replaced by `Symfony\Component\Clock\ClockInterface`.
+
+  Affected classes:
+    - `Sylius\Bundle\CoreBundle\CatalogPromotion\Announcer\CatalogPromotionAnnouncer`
+    - `Sylius\Bundle\CoreBundle\MessageHandler\Admin\Account\RequestResetPasswordEmailHandler`
+    - `Sylius\Bundle\CoreBundle\PriceHistory\Logger\PriceChangeLogger`
+    - `Sylius\Bundle\CoreBundle\PriceHistory\Remover\ChannelPricingLogEntriesRemover`
+    - `Sylius\Bundle\ShippingBundle\Assigner\ShippingDateAssigner`
+    - `Sylius\Bundle\PromotionBundle\Criteria\DateRange`
+    - `Sylius\Bundle\ApiBundle\Applicator\ArchivingShippingMethodApplicator`
+    - `Sylius\Bundle\ApiBundle\CommandHandler\Account\RequestResetPasswordTokenHandler`
+    - `Sylius\Bundle\ApiBundle\CommandHandler\Account\VerifyCustomerAccountHandler`
+    - `Sylius\Component\Taxation\Checker\TaxRateDateEligibilityChecker`
+
+1. The `\Serializable` interface has been removed from `Sylius\Component\User\Model\UserInterface`.
+
+#### New and Updated Repository Classes
+
+##### New Repositories
+- **Addressing**:
+    - `Sylius\Bundle\AddressingBundle\Doctrine\ORM\AddressRepository`
+    - `Sylius\Bundle\AddressingBundle\Doctrine\ORM\CountryRepository`
+    - `Sylius\Bundle\AddressingBundle\Doctrine\ORM\ProvinceRepository`
+    - `Sylius\Bundle\AddressingBundle\Doctrine\ORM\ZoneMemberRepository`
+
+- **Attribute**:
+    - `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeRepository`
+    - `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeTranslationRepository`
+    - `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeValueRepository`
+
+- **Product**:
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAssociationRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAssociationTypeTranslationRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAttributeRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAttributeTranslationRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductOptionTranslationRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductOptionValueRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductOptionValueTranslationRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductTranslationRepository`
+    - `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductVariantTranslationRepository`
+
+- **Currency**:
+    - `Sylius\Bundle\CurrencyBundle\Doctrine\ORM\CurrencyRepository`
+
+##### Repository Inheritance Changes
+
+- **Addressing**:
+    - `Sylius\Bundle\CoreBundle\Doctrine\ORM\AddressRepository` now extends `Sylius\Bundle\AddressingBundle\Doctrine\ORM\AddressRepository`.
+    - `Sylius\Component\Core\Repository\AddressRepositoryInterface` now implements `Sylius\Component\Addressing\Repository\AddressRepositoryInterface`.
+
+- **Attribute**:
+    - `Sylius\Bundle\CoreBundle\Doctrine\ORM\AttributeRepository` now extends `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeRepository`.
+    - `Sylius\Component\Product\Repository\ProductAttributeValueRepositoryInterface` now implements `Sylius\Component\Attribute\Repository\AttributeValueRepositoryInterface`.
+
+- **Product**:
+    - `Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductAssociationRepository` now extends `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAssociationRepository`.
+
+#### User Model Updates
+
+- Removed fields and corresponding methods for:
+    - `locked`
+    - `expiresAt`
+    - `credentialsExpireAt`
+- These changes affect the ShopUser and AdminUser models, and any custom user type extending the `Sylius\Component\User\Model\User` model, 
+  as well as the relevant columns in the database tables.
+
+#### Service Aliases
+
+* Aliases introduced in Sylius 1.14 have now become the primary service IDs in Sylius 2.0. The old service IDs have been
+  removed, and all references must be updated accordingly:
 
 | Old ID                                                                                                              | New ID                                                                                              |
 |---------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
@@ -662,9 +1481,11 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 | `Sylius\Bundle\UserBundle\Console\Command\PromoteUserCommand`                                                       | `sylius.console.command.promote_user`                                                               |
 | `sylius.listener.user_mailer_listener`                                                                              | `sylius.listener.user_mailer`                                                                       |
 
-  The old service IDs are no longer available in Sylius 2.0. Please ensure your configurations and service references use the new service IDs.
+The old service IDs are no longer available in Sylius 2.0. Please ensure your configurations and service references use
+the new service IDs.
 
-* The following services had new aliases added in Sylius 1.14. In Sylius 2.0, these aliases have become the primary service IDs, and the old service IDs remain as aliases:
+* The following services had new aliases added in Sylius 1.14. In Sylius 2.0, these aliases have become the primary
+  service IDs, and the old service IDs remain as aliases:
 
 | Current ID                                                                                                               | New Alias                                                                                | 
 |--------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
@@ -731,22 +1552,7 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 | **TaxonomyBundle**                                                                                                       |                                                                                          |
 | `Sylius\Bundle\TaxonomyBundle\Repository\TaxonTreeRepositoryInterface`                                                   | `sylius.custom_repository.tree.taxon`                                                    |
 
-* Aliases for the `knp_menu.menu_builder` tags introduced in Sylius 1.14 are now the only valid menu builder tags in Sylius 2.0:
-
-| Old Alias             | New Alias             |
-|-----------------------|-----------------------|
-| **AdminBundle**       |                       |
-| `sylius.admin.main`   | `sylius_admin.main`   |
-| **ShopBundle**        |                       |
-| `sylius.shop.account` | `sylius_shop.account` |
-
-* The following classes have been renamed:
-
-| Old Name                                                                               | New Name                                                                                |
-|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| `Sylius\Bundle\ApiBundle\CommandHandler\Account\ResendVerificationEmailHandler`        | `Sylius\Bundle\ApiBundle\CommandHandler\Account\RequestShopUserVerificationHandler`     |
-| `Sylius\Bundle\ApiBundle\CommandHandler\Account\SendAccountVerificationEmailHandler`   | `Sylius\Bundle\ApiBundle\CommandHandler\Account\SendShopUserVerificationEmailHandler`   |
-| `Sylius\Bundle\ApiBundle\CommandHandler\Account\VerifyCustomerAccountHandler`          | `Sylius\Bundle\ApiBundle\CommandHandler\Account\VerifyShopUserHandler`                  |
+### Architecture changes
 
 * The `Normalizer` and `Denormalizer` in `ApiBundle` have been reorganized into subdirectories, moving from `Sylius\Bundle\ApiBundle\Serializer`
   to `Sylius\Bundle\ApiBundle\Serializer\Normalizer` and `Sylius\Bundle\ApiBundle\Serializer\Denormalizer`.
@@ -756,732 +1562,69 @@ In Sylius 2.0, we have changed the visibility of services to `private` by defaul
 * The `Filter`, `QueryCollectionExtension`, and `QueryItemExtension` classes in `ApiBundle` have been reorganized into separate sections (`admin`, `shop`, `common`)
   based on their usage context, and grouped by resources.
 
-* The definition of the service `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionAction\PercentageDiscountActionConfigurationType` was moved to the `CoreBundle`.
+* `AdminBundle` now contains base form types for every resource. 
+Use these as an extension point for admin customizations instead the ones from `CoreBundle` or other minor bundles.
+Similarly, use form types from `ShopBundle` for the Shop context.
 
-* The definition of the service `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionScopeType` was moved to the `PromotionBundle`.
+### Payment method gateways
 
-* The following parameters were removed:
+* Stripe and Paypal Express Checkout gateways have been removed.
+  The only remaining by default gateway in core is `offline`. Use sylius plugins for the gateways of your choosing.
 
-    * `sylius.mongodb_odm.repository.class`
-    * `sylius.phpcr_odm.repository.class`
-    
-* The following parameters were renamed:
+### Theming
 
-    * `sylius.message.admin_user_create.validation_groups` to `sylius_admin.command_handler.create_admin_user.validation_groups`
+* Channel's `themeName` form field existence is made optional and depends on `ShopBundle` presence.
+* The `Sylius\Bundle\CoreBundle\Theme\ChannelBasedThemeContext` has been moved to 
+  the `Sylius\Bundle\ShopBundle\Theme\ChannelBasedThemeContext`.
 
-* The following configuration options were removed:
+### Frontend
 
-    * `sylius.mailer.templates`
-
-* Added the `Sylius\Component\Order\Context\ResettableCartContextInterface` that
-  extends `Sylius\Component\Order\Context\CartContextInterface` and `Symfony\Contracts\Service\ResetInterface`.
-
-* The name of the default `LiipImagineBundle`'s resolver and loader were changed from **default** to **sylius_image
-  ** ([reference](https://github.com/Sylius/Sylius/pull/12543)).
-  To change the default resolver and/or loader for `LiipImagineBundle`, configure `cache` and/or `data_loader`
-  parameters under the `liip_imagine` key.
-
-* The class `Sylius\Bundle\AdminBundle\EventListener\ResourceDeleteSubscriber` has been removed and replaced with
-  `Sylius\Bundle\AdminBundle\EventListener\ResourceDeleteListener`.
-
-* The `sylius/calendar` package has been replaced with `symfony/clock` package. All usages of
-  the `Sylius\Calendar\Provider\DateTimeProviderInterface` class
-  have been replaced with `Symfony\Component\Clock\ClockInterface` class.
-
-    * The following classes were changed:
-
-        * `Sylius\Bundle\CoreBundle\CatalogPromotion\Announcer\CatalogPromotionAnnouncer`
-        * `Sylius\Bundle\CoreBundle\MessageHandler\Admin\Account\RequestResetPasswordEmailHandler`
-        * `Sylius\Bundle\CoreBundle\PriceHistory\Logger\PriceChangeLogger`
-        * `Sylius\Bundle\CoreBundle\PriceHistory\Remover\ChannelPricingLogEntriesRemover`
-        * `Sylius\Bundle\ShippingBundle\Assigner\ShippingDateAssigner`
-        * `Sylius\Bundle\PromotionBundle\Criteria\DateRange`
-        * `Sylius\Bundle\ApiBundle\Applicator\ArchivingShippingMethodApplicator`
-        * `Sylius\Bundle\ApiBundle\CommandHandler\Account\RequestResetPasswordTokenHandler`
-        * `Sylius\Bundle\ApiBundle\CommandHandler\Account\VerifyCustomerAccountHandler`
-        * `Sylius\Component\Taxation\Checker\TaxRateDateEligibilityChecker`
-
-* The parameter order of `Sylius\Bundle\CoreBundle\Form\Type\Checkout\AddressType::__construct` has been changed:
-
-    ```php
-        public function __construct(
-        +   private readonly AddressComparatorInterface $addressComparator,
-            string $dataClass,
-            array $validationGroups = []
-        -   private readonly AddressComparatorInterface $addressComparator = null,
-        )
-    ```
-
-* The `\Serializable` interface has been removed from the `Sylius\Component\User\Model\UserInterface`.
-
-* The parameter order of the `Sylius\Component\Core\OrderProcessing\OrderPaymentProcessor::__construct` has been
-  changed:
-
-    ```php
-        public function __construct(
-            private OrderPaymentProviderInterface $orderPaymentProvider,
-        -   private string $targetState = PaymentInterface::STATE_CART,
-            private OrderPaymentsRemoverInterface $orderPaymentsRemover,
-            private array $unprocessableOrderStates,
-        +   private string $targetState = PaymentInterface::STATE_CART,
-        )
-    ```
-
-* The following repository classes and interfaces were added, if you have custom repositories,
-  you need to update them to extend the new ones:
-
-  Addressing:
-
-    * `Sylius\Bundle\AddressingBundle\Doctrine\ORM\AddressRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Addressing\Repository\AddressRepositoryInterface`
-    * `Sylius\Bundle\AddressingBundle\Doctrine\ORM\CountryRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Addressing\Repository\CountryRepositoryInterface`
-    * `Sylius\Bundle\AddressingBundle\Doctrine\ORM\ProvinceRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Addressing\Repository\ProvinceRepositoryInterface`
-    * `Sylius\Bundle\AddressingBundle\Doctrine\ORM\ZoneMemberRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Addressing\Repository\ZoneMemberRepositoryInterface`
-
-  Attribute:
-
-    * `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Attribute\Repository\AttributeRepositoryInterface`
-    * `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeTranslationRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Attribute\Repository\AttributeTranslationRepositoryInterface`
-    * `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeValueRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Attribute\Repository\AttributeValueRepositoryInterface`
-
-  Product:
-
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAssociationRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAssociationTypeTranslationRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAttributeRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAttributeTranslationRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductOptionTranslationRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductOptionValueRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductOptionValueTranslationRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductTranslationRepository`
-    * `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductVariantTranslationRepository`
-
-  Currency:
-
-    * `Sylius\Bundle\CurrencyBundle\Doctrine\ORM\CurrencyRepository`
-      extends `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository`
-      implements `Sylius\Component\Currency\Repository\CurrencyRepositoryInterface`
-
-* The following repository classes and interfaces namespaces were changed, if you have custom repositories,
-  you need to update them to extend the new ones:
-
-  Addressing:
-
-    * `Sylius\Bundle\CoreBundle\Doctrine\ORM\AddressRepository` extended class changed from
-      `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository` to
-      `Sylius\Bundle\AddressingBundle\Doctrine\ORM\AddressRepository`
-    * `Sylius\Component\Core\Repository\AddressRepositoryInterface` implemented interface changed from
-      `Sylius\Component\Resource\Repository\RepositoryInterface` to
-      `Sylius\Component\Addressing\Repository\AddressRepositoryInterface`
-
-  Attribute:
-
-    * `Sylius\Bundle\CoreBundle\Doctrine\ORM\AttributeRepository` extended class changed from
-      `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository` to
-      `Sylius\Bundle\AttributeBundle\Doctrine\ORM\AttributeRepository`
-    * `Sylius\Component\Product\Repository\ProductAttributeValueRepositoryInterface` extended interface changed from
-      `Sylius\Component\Resource\Repository\RepositoryInterface` to
-      `Sylius\Component\Attribute\Repository\AttributeValueRepositoryInterface`
-
-  Product:
-
-    * `Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductAssociationRepository` extended class changed from
-      `Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository` to
-      `Sylius\Bundle\ProductBundle\Doctrine\ORM\ProductAssociationRepository`
-
-* A new parameter has been added to specify the validation groups for a given zone.
-  If you have any custom validation groups for zone member, you need to add them to
-  your `config/packages/_sylius.yaml` file.
-  This is handled by `Sylius\Bundle\AddressingBundle\Validator\Constraints\ZoneMemberGroup` and it resolves the groups
-  based on the type of the passed zone.
-
-* The following constructor parameter has been changed across the codebase:
-
-    ```php
-    -   private StateMachineInterface $stateMachineFactory,
-    +   private StateMachineInterface $stateMachine,
-    ```    
-
-  ```yaml
-  sylius_addressing:
-    zone_member:
-      validation_groups:
-        country:
-          - 'sylius'
-          - 'sylius_zone_member_country'
-        zone:
-          - 'sylius'
-          - 'sylius_zone_member_zone'
-  ```
-
-* The `locked`, `expiresAt` and `credentialsExpireAt` fields have been removed from the User model, both ShopUser and AdminUser, 
-  as well as the corresponding methods in the User model and columns in the database tables.
-
-* The following classes and interfaces have been removed:
-
-    * `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
-    * `Sylius\Bundle\AdminBundle\Controller\NotificationController`
-    * `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
-    * `Sylius\Bundle\CoreBundle\Templating\Helper\CheckoutStepsHelper`
-    * `Sylius\Bundle\CoreBundle\Templating\Helper\PriceHelper`
-    * `Sylius\Bundle\CoreBundle\Templating\Helper\VariantResolverHelper`
-    * `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelper`
-    * `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelperInterface`
-    * `Sylius\Bundle\InventoryBundle\Templating\Helper\InventoryHelper`
-    * `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelper`
-    * `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelperInterface`
-    * `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelper`
-    * `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelperInterface`
-    * `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelper`
-    * `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelperInterface`
-    * `Sylius\Bundle\OrderBundle\Templating\Helper\AdjustmentsHelper`
-    * `Sylius\Bundle\ProductBundle\Controller\ProductAttributeController`
-    * `Sylius\Bundle\UserBundle\Security\UserLogin`
-    * `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
-    * `Sylius\Bundle\UserBundle\Security\UserPasswordHasher`
-    * `Sylius\Bundle\UserBundle\Security\UserPasswordHasherInterface`
-    * `Sylius\Component\User\Security\Generator\UniquePinGenerator`
-
-* The following services and aliases have been removed:
-
-    * `sylius.security.password_hasher`
-    * `sylius.security.user_login`
-    * `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
-    * `Sylius\Component\User\Security\UserPasswordHasherInterface`
-    * `sylius.controller.admin.notification`
-
-* The service `sylius.form_registry.payum_gateway_config` has been moved to the `PaymentBundle`, and its ID changed to `sylius.form_registry.payment_gateway_config`.
-
-* The class `Sylius\Bundle\PayumBundle\Validator\GatewayFactoryExistsValidator` has been moved to the `PaymentBundle`, and its service ID changed to`sylius.validator.gateway_factory_exists`.
-
-* The class `Sylius\Bundle\PayumBundle\Validator\GroupsGenerator\GatewayConfigGroupsGenerator` has been moved to the `PaymentBundle`, and its service ID changed to`sylius.validator.groups_generator.gateway_config`.
-
-### Constructors signature changes
-
-1. The following constructor signatures have been changed:
-
-   `Sylius\Bundle\CoreBundle\Twig\CheckoutStepsExtension`
-    ```diff
-    
-    use Sylius\Component\Core\Checker\OrderPaymentMethodSelectionRequirementCheckerInterface;
-    use Sylius\Component\Core\Checker\OrderShippingMethodSelectionRequirementCheckerInterface;
-
-        public function __construct(
-    -       private readonly CheckoutStepsHelper|OrderPaymentMethodSelectionRequirementCheckerInterface $checkoutStepsHelper,
-    -       private readonly ?OrderShippingMethodSelectionRequirementCheckerInterface $orderShippingMethodSelectionRequirementChecker = null,
-    +       private readonly OrderPaymentMethodSelectionRequirementCheckerInterface $orderPaymentMethodSelectionRequirementChecker,
-    +       private readonly OrderShippingMethodSelectionRequirementCheckerInterface $orderShippingMethodSelectionRequirementChecker,
-        )
-    ```
-
-   `Sylius\Bundle\CoreBundle\Twig\PriceExtension`
-    ```diff
-    
-    use Sylius\Component\Core\Calculator\ProductVariantPricesCalculatorInterface;
-
-        public function __construct(
-    -       private readonly PriceHelper|ProductVariantPricesCalculatorInterface $helper,
-    +       private readonly ProductVariantPricesCalculatorInterface $productVariantPricesCalculator,
-        )
-    ```
-
-   `Sylius\Bundle\CoreBundle\Twig\VariantResolverExtension`
-    ```diff
-    
-    use Sylius\Component\Product\Resolver\ProductVariantResolverInterface;
-
-        public function __construct(
-    -       private readonly ProductVariantResolverInterface|VariantResolverHelper $helper,
-    +       private readonly ProductVariantResolverInterface $productVariantResolver,
-        )
-    ```
-
-   `Sylius\Bundle\CurrencyBundle\Twig\CurrencyExtension`
-    ```diff
-
-        public function __construct(
-    -       private ?CurrencyHelperInterface $helper = null,
-        )
-    ```
-
-   `Sylius\Bundle\InventoryBundle\Twig\InventoryExtension`
-    ```diff
-    use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
-
-        public function __construct(
-    -       private AvailabilityCheckerInterface|InventoryHelper $helper,
-    +       private AvailabilityCheckerInterface $availabilityChecker,
-        )
-    ```
-
-   `Sylius\Bundle\LocaleBundle\Twig\LocaleExtension`
-    ```diff
-    use Sylius\Component\Locale\Context\LocaleContextInterface;
-    use Sylius\Component\Locale\Converter\LocaleConverterInterface;
-
-        public function __construct(
-    -       private LocaleConverterInterface|LocaleHelperInterface $localeHelper,
-    -       private ?LocaleContextInterface $localeContext = null,
-    +       private LocaleConverterInterface $localeConverter,
-    +       private LocaleContextInterface $localeContext,
-        )
-    ```
-
-   `Sylius\Bundle\MoneyBundle\Twig\ConvertMoneyExtension`
-    ```diff
-    use Sylius\Component\Currency\Converter\CurrencyConverterInterface;
-
-        public function __construct(
-    -       private ConvertMoneyHelperInterface|CurrencyConverterInterface $helper,
-    +       private CurrencyConverterInterface $currencyConverter,
-        )
-    ```
-
-   `Sylius\Bundle\MoneyBundle\Twig\FormatMoneyExtension`
-    ```diff
-    use Sylius\Bundle\MoneyBundle\Formatter\MoneyFormatterInterface;
-
-        public function __construct(
-    -       private private FormatMoneyHelperInterface|MoneyFormatterInterface $helper,
-    +       private MoneyFormatterInterface $moneyFormatter,
-        )
-    ```
-
-   `Sylius\Bundle\OrderBundle\Twig\AggregateAdjustmentsExtension`
-    ```diff
-    use Sylius\Component\Order\Aggregator\AdjustmentsAggregatorInterface;
-
-        public function __construct(
-    -       private AdjustmentsAggregatorInterface|AdjustmentsHelper $adjustmentsHelper,
-    +       private AdjustmentsAggregatorInterface $adjustmentsAggregator,
-        )
-    ```
-
-   `Sylius\Bundle\AdminBundle\Controller\DashboardController`
-    ```diff
-        public function __construct(
-            private ChannelRepositoryInterface $channelRepository,
-            private Environment $templatingEngine,
-            private RouterInterface $router,
-    -       private ?StatisticsDataProviderInterface $statisticsDataProvider = null,
-        )
-    ```
-
-   `Sylius\Bundle\AdminBundle\EventListener\AdminFilterSubscriber`
-    ```diff
-    - use Sylius\Bundle\UiBundle\Storage\FilterStorageInterface;
-    + use Sylius\Bundle\GridBundle\Storage\FilterStorageInterface;
-
-        public function __construct(private FilterStorageInterface $filterStorage)
-    ```
-
-   `Sylius\Bundle\AdminBundle\Controller\RedirectHandler`
-    ```diff
-    - use Sylius\Bundle\UiBundle\Storage\FilterStorageInterface;
-    + use Sylius\Bundle\GridBundle\Storage\FilterStorageInterface;
-
-        public function __construct(
-            private RedirectHandlerInterface $decoratedRedirectHandler,
-            private FilterStorageInterface $filterStorage,
-        )
-    ```
-
-   `Sylius\Bundle\UiBundle\Twig\RedirectPathExtension`
-    ```diff
-    - use Sylius\Bundle\UiBundle\Storage\FilterStorageInterface;
-    + use Sylius\Bundle\GridBundle\Storage\FilterStorageInterface;
-
-        public function __construct(
-            private FilterStorageInterface $filterStorage,
-            private RouterInterface $router,
-        )
-    ```
-
-   `Sylius\Bundle\PayumBundle\Form\Extension\CryptedGatewayConfigTypeExtension`
-    ```diff
-    + use Sylius\Bundle\PayumBundle\Checker\PayumGatewayConfigEncryptionCheckerInterface;
-
-        public function __construct(
-    +       private readonly PayumGatewayConfigEncryptionCheckerInterface $encryptionChecker,
-            private ?CypherInterface $cypher = null,
-        )
-    ```
-
-## Grids
-
-The experimental `entities` filter has been removed. It has been replaced by the generic `entity` one.
-
-```diff
-sylius_grid:
-    grids:
-        # ...
-        sylius_admin_catalog_promotion:
-            # ...
-            filters:
-                channel:
--                   type: entities
-+                   type: entity
-                    label: sylius.ui.channel
-                    form_options:
-                        class: "%sylius.model.channel.class%"
-                    options:
--                       field: product.channels.id
-+                       fields: [product.channels.id]
-```
-
-The following service has been removed:
-
-    - sylius.grid_filter.entities
-
-## Security
-
-* API firewalls have been renamed and user checkers have been configured on firewalls 
-  with `security.user_checker.chain.<firewall>` service:
-
-    ```diff
-    security:
-        firewalls:
-            admin:
-                ...
-    +           user_checker: security.user_checker.chain.admin
-    -       new_api_admin_user:
-    +       api_admin:
-                ...
-    +           user_checker: security.user_checker.chain.api_admin
-    -       new_api_shop_user:
-    +       api_shop:
-                ...
-    +           user_checker: security.user_checker.chain.api_shop
-            shop:
-                ...
-    +           user_checker: security.user_checker.chain.shop
-    ```
-
-## Password Encoder & Salt
-The encoder and salt has been removed from the User entities. It will use the password hasher configured on Symfony security configuration.
-
-This "encoder" is configured via the [Symfony security password hasher](https://symfony.com/doc/current/security/passwords.html#configuring-a-password-hasher).
-
-You may have already something like that configuration bellow.
-
-```yaml
-# config/packages/security.yaml
-security:
-    # ...
-
-    password_hashers:
-        Sylius\Component\User\Model\UserInterface: argon2i
-```
-
-Check if you have an encoder configured in the `sylius_user` package configuration.
-
-```yaml
-sylius_user:
-    # ...
-    
-    encoder: plaintext # Remove this line
-
-    # ...
-    resources:
-        oauth:
-            user:
-                encoder: false # Remove this line
-                classes: Sylius\Component\User\Model\UserOAuth
-```
-
-Check your user hashed passwords in your production database.
-In modern Symfony projects, the hasher name is stored on the password.
-
-Example:
-`$argon2i$v=19$m=65536,t=4,p=1$VVJuMnpUUWhRY1daN1ppMA$2Tx6l3I+OUx+PUPn+vZz1jI3Z6l6IHh2kpG0NdpmYWE`
-
-If some of your users do not have the hasher name stored in the password field you may need to configure the "migrate_from" option into Symfony, following that documentation:
-https://symfony.com/doc/current/security/passwords.html#configure-a-new-hasher-using-migrate-from
-
-Note:
-If your app never changed the hasher name configuration, you don't need to configure this "migrate_from" configuration.
-
-## Directory structure
-
-* The Winzou state machine configuration file `state_machine.yml` has been moved from `@SyliusPaymentBundle/Resources/config/app` to `@SyliusPaymentBundle/Resources/config/app/state_machine` and renamed to `sylius_payment.yaml`.
-* The Symfony workflow configuration file `state_machine.yaml` has been moved from `@SyliusPaymentBundle/Resources/config/workflow` to `@SyliusPaymentBundle/Resources/config/app/workflow` and renamed to `sylius_payment.yaml`.
-
-## Frontend
-
-* Unused, legacy node packages have been removed, while the required ones have been updated to newer versions. To ensure a smooth transition, it is recommended to delete the `node_modules` directory and reinstall the packages.
+* Unused, legacy node packages have been removed, while the required ones have been updated to newer versions. 
+  To ensure a smooth transition, it is recommended to delete the `node_modules` directory and reinstall the packages.
 * The recommended Node.js versions are 20 or 22, as support for version 18 has been dropped.
 * `use_webpack` option was removed from the `sylius_ui` configuration, and the Webpack has become the only module
   bundler provided by Sylius.
 * `use_webpack` twig global variable was removed. Webpack is always used now, and there is no need to check for it.
-
 * Image sizes have been simplified and standardized for both the Admin and Shop Bundle.
-
 * Some Twig extension services have been moved from the UiBundle to the new Twig Extra package
 
-## Removal based on deprecations:
+#### KNP Menu
 
-### Classes and services
+* Aliases for the `knp_menu.menu_builder` tags introduced in Sylius 1.14 are now the only valid menu builder tags in
+  Sylius 2.0:
 
-* The following classes have been removed:
-    * **AdminBundle**
-    * `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
-    * `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionActionTypeExtension`
-    * `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionScopeTypeExtension`
-    * `Sylius\Bundle\AdminBundle\Menu\CustomerShowMenuBuilder`
-    * `Sylius\Bundle\AdminBundle\Menu\OrderShowMenuBuilder`
-    * `Sylius\Bundle\AdminBundle\Menu\ProductFormMenuBuilder`
-    * `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
-    * `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
-    * `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
-    * `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProvider`
-    * `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProviderInterface`
-    * **ApiBundle**
-    * `Sylius\Bundle\ApiBundle\ApiPlatform\ApiResourceConfigurationMerger`
-    * `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
-    * `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\RouteNameResolver`
-    * `Sylius\Bundle\ApiBundle\ApiPlatform\Factory\MergingExtractorResourceMetadataFactory`
-    * `Sylius\Bundle\ApiBundle\ApiPlatform\Metadata\Merger\LegacyResourceMetadataMerger`
-    * `Sylius\Bundle\ApiBundle\ApiPlatform\ResourceMetadataPropertyValueResolver`
-    * `Sylius\Bundle\ApiBundle\Controller\GetAddressLogEntryCollectionAction`
-    * `Sylius\Bundle\ApiBundle\Controller\GetOrderAdjustmentsAction`
-    * `Sylius\Bundle\ApiBundle\Controller\UploadAvatarImageAction`
-    * `Sylius\Bundle\ApiBundle\Controller\UploadProductImageAction`
-    * `Sylius\Bundle\ApiBundle\Controller\UploadTaxonImageAction`
-    * `Sylius\Bundle\ApiBundle\DataPersister\AddressDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\AdminUserDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\ChannelDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\CountryDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\CustomerDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\LocaleDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\MessengerDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\PaymentMethodDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\ProductAttributeDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\ProductDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\ProductTaxonDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\ProductVariantDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\PromotionCouponDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\PromotionDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\ShippingMethodDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\TranslatableDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataPersister\ZoneDataPersister`
-    * `Sylius\Bundle\ApiBundle\DataProvider\AccountResetPasswordItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\AdminOrderItemAdjustmentsSubresourceDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\AdminResetPasswordItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\ChannelAwareItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\ChannelsCollectionDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\CustomerItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\OrderAdjustmentsSubresourceDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\OrderItemAdjustmentsSubresourceDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\OrderItemItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\OrderItemUnitItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\PaymentItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\PaymentMethodsCollectionDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\ProductAttributesSubresourceDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\ProductItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\ShipmentItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\ShippingMethodsCollectionDataProvider`
-    * `Sylius\Bundle\ApiBundle\DataProvider\VerifyCustomerAccountItemDataProvider`
-    * `Sylius\Bundle\ApiBundle\Exception\ChannelCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\PaymentMethodCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\ProductAttributeCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\ProductCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\ProductVariantCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\PromotionCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\PromotionCouponCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\ProvinceCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\ShippingMethodCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\TaxonCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Exception\ZoneCannotBeRemoved`
-    * `Sylius\Bundle\ApiBundle\Filter\Doctrine\PromotionCouponPromotionFilter`
-    * `Sylius\Bundle\ApiBundle\Filter\PaymentMethodFilter`
-    * `Sylius\Bundle\ApiBundle\Filter\ShippingMethodFilter`
-    * `Sylius\Bundle\ApiBundle\QueryHandler\GetAddressLogEntryCollectionHandler`
-    * `Sylius\Bundle\ApiBundle\Serializer\FlattenExceptionNormalizer`
-    * `Sylius\Bundle\ApiBundle\SerializerContextBuilder\ReadOperationContextBuilder`
-    * `Sylius\Bundle\ApiBundle\Validator\Constraints\AccountVerificationTokenEligibilityValidator`
-    * `Sylius\Bundle\ApiBundle\Validator\ResourceApiInputDataPropertiesValidator`
-    * `Sylius\Bundle\ApiBundle\Validator\ResourceInputDataPropertiesValidatorInterface`
-    * `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\ChannelCodeAwareInputCommandDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\CommandAwareInputDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\CommandDataTransformerInterface`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\LocaleCodeAwareInputCommandDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailAwareCommandDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailIfNotSetAwareCommandDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInShopUserIdAwareCommandDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\OrderTokenValueAwareInputCommandDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\ShipmentIdAwareInputCommandDataTransformer`
-    * `Sylius\Bundle\ApiBundle\DataTransformer\SubresourceIdAwareCommandDataTransformer`
-    * `api_platform.action.post_item`
-    * **CoreBundle**
-    * `Sylius\Bundle\CoreBundle\Console\Command\Model\PluginInfo`
-    * `Sylius\Bundle\CoreBundle\Console\Command\ShowAvailablePluginsCommand`
-    * `Sylius\Bundle\CoreBundle\Form\Extension\CountryTypeExtension`
-    * `Sylius\Bundle\CoreBundle\Form\Extension\CustomerTypeExtension`
-    * `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
-    * `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
-    * `Sylius\Bundle\CoreBundle\Form\EventSubscriber\AddUserFormSubscriber`
-    * `Sylius\Bundle\CoreBundle\Twig\StateMachineExtension`
-    * `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
-    * `Sylius\Component\Core\Dashboard\DashboardStatistics`
-    * `Sylius\Component\Core\Dashboard\DashboardStatisticsProvider`
-    * `Sylius\Component\Core\Dashboard\Interval`
-    * `Sylius\Component\Core\Dashboard\SalesDataProvider`
-    * `Sylius\Component\Core\Dashboard\SalesDataProviderInterface`
-    * `Sylius\Component\Core\Dashboard\SalesSummary`
-    * `Sylius\Component\Core\Dashboard\SalesSummaryInterface`
-    * **PayumBundle**
-    * `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
-    * `Sylius\Bundle\PayumBundle\Controller\PayumController`
-    * `Sylius\Bundle\PayumBundle\Form\Type\PaypalGatewayConfigurationType`
-    * `Sylius\Bundle\PayumBundle\Form\Type\StripeGatewayConfigurationType`
-    * **UiBundle**
-    * `Sylius\Bundle\UiBundle\Console\Command\DebugTemplateEventCommand`
-    * `Sylius\Bundle\UiBundle\ContextProvider\ContextProviderInterface`
-    * `Sylius\Bundle\UiBundle\ContextProvider\DefaultContextProvider`
-    * `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockDataCollector`
-    * `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockRenderingHistory`
-    * `Sylius\Bundle\UiBundle\DataCollector\TraceableTemplateBlockRenderer`
-    * `Sylius\Bundle\UiBundle\DataCollector\TraceableTemplateEventRenderer`
-    * `Sylius\Bundle\UiBundle\Registry\TemplateBlock`
-    * `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistry`
-    * `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistryInterface`
-    * `Sylius\Bundle\UiBundle\Renderer\DelegatingTemplateEventRenderer`
-    * `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateBlockRenderer`
-    * `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateEventRenderer`
-    * `Sylius\Bundle\UiBundle\Renderer\TemplateBlockRendererInterface`
-    * `Sylius\Bundle\UiBundle\Renderer\TemplateEventRendererInterface`
-    * `Sylius\Bundle\UiBundle\Renderer\TwigTemplateBlockRenderer`
-    * `Sylius\Bundle\UiBundle\Storage\FilterStorage`
-    * `Sylius\Bundle\UiBundle\Storage\FilterStorageInterface`
-    * `Sylius\Bundle\UiBundle\Twig\LegacySonataBlockExtension`
-    * `Sylius\Bundle\UiBundle\Twig\SortByExtension`
-    * `Sylius\Bundle\UiBundle\Twig\TemplateEventExtension`
-    * `Sylius\Bundle\UiBundle\Twig\TestFormAttributeExtension`
-    * `Sylius\Bundle\UiBundle\Twig\TestHtmlAttributeExtension`
+| Old Alias             | New Alias             |
+|-----------------------|-----------------------|
+| **AdminBundle**       |                       |
+| `sylius.admin.main`   | `sylius_admin.main`   |
+| **ShopBundle**        |                       |
+| `sylius.shop.account` | `sylius_shop.account` |
 
-### Routes
+#### Transition from SemanticUI to Bootstrap
 
-* The following routes have been removed:
-    * `sylius_admin_dashboard_statistics`
-    * `sylius_admin_ajax_all_product_variants_by_codes`
-    * `sylius_admin_ajax_all_product_variants_by_phrase`
-    * `sylius_admin_ajax_customer_group_by_code`
-    * `sylius_admin_ajax_customer_groups_by_phrase`
-    * `sylius_admin_ajax_find_product_options`
-    * `sylius_admin_ajax_generate_product_slug`
-    * `sylius_admin_ajax_generate_taxon_slug`
-    * `sylius_admin_ajax_product_by_code`
-    * `sylius_admin_ajax_product_by_name_phrase`
-    * `sylius_admin_ajax_product_index`
-    * `sylius_admin_ajax_product_options_by_phrase`
-    * `sylius_admin_ajax_products_by_phrase`
-    * `sylius_admin_ajax_product_variants_by_codes`
-    * `sylius_admin_ajax_product_variants_by_phrase`
-    * `sylius_admin_ajax_taxon_by_code`
-    * `sylius_admin_ajax_taxon_by_name_phrase`
-    * `sylius_admin_ajax_taxon_leafs`
-    * `sylius_admin_ajax_taxon_root_nodes`
-    * `sylius_admin_dashboard_statistics`
-    * `sylius_admin_get_attribute_types`
-    * `sylius_admin_get_payment_gateways`
-    * `sylius_admin_get_product_attributes`
-    * `sylius_admin_partial_address_log_entry_index`
-    * `sylius_admin_partial_catalog_promotion_show`
-    * `sylius_admin_partial_channel_index`
-    * `sylius_admin_partial_customer_latest`
-    * `sylius_admin_partial_customer_show`
-    * `sylius_admin_partial_order_latest`
-    * `sylius_admin_partial_order_latest_in_channel`
-    * `sylius_admin_partial_product_show`
-    * `sylius_admin_partial_promotion_show`
-    * `sylius_admin_partial_taxon_show`
-    * `sylius_admin_partial_taxon_tree`
-    * `sylius_admin_render_attribute_forms`
-    * `sylius_shop_ajax_cart_add_item`
-    * `sylius_shop_ajax_cart_item_remove`
-    * `sylius_shop_ajax_user_check_action`
-    * `sylius_shop_partial_cart_summary`
-    * `sylius_shop_partial_cart_add_item`
-    * `sylius_shop_partial_channel_menu_taxon_index`
-    * `sylius_shop_partial_product_association_show`
-    * `sylius_shop_partial_product_index_latest`
-    * `sylius_shop_partial_product_review_latest`
-    * `sylius_shop_partial_product_show_by_slug`
-    * `sylius_shop_partial_taxon_index_by_code`
-    * `sylius_shop_partial_taxon_show_by_slug`
-
-* The following services have been renamed:
-    * `sylius.twig.extension.form_test_attribute_array` => `sylius_twig_extra.twig.extension.test_form_attribute`
-    * `sylius.twig.extension.form_test_attribute_name` => `sylius_twig_extra.twig.extension.test_html_attribute`
-    * `sylius.twig.extension.sort_by` => `sylius_twig_extra.twig.extension.sort_by`
-    * `Sylius\Bundle\UiBundle\Twig\RouteExistsExtension` => `sylius_twig_extra.twig.extension.route_exists`
-
-## Payment method gateways
-
-* Stripe gateway has been removed. This implementation has been deprecated and not SCA Ready.
-* PayPal Express Checkout gateway has been removed. Use now [PayPal Commerce Platform](https://github.com/Sylius/PayPalPlugin) integration.
-
-## Theming
-* Dependency on `sylius/theme-bundle` is moved from CoreBundle to ShopBundle and it will no longer be installed 
-  if you're running your shop in headless mode.
-* Channel's `themeName` form field existence is made optional and depends on `ShopBundle` presence.
-* The `Sylius\Bundle\CoreBundle\Theme\ChannelBasedThemeContext` has been moved to the `Sylius\Bundle\ShopBundle\Theme\ChannelBasedThemeContext`.
-
-## Routing
-
-* Routing for the `sylius_shop_payum` has been moved from the `SyliusShopBundle` to the `SyliusPayumBundle`:
-
-```yaml
-sylius_shop_payum:
--   resource: "@SyliusShopBundle/Resources/config/routing/payum.yml"
-+   resource: "@SyliusPayumBundle/Resources/config/routing/integrations/sylius_shop.yaml"
-```
-
-## Testing Suite
-
-* The `sylius.behat.api_security` has been replaced by `sylius.behat.api_admin_security` and `sylius.behat.api_shop_security` services.
-
-## Templates changes
-
-### Transition from SemanticUI to Bootstrap
-
-- All `.ui` prefixed classes have been replaced with Bootstrap classes.
+- All CSS classes of SemanticUI have been replaced with Bootstrap classes.
 - JavaScript components relying on Semantic UI have been rewritten to utilize Bootstrap's JavaScript plugins.
 - Customized CSS has been replaced by Bootstrap's utility classes.
 
-### Abandoning jQuery
+#### Removal of jQuery
 
 Most of the existing JavaScript has been replaced by SymfonyUX with Stimulus, which includes live components.
 This change led to the removal of jQuery and a significant reduction of custom JavaScript in the project. 
 Check out the documentation for more information [here](https://ux.symfony.com/).
 
-### Abandoning partial routes
+#### Abandoning partial routes
 
 All partial routes rendered in templates have been removed and replaced by rendering Twig components.
 
-### Sylius Twig Hooks
+#### Sylius Twig Hooks
 
 Twig Hooks are a robust and powerful alternative to the Sonata Block Events and the old Sylius Template Events systems.
 
-#### Abandoning Sonata Blocks
+##### Removal of Sonata Blocks
 
-Sonata Blocks have been fully replaced with Twig Hooks.
+Sonata Blocks have been fully removed as they were not actively maintained/supported for a long time.
 
-#### Evolving Sylius Template Events to Twig Hooks
+##### Evolving Sylius Template Events to Twig Hooks
 
 Sylius Twig Hooks is a new generation of template customization and extension, providing:
 
@@ -1491,9 +1634,11 @@ Sylius Twig Hooks is a new generation of template customization and extension, p
 - A priority mechanism to control rendering order.
 - Simple enable/disable options for each hook.
 
-##### Key Improvements in Sylius Twig Hooks
+1. Key Improvements in Sylius Twig Hooks
 
 **Improved Structure**
+
+- **Hooks**
 
 Previously, all template events were configured in a single, monolithic `events.yaml` file, making it difficult to navigate and maintain:
 
@@ -1504,7 +1649,8 @@ Previously, all template events were configured in a single, monolithic `events.
             /events.yaml
 ```
 
-With Twig Hooks, the configuration has been reorganized into smaller, more manageable files. Each file corresponds to a specific part of the application, enhancing clarity and maintainability:
+With Twig Hooks, the configuration has been reorganized into smaller, more manageable files. Each file corresponds 
+to a specific part of the application, enhancing clarity and maintainability:
 
 ```
 /app
@@ -1518,7 +1664,44 @@ With Twig Hooks, the configuration has been reorganized into smaller, more manag
                     /show.yaml
 ```
 
-##### Detailed Comparison: Old vs. New configurations
+- **Templates**
+
+The structure of the template directories has also been improved. Previously, templates were organized in a less intuitive way, 
+with some structures inconsistent with the template event definitions:
+
+```
+/resources
+    /views
+        /AdminUser
+        /Crud
+        /Product
+            /Form
+            /_avatarImage.html.twig
+            /_form.html.twig
+```
+
+Now, the templates are organized in a more consistent manner, with all templates grouped by resource and aligned 
+with hook naming conventions:
+
+```
+/templates
+    /product
+        /form
+            /sections
+                /translations
+                    description.html.twig
+                    meta_description.html.twig
+                    meta_keywords.html.twig
+                    name.html.twig
+                    short_description.html.twig
+                    slug.html.twig
+                /translations.html.twig
+        /show
+    /shared
+    /another_resource
+```
+
+1. Detailed Comparison: Old vs. New configurations
 
 **Old configuration (Template Events)**
 
@@ -1629,3 +1812,9 @@ sylius_twig_hooks:
 Twig Hooks cover both the admin and shop areas comprehensively, ensuring consistency across the entire application. 
 AdminBundle hooks start with the `sylius_admin` prefix, while ShopBundle hooks start with the `sylius_shop` prefix.
 
+For more information visit the [Sylius Stack](https://github.com/Sylius/Stack).
+
+### Testing Suite
+
+* The `sylius.behat.api_security` has been replaced by `sylius.behat.api_admin_security` and `sylius.behat.api_shop_security` services.
+* We removed `Psalm`, the `PHPStan` is now the only static analysis tool used in the project.

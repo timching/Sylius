@@ -1,2 +1,0 @@
-imports:
-    - { resource: "../test_cached/fidry_alice_data_fixtures.yaml" }

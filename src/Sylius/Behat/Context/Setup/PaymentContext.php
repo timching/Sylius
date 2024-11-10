@@ -103,6 +103,18 @@ final readonly class PaymentContext implements Context
     }
 
     /**
+     * @Given /^(this payment method) is not using Payum$/
+     */
+    public function thisPaymentMethodIsNotUsingPayum(PaymentMethodInterface $paymentMethod): void
+    {
+        /** @var GatewayConfigInterface $gatewayConfig */
+        $gatewayConfig = $paymentMethod->getGatewayConfig();
+        $gatewayConfig->setUsePayum(false);
+
+        $this->paymentMethodManager->flush();
+    }
+
+    /**
      * @Given the payment method :paymentMethod is disabled
      * @Given /^(this payment method) (?:has been|is) disabled$/
      * @When the payment method :paymentMethod gets disabled

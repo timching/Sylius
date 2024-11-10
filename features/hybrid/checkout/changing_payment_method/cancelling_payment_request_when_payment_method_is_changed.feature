@@ -22,7 +22,7 @@ Feature: Cancelling payment request when payment method is changed
 
     @api @ui
     Scenario: Cancelling only not finalized payment requests when the payment method has changed
-        When I browse my orders
+        When I want to browse order details for this order
         And I change my payment method to "Bank Transfer"
         Then the administrator should see the payment request with action "authorize" for "Cash on Delivery" payment method and state "cancelled"
         And the administrator should see the payment request with action "status" for "Cash on Delivery" payment method and state "cancelled"
