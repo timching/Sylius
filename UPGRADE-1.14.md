@@ -1,6 +1,6 @@
 # UPGRADE FROM `v1.13.X` TO `v1.14.0`
 
-### Dependencies
+## Dependencies
 
 1. The minimum version of `sylius/resource` and `sylius/resource-bundle`  have been bumped to `^1.11`.
    Due to that the following namespaces have been updated throughout the codebase:
@@ -29,7 +29,7 @@
 | `Sylius\Component\Resource\Translation\Provider\TranslationLocaleProviderInterface` | `Sylius\Resource\Translation\Provider\TranslationLocaleProviderInterface` |
 | `Sylius\Component\Resource\Translation\TranslatableEntityLocaleAssignerInterface`   | `Sylius\Resource\Translation\TranslatableEntityLocaleAssignerInterface`   |
 
-   The previous namespaces are still usable, but are considered deprecated and may be removed in future versions of `Resource` packages, update them at your own convenience.
+The old namespaces are deprecated and may be removed in future versions. Update your code to use the new namespaces.
 
 2. Package `enshrined/svg-sanitize` has been removed from the project due to license incompatibility with Sylius. You can still use it in your project by adding it manually:
 
@@ -43,7 +43,27 @@
         allowed_image_mime_types: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
     ```
 
-### Deprecations
+## Configuration
+
+1. The `sylius_core.state_machine` configuration parameter is deprecated and will be removed in 2.0.
+   Use `sylius_state_machine_abstraction.state_machine` instead.
+
+1. The `sylius_core.autoconfigure_with_attributes` and `sylius_order.autoconfigure_with_attributes` configuration parameters
+   are deprecated and will be removed in 2.0. To autoconfigure order processors and cart contexts, use corresponding attributes
+   instead of interfaces:
+
+    - `Sylius\Bundle\OrderBundle\Attribute\AsCartContext`
+    - `Sylius\Bundle\OrderBundle\Attribute\AsOrderProcessor`
+
+1. The `sylius_user.resources.{name}.user.resetting.pin` configuration parameter is deprecated and will be removed in 2.0.
+   The corresponding email `reset_password_pin` and `Sylius\Bundle\UserBundle\Controller\UserController::requestPasswordResetPinAction`
+   method have been also deprecated and will be removed in 2.0. The related class `Sylius\Component\User\Security\Generator\UniquePinGenerator`
+   and services have been deprecated as well:
+
+    * `sylius.{user_type}_user.pin_generator.password_reset`
+    * `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
+
+## New Service Aliases
 
 1. Aliases for the following services have been introduced to standardize service IDs and will replace the incorrect IDs in Sylius 2.0:
     
@@ -621,14 +641,16 @@
 
 1. Aliases for the following `knp_menu.menu_builder` service tags have been introduced to standardize tag aliases and will replace the incorrect aliases in Sylius 2.0:
 
-    | Old Alias             | New Alias             |
-    |-----------------------|-----------------------|
-    | **AdminBundle**       |                       |
-    | `sylius.admin.main`   | `sylius_admin.main`   |
-    | **ShopBundle**        |                       |
-    | `sylius.shop.account` | `sylius_shop.account` |
+   | Old Alias             | New Alias             |
+   |-----------------------|-----------------------|
+   | **AdminBundle**       |                       |
+   | `sylius.admin.main`   | `sylius_admin.main`   |
+   | **ShopBundle**        |                       |
+   | `sylius.shop.account` | `sylius_shop.account` |
 
-    The old alias are now deprecated and will be removed in Sylius 2.0.
+   The old alias are now deprecated and will be removed in Sylius 2.0.
+
+## Service Definition Deprecations
 
 1. The definition of the service `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionAction\PercentageDiscountActionConfigurationType`
    in the `PromotionBundle` has been deprecated and will be removed in Sylius 2.0. This definition has been copied to the `CoreBundle`.
@@ -639,114 +661,133 @@
 1. The following class definitions will be moved to `PromotionBundle` in Sylius 2.0:
     - `Sylius\Bundle\PromotionBundle\Form\Type\CatalogPromotionScopeType`
 
-1. The following class will be moved to `ShopBundle` in Sylius 2.0:
-    - `Sylius\Bundle\CoreBundle\Theme\ChannelBasedThemeContext`
+## Classes and Interfaces Deprecations
 
-   Starting with this version, form types will be extended using the parent form instead of through form extensions,
-   like it's done in the `Sylius\Bundle\AdminBundle\Form\Type\CatalogPromotionScopeType` and `Sylius\Bundle\AdminBundle\Form\Type\CatalogPromotionActionType` classes.
+| Deprecated class/interface                                           | Will be replaced with                                                   |
+|----------------------------------------------------------------------|-------------------------------------------------------------------------|
+| `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProvider`          | `Sylius\Component\Core\Statistics\Provider\StatisticsProvider`          |
+| `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProviderInterface` | `Sylius\Component\Core\Statistics\Provider\StatisticsProviderInterface` |
+| `Sylius\Bundle\CoreBundle\Twig\StateMachineExtension`                | `Sylius\Abstraction\StateMachine\Twig\StateMachineExtension`            |
 
-1. Classes related to legacy validation of CatalogPromotions' configuration have been deprecated and will be remove in Sylius 2.0:
-    - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\FixedDiscountActionValidator`
-    - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\ForProductsScopeValidator`
-    - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\ForTaxonsScopeValidator`
-    - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\ForVariantsScopeValidator`
-    - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\PercentageDiscountActionValidator`
-    - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionAction\FixedDiscountActionValidator`
-    - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionScope\ForProductsScopeValidator`
-    - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionScope\ForTaxonsScopeValidator`
-    - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionScope\ForVariantsScopeValidator`
-    - `Sylius\Bundle\PromotionBundle\Validator\Constraints\CatalogPromotionAction` 
-    - `Sylius\Bundle\PromotionBundle\Validator\Constraints\CatalogPromotionScope` 
-   Use the regular Symfony validation constraints instead.
-
-1. The class `Sylius\Bundle\CoreBundle\Twig\StateMachineExtension` has been deprecated and will be removed in Sylius 2.0. Use `Sylius\Abstraction\StateMachine\Twig\StateMachineExtension` instead.
-
-1. The class `Sylius\Bundle\CoreBundle\Console\Command\ShowAvailablePluginsCommand` has been deprecated and will be removed in Sylius 2.0.
-
-1. The class `Sylius\Bundle\CoreBundle\Console\Command\Model\PluginInfo` has been deprecated and will be removed in Sylius 2.0.
-
-1. The class `Sylius\Bundle\CoreBundle\Form\EventSubscriber\AddUserFormSubscriber` has been deprecated and will be removed in Sylius 2.0.
-
-1. The class `Sylius\Bundle\AdminBundle\EventListener\ResourceDeleteSubscriber` has been deprecated and will be removed in Sylius 2.0.
-   It will be replaced with the `ResourceDeleteListener`.
-
-1. The following exceptions have been deprecated and will be removed in Sylius 2.0:
-    - `Sylius\Bundle\ApiBundle\Exception\CannotRemoveCurrentlyLoggedInUser`
-    - `Sylius\Bundle\ApiBundle\Exception\ChannelCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\PaymentMethodCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\ProductAttributeCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\ProductCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\ProductVariantCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\PromotionCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\PromotionCouponCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\ProvinceCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\ShippingMethodCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\TaxonCannotBeRemoved`
-    - `Sylius\Bundle\ApiBundle\Exception\ZoneCannotBeRemoved`
-
-    All of these exceptions will be replaced with the `Sylius\Component\Core\Exception\ResourceDeleteException` exception.
+### Exceptions
+ - `Sylius\Bundle\ApiBundle\Exception\CannotRemoveCurrentlyLoggedInUser`                                                                                                               
+ - `Sylius\Bundle\ApiBundle\Exception\ChannelCannotBeRemoved`                                                                                                                          
+ - `Sylius\Bundle\ApiBundle\Exception\PaymentMethodCannotBeRemoved`                                                                                                                    
+ - `Sylius\Bundle\ApiBundle\Exception\ProductAttributeCannotBeRemoved`                                                                                                                 
+ - `Sylius\Bundle\ApiBundle\Exception\ProductCannotBeRemoved`                                                                                                                          
+ - `Sylius\Bundle\ApiBundle\Exception\ProductVariantCannotBeRemoved`                                                                                                                   
+ - `Sylius\Bundle\ApiBundle\Exception\PromotionCannotBeRemoved`                                                                                                                        
+ - `Sylius\Bundle\ApiBundle\Exception\PromotionCouponCannotBeRemoved`                                                                                                                  
+ - `Sylius\Bundle\ApiBundle\Exception\ProvinceCannotBeRemoved`                                                                                                                         
+ - `Sylius\Bundle\ApiBundle\Exception\ShippingMethodCannotBeRemoved`                                                                                                                   
+ - `Sylius\Bundle\ApiBundle\Exception\TaxonCannotBeRemoved`                                                                                                                            
+ - `Sylius\Bundle\ApiBundle\Exception\ZoneCannotBeRemoved`                                                              
+                                                                                                                        
+### Classes related to legacy validation of CatalogPromotions. Use the regular Symfony validation constraints instead.
+ - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\FixedDiscountActionValidator`                                      
+ - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\ForProductsScopeValidator`                                         
+ - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\ForTaxonsScopeValidator`                                           
+ - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\ForVariantsScopeValidator`                                         
+ - `Sylius\Bundle\ApiBundle\Validator\CatalogPromotion\PercentageDiscountActionValidator`                                 
+ - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionAction\FixedDiscountActionValidator`              
+ - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionScope\ForProductsScopeValidator`                  
+ - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionScope\ForTaxonsScopeValidator`                    
+ - `Sylius\Bundle\CoreBundle\CatalogPromotion\Validator\CatalogPromotionScope\ForVariantsScopeValidator`                  
+ - `Sylius\Bundle\PromotionBundle\Validator\Constraints\CatalogPromotionAction`                                           
+ - `Sylius\Bundle\PromotionBundle\Validator\Constraints\CatalogPromotionScope`                                            
+                                                                                                                        
+### Statistics
+ - `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`                                                  
+ - `Sylius\Component\Core\Dashboard\DashboardStatistics`                                                                  
+ - `Sylius\Component\Core\Dashboard\DashboardStatisticsProvider`                                                          
+ - `Sylius\Component\Core\Dashboard\DashboardStatisticsProviderInterface`                                                 
+ - `Sylius\Component\Core\Dashboard\Interval`                                                                             
+ - `Sylius\Component\Core\Dashboard\SalesDataProvider`                                                                    
+ - `Sylius\Component\Core\Dashboard\SalesDataProviderInterface`                                                           
+ - `Sylius\Component\Core\Dashboard\SalesSummary`                                                                         
+ - `Sylius\Component\Core\Dashboard\SalesSummaryInterface`                                                                
+                                                                                                                        
+### Templating helpers and its interfaces
+ - `Sylius\Bundle\CoreBundle\Templating\Helper\CheckoutStepsHelper`                                                       
+ - `Sylius\Bundle\CoreBundle\Templating\Helper\PriceHelper`                                                               
+ - `Sylius\Bundle\CoreBundle\Templating\Helper\VariantResolverHelper`                                                     
+ - `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelper`                                                        
+ - `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelperInterface`                                               
+ - `Sylius\Bundle\InventoryBundle\Templating\Helper\InventoryHelper`                                                      
+ - `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelper`                                                            
+ - `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelperInterface`                                                   
+ - `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelper`                                                       
+ - `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelperInterface`                                              
+ - `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelper`                                                        
+ - `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelperInterface`                                               
+ - `Sylius\Bundle\OrderBundle\Templating\Helper\AdjustmentsHelper`                                                        
+                                                                                                                        
+### Security related classes and interfaces
+ - `Sylius\Bundle\UserBundle\Security\UserLogin`                                                                          
+ - `Sylius\Bundle\UserBundle\Security\UserLoginInterface`                                                                 
+ - `Sylius\Bundle\UserBundle\Security\UserPasswordHasher`                                                                 
+ - `Sylius\Component\User\Security\UserPasswordHasherInterface`                                                           
+                                                                                                                        
+### Miscellaneous
+ - `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
+ - `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
+ - `Sylius\Bundle\AdminBundle\Controller\NotificationController`                                                                                                                            
+ - `Sylius\Bundle\AdminBundle\EventListener\ResourceDeleteSubscriber`                                                                                                                       
+ - `Sylius\Bundle\AdminBundle\Menu\CustomerShowMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\OrderShowMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\ProductFormMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
+ - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
+ - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\RouteNameResolver`
+ - `Sylius\Bundle\ApiBundle\ApiPlatform\Factory\MergingExtractorResourceMetadataFactory`
+ - `Sylius\Bundle\ApiBundle\DataTransformer\CommandAwareInputDataTransformer`
+ - `Sylius\Bundle\ApiBundle\DataTransformer\CommandDataTransformerInterface`
+ - `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
+ - `Sylius\Bundle\ApiBundle\PropertyInfo\Extractor\EmptyPropertyListExtractor`
+ - `Sylius\Bundle\ApiBundle\Validator\ResourceApiInputDataPropertiesValidator`
+ - `Sylius\Bundle\CoreBundle\Console\Command\Model\PluginInfo`                                                                                                                              
+ - `Sylius\Bundle\CoreBundle\Console\Command\ShowAvailablePluginsCommand`                                                                                                                   
+ - `Sylius\Bundle\CoreBundle\Form\EventSubscriber\AddUserFormSubscriber`                                                                                                                    
+ - `Sylius\Bundle\CoreBundle\Form\Extension\CountryTypeExtension`
+ - `Sylius\Bundle\CoreBundle\Form\Extension\CustomerTypeExtension`
+ - `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
+ - `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
+ - `Sylius\Bundle\CoreBundle\Theme\ChannelBasedThemeContext`                                                                                                                                
+ - `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
+ - `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
+ - `Sylius\Bundle\PayumBundle\Controller\PayumController`
+ - `Sylius\Bundle\PayumBundle\Form\Type\PaypalGatewayConfigurationType`
+ - `Sylius\Bundle\PayumBundle\Form\Type\StripeGatewayConfigurationType`
+ - `Sylius\Bundle\PayumBundle\Validator\Constraints\GatewayFactoryExists`
+ - `Sylius\Bundle\ProductBundle\Controller\ProductSlugController`
+ - `Sylius\Bundle\ShopBundle\Controller\HomepageController`
+ - `Sylius\Bundle\ShopBundle\Controller\SecurityWidgetController`
+ - `Sylius\Bundle\UiBundle\ContextProvider\DefaultContextProvider`
+ - `Sylius\Bundle\UiBundle\Renderer\DelegatingTemplateEventRenderer`
+ - `Sylius\Bundle\UiBundle\Renderer\TwigTemplateBlockRenderer`
+ - `Sylius\Bundle\UiBundle\Storage\FilterStorageInterface`
+ - `Sylius\Bundle\UiBundle\Twig\SortByExtension`
+ - `Sylius\Bundle\UiBundle\Twig\TemplateEventExtension`
+ - `Sylius\Bundle\UiBundle\Twig\TestFormAttributeExtension`
+ - `Sylius\Bundle\UiBundle\Twig\TestHtmlAttributeExtension`
+ - `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
 
 1. Extending `\InvalidArgumentException` by `Sylius\Component\Core\Inventory\Exception\NotEnoughUnitsOnHandException` 
    and `Sylius\Component\Core\Inventory\Exception\NotEnoughUnitsOnHoldException` is deprecated, instead they will extend 
    `\RuntimeException` in Sylius 2.0.
 
-1. Statistics related deprecations:
-    - The class `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProvider` and interface `Sylius\Bundle\AdminBundle\Provider\StatisticsDataProviderInterface` have been deprecated and will be removed in Sylius 2.0. 
-      Use `Sylius\Component\Core\Statistics\Provider\StatisticsProvider` and `Sylius\Component\Core\Statistics\Provider\StatisticsProviderInterface` instead.
-    - The class `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController` has been deprecated and will be removed in Sylius 2.0.
-    - The route `sylius_admin_dashboard_statistics` has been deprecated and will be removed in Sylius 2.0.
-    - The class `Sylius\Component\Core\Dashboard\DashboardStatistics` has been deprecated and will be removed in Sylius 2.0.
-    - The class `Sylius\Component\Core\Dashboard\DashboardStatisticsProvider` and interface `Sylius\Component\Core\Dashboard\DashboardStatisticsProviderInterface` have been deprecated and will be removed in Sylius 2.0.
-    - The class `Sylius\Component\Core\Dashboard\Interval` has been deprecated and will be removed in Sylius 2.0.
-    - The class `Sylius\Component\Core\Dashboard\SalesDataProvider` and interface `Sylius\Component\Core\Dashboard\SalesDataProviderInterface` have been deprecated and will be removed in Sylius 2.0.
-    - The class `Sylius\Component\Core\Dashboard\SalesSummary` and interface `Sylius\Component\Core\Dashboard\SalesSummaryInterface` have been deprecated and will be removed in Sylius 2.0.
-
-1. The following security related classes and interfaces have been deprecated, and they will be removed in 2.0:
-    - `Sylius\Bundle\UserBundle\Security\UserLogin`
-    - `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
-    - `Sylius\Bundle\UserBundle\Security\UserPasswordHasher`
-    - `Sylius\Bundle\UserBundle\Security\UserPasswordHasherInterface`
-
-1. The following security related services and aliases have been deprecated, and they will be removed in 2.0:
-    - `sylius.security.password_hasher`
-    - `sylius.security.user_login`
-    - `Sylius\Bundle\UserBundle\Security\UserLoginInterface`
-    - `Sylius\Component\User\Security\UserPasswordHasherInterface`
-
-1. The constructor signature of `Sylius\Bundle\AdminBundle\Action\ResendOrderConfirmationEmailAction` has been changed:
-    ```diff
-    use Symfony\Component\Routing\RouterInterface;
-
-        public function __construct(
-            private OrderRepositoryInterface $orderRepository,
-            private OrderEmailManagerInterface|ResendOrderConfirmationEmailDispatcherInterface $orderEmailManager,
-            private CsrfTokenManagerInterface $csrfTokenManager,
-            private RequestStack|SessionInterface $requestStackOrSession,
-    +       private ?RouterInterface $router = null,
-        )
-    ```
-
-1. The following classes have been deprecated and will be removed in Sylius 2.0:
-    - **AddressingBundle**
-    - `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
+1. The following services have been deprecated and will be removed in Sylius 2.0:
     - **AdminBundle**
-    - `Sylius\Bundle\AdminBundle\Controller\NotificationController`
     - `sylius.controller.admin.notification`
-    - `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
     - `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionActionTypeExtension`
     - `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionScopeTypeExtension`
-    - `Sylius\Bundle\AdminBundle\Menu\CustomerShowMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\OrderShowMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\ProductFormMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
     - **ApiBundle**
+    - `api_platform.action.post_item`
+    - `sylius.listener.api_postgresql_driver_exception_listener`
     - `Sylius\Bundle\ApiBundle\ApiPlatform\ApiResourceConfigurationMerger`
-    - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
-    - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\RouteNameResolver`
-    - `Sylius\Bundle\ApiBundle\ApiPlatform\Factory\MergingExtractorResourceMetadataFactory`
     - `Sylius\Bundle\ApiBundle\ApiPlatform\Metadata\Merger\LegacyResourceMetadataMerger`
     - `Sylius\Bundle\ApiBundle\ApiPlatform\ResourceMetadataPropertyValueResolver`
     - `Sylius\Bundle\ApiBundle\Controller\GetAddressLogEntryCollectionAction`
@@ -789,8 +830,6 @@
     - `Sylius\Bundle\ApiBundle\DataProvider\ShippingMethodsCollectionDataProvider`
     - `Sylius\Bundle\ApiBundle\DataProvider\VerifyCustomerAccountItemDataProvider`
     - `Sylius\Bundle\ApiBundle\DataTransformer\ChannelCodeAwareInputCommandDataTransformer`
-    - `Sylius\Bundle\ApiBundle\DataTransformer\CommandAwareInputDataTransformer`
-    - `Sylius\Bundle\ApiBundle\DataTransformer\CommandDataTransformerInterface`
     - `Sylius\Bundle\ApiBundle\DataTransformer\LocaleCodeAwareInputCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailAwareCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailIfNotSetAwareCommandDataTransformer`
@@ -798,7 +837,6 @@
     - `Sylius\Bundle\ApiBundle\DataTransformer\OrderTokenValueAwareInputCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\ShipmentIdAwareInputCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\SubresourceIdAwareCommandDataTransformer`
-    - `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
     - `Sylius\Bundle\ApiBundle\Filter\Doctrine\PromotionCouponPromotionFilter`
     - `Sylius\Bundle\ApiBundle\Filter\PaymentMethodFilter`
     - `Sylius\Bundle\ApiBundle\Filter\ShippingMethodFilter`
@@ -807,35 +845,34 @@
     - `Sylius\Bundle\ApiBundle\Serializer\FlattenExceptionNormalizer`
     - `Sylius\Bundle\ApiBundle\SerializerContextBuilder\ReadOperationContextBuilder`
     - `Sylius\Bundle\ApiBundle\Validator\Constraints\AccountVerificationTokenEligibilityValidator`
-    - `Sylius\Bundle\ApiBundle\Validator\ResourceApiInputDataPropertiesValidator`
     - `Sylius\Bundle\ApiBundle\Validator\ResourceInputDataPropertiesValidatorInterface`
-    - `api_platform.action.post_item`
+    - `sylius_api.extractor.property_info.empty_property_list`
     - **CoreBundle**
-    - `Sylius\Bundle\CoreBundle\Form\Extension\CountryTypeExtension`
-    - `Sylius\Bundle\CoreBundle\Form\Extension\CustomerTypeExtension`
-    - `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
-    - `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
-    - `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
-    - `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
+    - `sylius.form.extension.type.country`
+    - `sylius.form.extension.type.customer`
+    - `sylius.form.extension.type.locale`
+    - `sylius.grid_filter.entities`
     - **PayumBundle**
-    - `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
-    - `Sylius\Bundle\PayumBundle\Controller\PayumController`
-    - `Sylius\Bundle\PayumBundle\Form\Type\PaypalGatewayConfigurationType`
-    - `Sylius\Bundle\PayumBundle\Form\Type\StripeGatewayConfigurationType`
-    - `Sylius\Bundle\PayumBundle\Validator\Constraints\GatewayFactoryExists`
+    - `sylius.controller.payum`
+    - `sylius.form.type.gateway_configuration.paypal`
+    - `sylius.form.type.gateway_configuration.stripe`
+    - `sylius.form_registry.payum_gateway_config`
+    - `sylius.payum_action.paypal_express_checkout.convert_payment`
     - `Sylius\Bundle\PayumBundle\Validator\GatewayFactoryExistsValidator`
     - `Sylius\Bundle\PayumBundle\Validator\GroupsGenerator\GatewayConfigGroupsGenerator`
-    - `sylius.form_registry.payum_gateway_config`
     - **ProductBundle**
+    - `sylius.controller.product_slug`
     - `Sylius\Bundle\ProductBundle\Controller\ProductAttributeController`
-    - `Sylius\Bundle\ProductBundle\Controller\ProductSlugController`
     - **ShopBundle**
-    - `Sylius\Bundle\ShopBundle\Controller\HomepageController`
-    - `Sylius\Bundle\ShopBundle\Controller\SecurityWidgetController`
+    - `sylius.controller.shop.homepage`
+    - `sylius.controller.shop.security_widget`
     - **UiBundle**
+    - `sylius.twig.extension.form_test_attribute_array`
+    - `sylius.twig.extension.form_test_attribute_name`
+    - `sylius.twig.extension.sort_by`
+    - `sylius.twig.extension.template_event`
     - `Sylius\Bundle\UiBundle\Console\Command\DebugTemplateEventCommand`
     - `Sylius\Bundle\UiBundle\ContextProvider\ContextProviderInterface`
-    - `Sylius\Bundle\UiBundle\ContextProvider\DefaultContextProvider`
     - `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockDataCollector`
     - `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockRenderingHistory`
     - `Sylius\Bundle\UiBundle\DataCollector\TraceableTemplateBlockRenderer`
@@ -843,36 +880,79 @@
     - `Sylius\Bundle\UiBundle\Registry\TemplateBlock`
     - `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistry`
     - `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistryInterface`
-    - `Sylius\Bundle\UiBundle\Renderer\DelegatingTemplateEventRenderer`
     - `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateBlockRenderer`
     - `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateEventRenderer`
     - `Sylius\Bundle\UiBundle\Renderer\TemplateBlockRendererInterface`
     - `Sylius\Bundle\UiBundle\Renderer\TemplateEventRendererInterface`
-    - `Sylius\Bundle\UiBundle\Renderer\TwigTemplateBlockRenderer`
     - `Sylius\Bundle\UiBundle\Storage\FilterStorage`
-    - `Sylius\Bundle\UiBundle\Storage\FilterStorageInterface`
     - `Sylius\Bundle\UiBundle\Twig\LegacySonataBlockExtension`
-    - `Sylius\Bundle\UiBundle\Twig\SortByExtension`
-    - `Sylius\Bundle\UiBundle\Twig\TemplateEventExtension`
-    - `Sylius\Bundle\UiBundle\Twig\TestFormAttributeExtension`
-    - `Sylius\Bundle\UiBundle\Twig\TestHtmlAttributeExtension`
+    - **UserBundle**
+    - `sylius.security.password_hasher`
+    - `sylius.security.user_login`
 
-1. The following templating helpers and its interfaces have been deprecated and will be removed in Sylius 2.0:
-    - `Sylius\Bundle\CoreBundle\Templating\Helper\CheckoutStepsHelper`
-    - `Sylius\Bundle\CoreBundle\Templating\Helper\PriceHelper`
-    - `Sylius\Bundle\CoreBundle\Templating\Helper\VariantResolverHelper`
-    - `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelper`
-    - `Sylius\Bundle\CurrencyBundle\Templating\Helper\CurrencyHelperInterface`
-    - `Sylius\Bundle\InventoryBundle\Templating\Helper\InventoryHelper`
-    - `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelper`
-    - `Sylius\Bundle\LocaleBundle\Templating\Helper\LocaleHelperInterface`
-    - `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelper`
-    - `Sylius\Bundle\MoneyBundle\Templating\Helper\ConvertMoneyHelperInterface`
-    - `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelper`
-    - `Sylius\Bundle\MoneyBundle\Templating\Helper\FormatMoneyHelperInterface`
-    - `Sylius\Bundle\OrderBundle\Templating\Helper\AdjustmentsHelper`
+## Routes deprecations
+    - `sylius_admin_ajax_all_product_variants_by_codes`
+    - `sylius_admin_ajax_all_product_variants_by_phrase`
+    - `sylius_admin_ajax_customer_group_by_code`
+    - `sylius_admin_ajax_customer_groups_by_phrase`
+    - `sylius_admin_ajax_find_product_options`
+    - `sylius_admin_ajax_generate_product_slug`
+    - `sylius_admin_ajax_generate_taxon_slug`
+    - `sylius_admin_ajax_product_by_code`
+    - `sylius_admin_ajax_product_by_name_phrase`
+    - `sylius_admin_ajax_product_index`
+    - `sylius_admin_ajax_product_options_by_phrase`
+    - `sylius_admin_ajax_product_variants_by_codes`
+    - `sylius_admin_ajax_product_variants_by_phrase`
+    - `sylius_admin_ajax_products_by_phrase`
+    - `sylius_admin_ajax_taxon_by_code`
+    - `sylius_admin_ajax_taxon_by_name_phrase`
+    - `sylius_admin_ajax_taxon_leafs`
+    - `sylius_admin_ajax_taxon_root_nodes`
+    - `sylius_admin_dashboard_statistics`
+    - `sylius_admin_get_attribute_types`
+    - `sylius_admin_get_payment_gateways`
+    - `sylius_admin_get_product_attributes`
+    - `sylius_admin_partial_address_log_entry_index`
+    - `sylius_admin_partial_catalog_promotion_show`
+    - `sylius_admin_partial_channel_index`
+    - `sylius_admin_partial_customer_latest`
+    - `sylius_admin_partial_customer_show`
+    - `sylius_admin_partial_order_latest`
+    - `sylius_admin_partial_order_latest_in_channel`
+    - `sylius_admin_partial_product_show`
+    - `sylius_admin_partial_promotion_show`
+    - `sylius_admin_partial_taxon_show`
+    - `sylius_admin_partial_taxon_tree`
+    - `sylius_admin_render_attribute_forms`
+    - `sylius_shop_ajax_cart_add_item`
+    - `sylius_shop_ajax_cart_item_remove`
+    - `sylius_shop_ajax_user_check_action`
+    - `sylius_shop_partial_cart_summary`
+    - `sylius_shop_partial_cart_add_item`
+    - `sylius_shop_partial_channel_menu_taxon_index`
+    - `sylius_shop_partial_product_association_show`
+    - `sylius_shop_partial_product_index_latest`
+    - `sylius_shop_partial_product_review_latest`
+    - `sylius_shop_partial_product_show_by_slug`
+    - `sylius_shop_partial_taxon_index_by_code`
+    - `sylius_shop_partial_taxon_show_by_slug`
+
+## Constructor Signature Changes
 
 1. The following constructor signatures have been changed:
+    `Sylius\Bundle\AdminBundle\Action\ResendOrderConfirmationEmailAction`
+    ```diff
+    use Symfony\Component\Routing\RouterInterface;
+    
+        public function __construct(
+            private OrderRepositoryInterface $orderRepository,
+            private OrderEmailManagerInterface|ResendOrderConfirmationEmailDispatcherInterface $orderEmailManager,
+            private CsrfTokenManagerInterface $csrfTokenManager,
+            private RequestStack|SessionInterface $requestStackOrSession,
+    +       private ?RouterInterface $router = null,
+        )
+    ```
 
    `Sylius\Bundle\CoreBundle\Twig\CheckoutStepsExtension`
     ```diff
@@ -969,72 +1049,6 @@
     +       private AdjustmentsHelper|AdjustmentsAggregatorInterface $adjustmentsHelper,
         )
     ```
-
-1. The following routes has been deprecated and will be removed in Sylius 2.0:
-    - `sylius_admin_ajax_all_product_variants_by_codes`
-    - `sylius_admin_ajax_all_product_variants_by_phrase`
-    - `sylius_admin_ajax_customer_group_by_code`
-    - `sylius_admin_ajax_customer_groups_by_phrase`
-    - `sylius_admin_ajax_find_product_options`
-    - `sylius_admin_ajax_generate_product_slug`
-    - `sylius_admin_ajax_generate_taxon_slug`
-    - `sylius_admin_ajax_product_by_code`
-    - `sylius_admin_ajax_product_by_name_phrase`
-    - `sylius_admin_ajax_product_index`
-    - `sylius_admin_ajax_product_options_by_phrase`
-    - `sylius_admin_ajax_products_by_phrase`
-    - `sylius_admin_ajax_product_variants_by_codes`
-    - `sylius_admin_ajax_product_variants_by_phrase`
-    - `sylius_admin_ajax_taxon_by_code`
-    - `sylius_admin_ajax_taxon_by_name_phrase`
-    - `sylius_admin_ajax_taxon_leafs`
-    - `sylius_admin_ajax_taxon_root_nodes`
-    - `sylius_admin_dashboard_statistics`
-    - `sylius_admin_get_attribute_types`
-    - `sylius_admin_get_payment_gateways`
-    - `sylius_admin_get_product_attributes`
-    - `sylius_admin_partial_address_log_entry_index`
-    - `sylius_admin_partial_catalog_promotion_show`
-    - `sylius_admin_partial_channel_index`
-    - `sylius_admin_partial_customer_latest`
-    - `sylius_admin_partial_customer_show`
-    - `sylius_admin_partial_order_latest`
-    - `sylius_admin_partial_order_latest_in_channel`
-    - `sylius_admin_partial_product_show`
-    - `sylius_admin_partial_promotion_show`
-    - `sylius_admin_partial_taxon_show`
-    - `sylius_admin_partial_taxon_tree`
-    - `sylius_admin_render_attribute_forms`
-    - `sylius_shop_ajax_cart_add_item`
-    - `sylius_shop_ajax_cart_item_remove`
-    - `sylius_shop_ajax_user_check_action`
-    - `sylius_shop_partial_cart_summary`
-    - `sylius_shop_partial_cart_add_item`
-    - `sylius_shop_partial_channel_menu_taxon_index`
-    - `sylius_shop_partial_product_association_show`
-    - `sylius_shop_partial_product_index_latest`
-    - `sylius_shop_partial_product_review_latest`
-    - `sylius_shop_partial_product_show_by_slug`
-    - `sylius_shop_partial_taxon_index_by_code`
-    - `sylius_shop_partial_taxon_show_by_slug`
-
-1. The `sylius_core.state_machine` configuration parameter is deprecated and will be removed in 2.0. 
-   Use `sylius_state_machine_abstraction.state_machine` instead.
-
-1. The `sylius_core.autoconfigure_with_attributes` and `sylius_order.autoconfigure_with_attributes` configuration parameters 
-   are deprecated and will be removed in 2.0. To autoconfigure order processors and cart contexts, use corresponding attributes
-   instead of interfaces:
-
-   - `Sylius\Bundle\OrderBundle\Attribute\AsCartContext`
-   - `Sylius\Bundle\OrderBundle\Attribute\AsOrderProcessor`
-
-1. The `sylius_user.resources.{name}.user.resetting.pin` configuration parameter is deprecated and will be removed in 2.0. 
-   The corresponding email `reset_password_pin` and `Sylius\Bundle\UserBundle\Controller\UserController::requestPasswordResetPinAction` 
-   method have been also deprecated and will be removed in 2.0. The related class `Sylius\Component\User\Security\Generator\UniquePinGenerator`
-   and services have been deprecated as well:
-
-    * `sylius.{user_type}_user.pin_generator.password_reset`
-    * `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
 
 ### Testing Suite
 
