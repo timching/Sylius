@@ -43,6 +43,26 @@ The old namespaces are deprecated and may be removed in future versions. Update 
         allowed_image_mime_types: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
     ```
 
+## Configuration
+
+1. The `sylius_core.state_machine` configuration parameter is deprecated and will be removed in 2.0.
+   Use `sylius_state_machine_abstraction.state_machine` instead.
+
+1. The `sylius_core.autoconfigure_with_attributes` and `sylius_order.autoconfigure_with_attributes` configuration parameters
+   are deprecated and will be removed in 2.0. To autoconfigure order processors and cart contexts, use corresponding attributes
+   instead of interfaces:
+
+    - `Sylius\Bundle\OrderBundle\Attribute\AsCartContext`
+    - `Sylius\Bundle\OrderBundle\Attribute\AsOrderProcessor`
+
+1. The `sylius_user.resources.{name}.user.resetting.pin` configuration parameter is deprecated and will be removed in 2.0.
+   The corresponding email `reset_password_pin` and `Sylius\Bundle\UserBundle\Controller\UserController::requestPasswordResetPinAction`
+   method have been also deprecated and will be removed in 2.0. The related class `Sylius\Component\User\Security\Generator\UniquePinGenerator`
+   and services have been deprecated as well:
+
+    * `sylius.{user_type}_user.pin_generator.password_reset`
+    * `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
+
 ## New Service Aliases
 
 1. Aliases for the following services have been introduced to standardize service IDs and will replace the incorrect IDs in Sylius 2.0:
@@ -870,6 +890,54 @@ The old namespaces are deprecated and may be removed in future versions. Update 
     - `sylius.security.password_hasher`
     - `sylius.security.user_login`
 
+## Routes deprecations
+    - `sylius_admin_ajax_all_product_variants_by_codes`
+    - `sylius_admin_ajax_all_product_variants_by_phrase`
+    - `sylius_admin_ajax_customer_group_by_code`
+    - `sylius_admin_ajax_customer_groups_by_phrase`
+    - `sylius_admin_ajax_find_product_options`
+    - `sylius_admin_ajax_generate_product_slug`
+    - `sylius_admin_ajax_generate_taxon_slug`
+    - `sylius_admin_ajax_product_by_code`
+    - `sylius_admin_ajax_product_by_name_phrase`
+    - `sylius_admin_ajax_product_index`
+    - `sylius_admin_ajax_product_options_by_phrase`
+    - `sylius_admin_ajax_product_variants_by_codes`
+    - `sylius_admin_ajax_product_variants_by_phrase`
+    - `sylius_admin_ajax_products_by_phrase`
+    - `sylius_admin_ajax_taxon_by_code`
+    - `sylius_admin_ajax_taxon_by_name_phrase`
+    - `sylius_admin_ajax_taxon_leafs`
+    - `sylius_admin_ajax_taxon_root_nodes`
+    - `sylius_admin_dashboard_statistics`
+    - `sylius_admin_get_attribute_types`
+    - `sylius_admin_get_payment_gateways`
+    - `sylius_admin_get_product_attributes`
+    - `sylius_admin_partial_address_log_entry_index`
+    - `sylius_admin_partial_catalog_promotion_show`
+    - `sylius_admin_partial_channel_index`
+    - `sylius_admin_partial_customer_latest`
+    - `sylius_admin_partial_customer_show`
+    - `sylius_admin_partial_order_latest`
+    - `sylius_admin_partial_order_latest_in_channel`
+    - `sylius_admin_partial_product_show`
+    - `sylius_admin_partial_promotion_show`
+    - `sylius_admin_partial_taxon_show`
+    - `sylius_admin_partial_taxon_tree`
+    - `sylius_admin_render_attribute_forms`
+    - `sylius_shop_ajax_cart_add_item`
+    - `sylius_shop_ajax_cart_item_remove`
+    - `sylius_shop_ajax_user_check_action`
+    - `sylius_shop_partial_cart_summary`
+    - `sylius_shop_partial_cart_add_item`
+    - `sylius_shop_partial_channel_menu_taxon_index`
+    - `sylius_shop_partial_product_association_show`
+    - `sylius_shop_partial_product_index_latest`
+    - `sylius_shop_partial_product_review_latest`
+    - `sylius_shop_partial_product_show_by_slug`
+    - `sylius_shop_partial_taxon_index_by_code`
+    - `sylius_shop_partial_taxon_show_by_slug`
+
 ## Constructor Signature Changes
 
 1. The following constructor signatures have been changed:
@@ -981,74 +1049,6 @@ The old namespaces are deprecated and may be removed in future versions. Update 
     +       private AdjustmentsHelper|AdjustmentsAggregatorInterface $adjustmentsHelper,
         )
     ```
-
-## Routes deprecations
-    - `sylius_admin_ajax_all_product_variants_by_codes`
-    - `sylius_admin_ajax_all_product_variants_by_phrase`
-    - `sylius_admin_ajax_customer_group_by_code`
-    - `sylius_admin_ajax_customer_groups_by_phrase`
-    - `sylius_admin_ajax_find_product_options`
-    - `sylius_admin_ajax_generate_product_slug`
-    - `sylius_admin_ajax_generate_taxon_slug`
-    - `sylius_admin_ajax_product_by_code`
-    - `sylius_admin_ajax_product_by_name_phrase`
-    - `sylius_admin_ajax_product_index`
-    - `sylius_admin_ajax_product_options_by_phrase`
-    - `sylius_admin_ajax_product_variants_by_codes`
-    - `sylius_admin_ajax_product_variants_by_phrase`
-    - `sylius_admin_ajax_products_by_phrase`
-    - `sylius_admin_ajax_taxon_by_code`
-    - `sylius_admin_ajax_taxon_by_name_phrase`
-    - `sylius_admin_ajax_taxon_leafs`
-    - `sylius_admin_ajax_taxon_root_nodes`
-    - `sylius_admin_dashboard_statistics`
-    - `sylius_admin_get_attribute_types`
-    - `sylius_admin_get_payment_gateways`
-    - `sylius_admin_get_product_attributes`
-    - `sylius_admin_partial_address_log_entry_index`
-    - `sylius_admin_partial_catalog_promotion_show`
-    - `sylius_admin_partial_channel_index`
-    - `sylius_admin_partial_customer_latest`
-    - `sylius_admin_partial_customer_show`
-    - `sylius_admin_partial_order_latest`
-    - `sylius_admin_partial_order_latest_in_channel`
-    - `sylius_admin_partial_product_show`
-    - `sylius_admin_partial_promotion_show`
-    - `sylius_admin_partial_taxon_show`
-    - `sylius_admin_partial_taxon_tree`
-    - `sylius_admin_render_attribute_forms`
-    - `sylius_shop_ajax_cart_add_item`
-    - `sylius_shop_ajax_cart_item_remove`
-    - `sylius_shop_ajax_user_check_action`
-    - `sylius_shop_partial_cart_summary`
-    - `sylius_shop_partial_cart_add_item`
-    - `sylius_shop_partial_channel_menu_taxon_index`
-    - `sylius_shop_partial_product_association_show`
-    - `sylius_shop_partial_product_index_latest`
-    - `sylius_shop_partial_product_review_latest`
-    - `sylius_shop_partial_product_show_by_slug`
-    - `sylius_shop_partial_taxon_index_by_code`
-    - `sylius_shop_partial_taxon_show_by_slug`
-
-## Configuration
-
-1. The `sylius_core.state_machine` configuration parameter is deprecated and will be removed in 2.0. 
-   Use `sylius_state_machine_abstraction.state_machine` instead.
-
-1. The `sylius_core.autoconfigure_with_attributes` and `sylius_order.autoconfigure_with_attributes` configuration parameters 
-   are deprecated and will be removed in 2.0. To autoconfigure order processors and cart contexts, use corresponding attributes
-   instead of interfaces:
-
-   - `Sylius\Bundle\OrderBundle\Attribute\AsCartContext`
-   - `Sylius\Bundle\OrderBundle\Attribute\AsOrderProcessor`
-
-1. The `sylius_user.resources.{name}.user.resetting.pin` configuration parameter is deprecated and will be removed in 2.0. 
-   The corresponding email `reset_password_pin` and `Sylius\Bundle\UserBundle\Controller\UserController::requestPasswordResetPinAction` 
-   method have been also deprecated and will be removed in 2.0. The related class `Sylius\Component\User\Security\Generator\UniquePinGenerator`
-   and services have been deprecated as well:
-
-    * `sylius.{user_type}_user.pin_generator.password_reset`
-    * `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
 
 ### Testing Suite
 
