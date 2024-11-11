@@ -188,7 +188,6 @@ The old namespaces are deprecated and may be removed in future versions. Update 
     | `Sylius\Bundle\ApiBundle\Validator\Constraints\UniqueReviewerEmailValidator`                                        | `sylius_api.validator.unique_reviewer_email`                                                        |
     | `Sylius\Bundle\ApiBundle\Validator\Constraints\AdminResetPasswordTokenNonExpiredValidator`                          | `sylius_api.validator.admin_reset_password_token_non_expired`                                       |
     | `sylius.validator.order_address_requirement`                                                                        | `sylius_api.validator.order_address_requirement`                                                    |
-    | `Sylius\Bundle\ApiBundle\PropertyInfo\Extractor\EmptyPropertyListExtractor`                                         | `sylius_api.extractor.property_info.empty_property_list`                                            |
     | `Sylius\Bundle\ApiBundle\SectionResolver\AdminApiUriBasedSectionResolver`                                           | `sylius_api.section_resolver.admin_api_uri_based`                                                   |
     | `Sylius\Bundle\ApiBundle\SectionResolver\ShopApiUriBasedSectionResolver`                                            | `sylius_api.section_resolver.shop_api_uri_based`                                                    |
     | `Sylius\Bundle\ApiBundle\EventListener\ApiCartBlamerListener`                                                       | `sylius_api.listener.api_cart_blamer`                                                               |
@@ -710,12 +709,50 @@ The old namespaces are deprecated and may be removed in future versions. Update 
                                                                                                                         
 ### Miscellaneous
  - `Sylius\Bundle\AddressingBundle\Controller\ProvinceController`
+ - `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
  - `Sylius\Bundle\AdminBundle\Controller\NotificationController`                                                                                                                            
  - `Sylius\Bundle\AdminBundle\EventListener\ResourceDeleteSubscriber`                                                                                                                       
+ - `Sylius\Bundle\AdminBundle\Menu\CustomerShowMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\OrderShowMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\ProductFormMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
+ - `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
+ - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
+ - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\RouteNameResolver`
+ - `Sylius\Bundle\ApiBundle\ApiPlatform\Factory\MergingExtractorResourceMetadataFactory`
+ - `Sylius\Bundle\ApiBundle\DataTransformer\CommandAwareInputDataTransformer`
+ - `Sylius\Bundle\ApiBundle\DataTransformer\CommandDataTransformerInterface`
+ - `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
+ - `Sylius\Bundle\ApiBundle\PropertyInfo\Extractor\EmptyPropertyListExtractor`
+ - `Sylius\Bundle\ApiBundle\Validator\ResourceApiInputDataPropertiesValidator`
  - `Sylius\Bundle\CoreBundle\Console\Command\Model\PluginInfo`                                                                                                                              
  - `Sylius\Bundle\CoreBundle\Console\Command\ShowAvailablePluginsCommand`                                                                                                                   
  - `Sylius\Bundle\CoreBundle\Form\EventSubscriber\AddUserFormSubscriber`                                                                                                                    
+ - `Sylius\Bundle\CoreBundle\Form\Extension\CountryTypeExtension`
+ - `Sylius\Bundle\CoreBundle\Form\Extension\CustomerTypeExtension`
+ - `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
+ - `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
  - `Sylius\Bundle\CoreBundle\Theme\ChannelBasedThemeContext`                                                                                                                                
+ - `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
+ - `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
+ - `Sylius\Bundle\PayumBundle\Controller\PayumController`
+ - `Sylius\Bundle\PayumBundle\Form\Type\PaypalGatewayConfigurationType`
+ - `Sylius\Bundle\PayumBundle\Form\Type\StripeGatewayConfigurationType`
+ - `Sylius\Bundle\PayumBundle\Validator\Constraints\GatewayFactoryExists`
+ - `Sylius\Bundle\ProductBundle\Controller\ProductSlugController`
+ - `Sylius\Bundle\ShopBundle\Controller\HomepageController`
+ - `Sylius\Bundle\ShopBundle\Controller\SecurityWidgetController`
+ - `Sylius\Bundle\UiBundle\ContextProvider\DefaultContextProvider`
+ - `Sylius\Bundle\UiBundle\Renderer\DelegatingTemplateEventRenderer`
+ - `Sylius\Bundle\UiBundle\Renderer\TwigTemplateBlockRenderer`
+ - `Sylius\Bundle\UiBundle\Storage\FilterStorageInterface`
+ - `Sylius\Bundle\UiBundle\Twig\SortByExtension`
+ - `Sylius\Bundle\UiBundle\Twig\TemplateEventExtension`
+ - `Sylius\Bundle\UiBundle\Twig\TestFormAttributeExtension`
+ - `Sylius\Bundle\UiBundle\Twig\TestHtmlAttributeExtension`
+ - `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
 
 1. Extending `\InvalidArgumentException` by `Sylius\Component\Core\Inventory\Exception\NotEnoughUnitsOnHandException` 
    and `Sylius\Component\Core\Inventory\Exception\NotEnoughUnitsOnHoldException` is deprecated, instead they will extend 
@@ -724,21 +761,12 @@ The old namespaces are deprecated and may be removed in future versions. Update 
 1. The following services have been deprecated and will be removed in Sylius 2.0:
     - **AdminBundle**
     - `sylius.controller.admin.notification`
-    - `Sylius\Bundle\AdminBundle\Controller\Dashboard\StatisticsController`
     - `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionActionTypeExtension`
     - `Sylius\Bundle\AdminBundle\Form\Extension\CatalogPromotionScopeTypeExtension`
-    - `Sylius\Bundle\AdminBundle\Menu\CustomerShowMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\OrderShowMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\ProductFormMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\ProductUpdateMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\ProductVariantFormMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Menu\PromotionUpdateMenuBuilder`
-    - `Sylius\Bundle\AdminBundle\Twig\NotificationWidgetExtension`
     - **ApiBundle**
+    - `api_platform.action.post_item`
+    - `sylius.listener.api_postgresql_driver_exception_listener`
     - `Sylius\Bundle\ApiBundle\ApiPlatform\ApiResourceConfigurationMerger`
-    - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\CachedRouteNameResolver`
-    - `Sylius\Bundle\ApiBundle\ApiPlatform\Bridge\Symfony\Routing\RouteNameResolver`
-    - `Sylius\Bundle\ApiBundle\ApiPlatform\Factory\MergingExtractorResourceMetadataFactory`
     - `Sylius\Bundle\ApiBundle\ApiPlatform\Metadata\Merger\LegacyResourceMetadataMerger`
     - `Sylius\Bundle\ApiBundle\ApiPlatform\ResourceMetadataPropertyValueResolver`
     - `Sylius\Bundle\ApiBundle\Controller\GetAddressLogEntryCollectionAction`
@@ -781,8 +809,6 @@ The old namespaces are deprecated and may be removed in future versions. Update 
     - `Sylius\Bundle\ApiBundle\DataProvider\ShippingMethodsCollectionDataProvider`
     - `Sylius\Bundle\ApiBundle\DataProvider\VerifyCustomerAccountItemDataProvider`
     - `Sylius\Bundle\ApiBundle\DataTransformer\ChannelCodeAwareInputCommandDataTransformer`
-    - `Sylius\Bundle\ApiBundle\DataTransformer\CommandAwareInputDataTransformer`
-    - `Sylius\Bundle\ApiBundle\DataTransformer\CommandDataTransformerInterface`
     - `Sylius\Bundle\ApiBundle\DataTransformer\LocaleCodeAwareInputCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailAwareCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\LoggedInCustomerEmailIfNotSetAwareCommandDataTransformer`
@@ -790,7 +816,6 @@ The old namespaces are deprecated and may be removed in future versions. Update 
     - `Sylius\Bundle\ApiBundle\DataTransformer\OrderTokenValueAwareInputCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\ShipmentIdAwareInputCommandDataTransformer`
     - `Sylius\Bundle\ApiBundle\DataTransformer\SubresourceIdAwareCommandDataTransformer`
-    - `Sylius\Bundle\ApiBundle\EventListener\PostgreSQLDriverExceptionListener`
     - `Sylius\Bundle\ApiBundle\Filter\Doctrine\PromotionCouponPromotionFilter`
     - `Sylius\Bundle\ApiBundle\Filter\PaymentMethodFilter`
     - `Sylius\Bundle\ApiBundle\Filter\ShippingMethodFilter`
@@ -799,35 +824,34 @@ The old namespaces are deprecated and may be removed in future versions. Update 
     - `Sylius\Bundle\ApiBundle\Serializer\FlattenExceptionNormalizer`
     - `Sylius\Bundle\ApiBundle\SerializerContextBuilder\ReadOperationContextBuilder`
     - `Sylius\Bundle\ApiBundle\Validator\Constraints\AccountVerificationTokenEligibilityValidator`
-    - `Sylius\Bundle\ApiBundle\Validator\ResourceApiInputDataPropertiesValidator`
     - `Sylius\Bundle\ApiBundle\Validator\ResourceInputDataPropertiesValidatorInterface`
-    - `api_platform.action.post_item`
+    - `sylius_api.extractor.property_info.empty_property_list`
     - **CoreBundle**
-    - `Sylius\Bundle\CoreBundle\Form\Extension\CountryTypeExtension`
-    - `Sylius\Bundle\CoreBundle\Form\Extension\CustomerTypeExtension`
-    - `Sylius\Bundle\CoreBundle\Form\Extension\LocaleTypeExtension`
-    - `Sylius\Bundle\CoreBundle\Form\Type\Grid\Filter\EntitiesFilterType`
-    - `Sylius\Component\Core\Grid\Filter\EntitiesFilter`
-    - `Sylius\Bundle\CoreBundle\Twig\FilterExtension`
+    - `sylius.form.extension.type.country`
+    - `sylius.form.extension.type.customer`
+    - `sylius.form.extension.type.locale`
+    - `sylius.grid_filter.entities`
     - **PayumBundle**
-    - `Sylius\Bundle\PayumBundle\Action\Paypal\ExpressCheckout\ConvertPaymentAction`
-    - `Sylius\Bundle\PayumBundle\Controller\PayumController`
-    - `Sylius\Bundle\PayumBundle\Form\Type\PaypalGatewayConfigurationType`
-    - `Sylius\Bundle\PayumBundle\Form\Type\StripeGatewayConfigurationType`
-    - `Sylius\Bundle\PayumBundle\Validator\Constraints\GatewayFactoryExists`
+    - `sylius.controller.payum`
+    - `sylius.form.type.gateway_configuration.paypal`
+    - `sylius.form.type.gateway_configuration.stripe`
+    - `sylius.form_registry.payum_gateway_config`
+    - `sylius.payum_action.paypal_express_checkout.convert_payment`
     - `Sylius\Bundle\PayumBundle\Validator\GatewayFactoryExistsValidator`
     - `Sylius\Bundle\PayumBundle\Validator\GroupsGenerator\GatewayConfigGroupsGenerator`
-    - `sylius.form_registry.payum_gateway_config`
     - **ProductBundle**
+    - `sylius.controller.product_slug`
     - `Sylius\Bundle\ProductBundle\Controller\ProductAttributeController`
-    - `Sylius\Bundle\ProductBundle\Controller\ProductSlugController`
     - **ShopBundle**
-    - `Sylius\Bundle\ShopBundle\Controller\HomepageController`
-    - `Sylius\Bundle\ShopBundle\Controller\SecurityWidgetController`
+    - `sylius.controller.shop.homepage`
+    - `sylius.controller.shop.security_widget`
     - **UiBundle**
+    - `sylius.twig.extension.form_test_attribute_array`
+    - `sylius.twig.extension.form_test_attribute_name`
+    - `sylius.twig.extension.sort_by`
+    - `sylius.twig.extension.template_event`
     - `Sylius\Bundle\UiBundle\Console\Command\DebugTemplateEventCommand`
     - `Sylius\Bundle\UiBundle\ContextProvider\ContextProviderInterface`
-    - `Sylius\Bundle\UiBundle\ContextProvider\DefaultContextProvider`
     - `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockDataCollector`
     - `Sylius\Bundle\UiBundle\DataCollector\TemplateBlockRenderingHistory`
     - `Sylius\Bundle\UiBundle\DataCollector\TraceableTemplateBlockRenderer`
@@ -835,19 +859,12 @@ The old namespaces are deprecated and may be removed in future versions. Update 
     - `Sylius\Bundle\UiBundle\Registry\TemplateBlock`
     - `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistry`
     - `Sylius\Bundle\UiBundle\Registry\TemplateBlockRegistryInterface`
-    - `Sylius\Bundle\UiBundle\Renderer\DelegatingTemplateEventRenderer`
     - `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateBlockRenderer`
     - `Sylius\Bundle\UiBundle\Renderer\HtmlDebugTemplateEventRenderer`
     - `Sylius\Bundle\UiBundle\Renderer\TemplateBlockRendererInterface`
     - `Sylius\Bundle\UiBundle\Renderer\TemplateEventRendererInterface`
-    - `Sylius\Bundle\UiBundle\Renderer\TwigTemplateBlockRenderer`
     - `Sylius\Bundle\UiBundle\Storage\FilterStorage`
-    - `Sylius\Bundle\UiBundle\Storage\FilterStorageInterface`
     - `Sylius\Bundle\UiBundle\Twig\LegacySonataBlockExtension`
-    - `Sylius\Bundle\UiBundle\Twig\SortByExtension`
-    - `Sylius\Bundle\UiBundle\Twig\TemplateEventExtension`
-    - `Sylius\Bundle\UiBundle\Twig\TestFormAttributeExtension`
-    - `Sylius\Bundle\UiBundle\Twig\TestHtmlAttributeExtension`
     - **UserBundle**
     - `sylius.security.password_hasher`
     - `sylius.security.user_login`
@@ -1031,10 +1048,6 @@ The old namespaces are deprecated and may be removed in future versions. Update 
 
     * `sylius.{user_type}_user.pin_generator.password_reset`
     * `sylius.{user_type}_user.pin_uniqueness_checker.password_reset`
-
-## Miscellaneous
-
-1. Starting with Sylius 1.14, form types will be extended using the parent form instead of through form extensions, like it's done in the `Sylius\Bundle\AdminBundle\Form\Type\CatalogPromotionScopeType` and `Sylius\Bundle\AdminBundle\Form\Type\CatalogPromotionActionType` classes.
 
 ### Testing Suite
 
