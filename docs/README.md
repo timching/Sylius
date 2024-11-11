@@ -49,9 +49,7 @@ So why choose Sylius? Because it's more than just an e-commerce platform - it's 
 * [Sylius Team](https://sylius.com/team/)
 * [Sylius Roadmap](https://sylius.com/roadmap/)
 
-### Getting Started with Sylius
-
-The essential guide for the Sylius newcomers who want to know its most important features, quickly see the power of customization, and run their first Sylius shop within a few hours.
+### Getting Started with SyliusThe essential guide for the Sylius newcomers who want to know its most important features, quickly see the power of customization, and run their first Sylius shop within a few hours.
 
 * [Installation](getting-started-with-sylius/installation.md)
 * [Basic Configuration](getting-started-with-sylius/basic-configuration.md)
@@ -74,11 +72,10 @@ The Developer’s guide to leveraging the flexibility of Sylius. Here you will f
 * [Customers](the-book/customers/)
 * [Products](the-book/products/)
 * [Carts & Orders](the-book/carts-and-orders/)
-* [Frontend & Themes](the-book/frondend-and-themes.md)
-* [Sylius Plugins](the-book/sylius-plugins/)
 * [Support](the-book/support.md)
 * [Contributing](the-book/contributing/)
-* [API](the-book/api/)
+
+&#x20;                                                             [![Blackfire](https://old-docs.sylius.com/en/1.13/\_static/img/blackfire.png)](https://blackfire.io/docs/introduction?utm\_source=sylius\&utm\_medium=docs\&utm\_campaign=profiler)
 
 ### Sylius Plus
 
@@ -94,9 +91,9 @@ Documentation sections referring to Sylius Plus features are:
 * [RBAC](the-book/customers/adminuser.md)
 * [Customer Pools](the-book/customers/customer-pools.md)
 * [Splitting Shipments](the-book/carts-and-orders/shipments.md)
-* [Returns](the-book/carts-and-orders/returns.md)
+* Returns
   * Returns related [E-Mails](the-book/architecture/e-mails.md#sylius-plus-return-requests-emails)
 * [Multi-Source Inventory](the-book/products/multi-source-inventory.md)
-* [Loyalty](the-book/sylius-plus/loyalty.md)
-
-<figure><img src=".gitbook/assets/blackfire (1).png" alt="" width="356"><figcaption></figcaption></figure>
+* Loyalty
+* Marketplace Suite
+* B2B Suite
