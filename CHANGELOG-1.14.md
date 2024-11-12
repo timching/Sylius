@@ -1,5 +1,11 @@
 # CHANGELOG FOR `1.14.X`
 
+## v1.14.0 (2024-11-12)
+
+#### Details
+
+- [#17438](https://github.com/Sylius/Sylius/issues/17438) [Upgrade] Refine Sylius 1.14 Upgrade Guide ([@Rafikooo](https://github.com/Rafikooo))
+
 ## v1.14.0-RC.1 (2024-11-07)
 
 #### Details
