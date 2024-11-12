@@ -14,8 +14,6 @@ layout:
 
 # Release Cycle
 
-## The Release Cycle
-
 This document explains the **release cycle** of the Sylius project (i.e. the code & documentation hosted on the main `Sylius/Sylius` [repository](https://github.com/Sylius/Sylius)).
 
 Sylius follows the [Semantic Versioning](https://semver.org/) strategy:
