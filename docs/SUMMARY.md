@@ -105,7 +105,10 @@
 ## The Customization Guide
 
 * [Index](the-customization-guide/index.md)
-* [Customizing Models](the-customization-guide/customizing-models.md)
+* [Customizing Models](the-customization-guide/customizing-models/README.md)
+  * [How to add a custom model?](the-customization-guide/customizing-models/how-to-add-a-custom-model.md)
+  * [How to add a custom translatable model?](the-customization-guide/customizing-models/how-to-add-a-custom-translatable-model.md)
+  * [How to add a custom model accessible for respective channel administrators?](the-customization-guide/customizing-models/how-to-add-a-custom-model-accessible-for-respective-channel-administrators.md)
 * [Customizing Forms](the-customization-guide/customizing-forms.md)
 * [Customizing Repositories](the-customization-guide/customizing-repositories.md)
 * [Customizing Factories](the-customization-guide/customizing-factories.md)
@@ -121,34 +124,32 @@
   * [Customizing Fixture Suites](the-customization-guide/customizing-fixtures/customizing-fixture-suites.md)
 * [Customizing API](the-customization-guide/customizing-api.md)
 * [Customizing Serialization of API](the-customization-guide/customizing-serialization-of-api.md)
+* [Customizing Payments](the-customization-guide/customizing-payments/README.md)
+  * [How to integrate a Payment Gateway as a Plugin?](the-customization-guide/customizing-payments/how-to-integrate-a-payment-gateway-as-a-plugin.md)
+  * [How to configure PayPal Express Checkout?](the-customization-guide/customizing-payments/how-to-configure-paypal-express-checkout.md)
+* [Customizing Checkout](the-customization-guide/customizing-checkout/README.md)
+  * [How to disable guest checkout?](the-customization-guide/customizing-checkout/how-to-disable-guest-checkout.md)
+  * [How to change a redirect after the add to cart action?](the-customization-guide/customizing-checkout/how-to-change-a-redirect-after-the-add-to-cart-action.md)
 * [Tips & Tricks](the-customization-guide/tips-and-tricks.md)
 
-## THE COOKBOOK
+## THE COOKBOOK v1.x
 
-* [The Cookbook v.1.x](https://old-docs.sylius.com/en/1.13/cookbook/index.html)
+* [The Cookbook v1.x](https://old-docs.sylius.com/en/1.13/cookbook/index.html)
 
 ## The Cookbook 2.0
 
 * [Index](the-cookbook-2.0/index.md)
 * [Handling multiple Channels in CLI](the-cookbook-2.0/handling-multiple-channels-in-cli.md)
-* [How to add a custom model?](the-cookbook-2.0/how-to-add-a-custom-model.md)
-* [How to add a custom model accessible for respective channel administrators?](the-cookbook-2.0/how-to-add-a-custom-model-accessible-for-respective-channel-administrators.md)
-* [How to add a custom translatable model?](the-cookbook-2.0/how-to-add-a-custom-translatable-model.md)
 * [How to edit orders in Sylius?](the-cookbook-2.0/how-to-edit-orders-in-sylius.md)
-* [How to customize Sylius Checkout?](the-cookbook-2.0/how-to-customize-sylius-checkout.md)
-* [How to disable guest checkout?](the-cookbook-2.0/how-to-disable-guest-checkout.md)
 * [How to add Facebook login?](the-cookbook-2.0/how-to-add-facebook-login.md)
-* [How to change a redirect after the add to cart action?](the-cookbook-2.0/how-to-change-a-redirect-after-the-add-to-cart-action.md)
 * [How to render a menu of taxons (categories) in a view?](the-cookbook-2.0/how-to-render-a-menu-of-taxons-categories-in-a-view.md)
 * [How to embed a list of products into a view?](the-cookbook-2.0/how-to-embed-a-list-of-products-into-a-view.md)
 * [How to disable localized URLs?](the-cookbook-2.0/how-to-disable-localized-urls.md)
 * [How to manage content in Sylius?](the-cookbook-2.0/how-to-manage-content-in-sylius.md)
 * [How to use Vue Storefront PWA with Sylius?](the-cookbook-2.0/how-to-use-vue-storefront-pwa-with-sylius.md)
-* [How to configure PayPal Express Checkout?](the-cookbook-2.0/how-to-configure-paypal-express-checkout.md)
 * [How to configure Stripe Credit Card payment?](the-cookbook-2.0/how-to-configure-stripe-credit-card-payment.md)
 * [How to encrypt gateway config stored in the database?](the-cookbook-2.0/how-to-encrypt-gateway-config-stored-in-the-database.md)
 * [How to authorize a payment before capturing?](the-cookbook-2.0/how-to-authorize-a-payment-before-capturing.md)
-* [How to integrate a Payment Gateway as a Plugin?](the-cookbook-2.0/how-to-integrate-a-payment-gateway-as-a-plugin.md)
 * [How to customize a Credit Memo?](the-cookbook-2.0/how-to-customize-a-credit-memo.md)
 * [How to have the Credit Memos created after the Refund Payments?](the-cookbook-2.0/how-to-have-the-credit-memos-created-after-the-refund-payments.md)
 * [How to customize the refund form?](the-cookbook-2.0/how-to-customize-the-refund-form.md)

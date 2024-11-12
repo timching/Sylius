@@ -49,7 +49,9 @@ So why choose Sylius? Because it's more than just an e-commerce platform - it's 
 * [Sylius Team](https://sylius.com/team/)
 * [Sylius Roadmap](https://sylius.com/roadmap/)
 
-### Getting Started with SyliusThe essential guide for the Sylius newcomers who want to know its most important features, quickly see the power of customization, and run their first Sylius shop within a few hours.
+### Getting Started with Sylius
+
+The essential guide for the Sylius newcomers who want to know its most important features, quickly see the power of customization and run their first Sylius shop within a few hours.
 
 * [Installation](getting-started-with-sylius/installation.md)
 * [Basic Configuration](getting-started-with-sylius/basic-configuration.md)
