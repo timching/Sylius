@@ -1,5 +1,30 @@
 # CHANGELOG FOR `2.0.X`
 
+## v2.0.0 (2024-11-12)
+
+#### Details
+
+- [#17439](https://github.com/Sylius/Sylius/issues/17439) [CS][DX] Refactor
+- [#17355](https://github.com/Sylius/Sylius/issues/17355) New fixtures ([@kulczy](https://github.com/kulczy))
+- [#17441](https://github.com/Sylius/Sylius/issues/17441) [DOCUMENTATION] Synchronize 2.0-docs -> 2.0 ([@SyliusBot](https://github.com/SyliusBot))
+- [#17437](https://github.com/Sylius/Sylius/issues/17437) Remove Obsolete Catalog Promotions Validation ADR ([@Rafikooo](https://github.com/Rafikooo))
+- [#17442](https://github.com/Sylius/Sylius/issues/17442) SYL-4118: Mobile UI fixes in admin panel ([@bartek-sek](https://github.com/bartek-sek))
+- [#17444](https://github.com/Sylius/Sylius/issues/17444) [UI] Add top margin to flash messages ([@kulczy](https://github.com/kulczy))
+- [#17445](https://github.com/Sylius/Sylius/issues/17445) [Admin] Fix deleting customer account ([@GSadee](https://github.com/GSadee))
+- [#17450](https://github.com/Sylius/Sylius/issues/17450) Fix missing payment request breadcrumb ([@bartek-sek](https://github.com/bartek-sek))
+- [#17447](https://github.com/Sylius/Sylius/issues/17447) Fix mobile shipping methods form ([@bartek-sek](https://github.com/bartek-sek))
+- [#17449](https://github.com/Sylius/Sylius/issues/17449) Fix missing taxon header ([@bartek-sek](https://github.com/bartek-sek))
+- [#17451](https://github.com/Sylius/Sylius/issues/17451) Fix mobile product attributes form ([@bartek-sek](https://github.com/bartek-sek))
+- [#17452](https://github.com/Sylius/Sylius/issues/17452) [UI] Add missing asterix ([@kulczy](https://github.com/kulczy))
+- [#17453](https://github.com/Sylius/Sylius/issues/17453) Add Sylius logo for mails ([@kulczy](https://github.com/kulczy))
+- [#17457](https://github.com/Sylius/Sylius/issues/17457) [DOCUMENTATION] Synchronize 2.0-docs -> 2.0 ([@SyliusBot](https://github.com/SyliusBot))
+- [#17455](https://github.com/Sylius/Sylius/issues/17455) Fixtures cleanups ([@kulczy](https://github.com/kulczy))
+- [#17454](https://github.com/Sylius/Sylius/issues/17454) [UI] Reduce the margin on the product show page ([@kulczy](https://github.com/kulczy))
+- [#17446](https://github.com/Sylius/Sylius/issues/17446) [PaymentRequest] Fix Payum payment request ([@Prometee](https://github.com/Prometee))
+- [#17448](https://github.com/Sylius/Sylius/issues/17448) Refactor Upgrade file for 2.0 ([@TheMilek](https://github.com/TheMilek))
+- [#17438](https://github.com/Sylius/Sylius/issues/17438) [Upgrade] Refine Sylius 1.14 Upgrade Guide ([@Rafikooo](https://github.com/Rafikooo))
+- [#17464](https://github.com/Sylius/Sylius/issues/17464) [Composer] Add conflict to phpstan/phpdoc-parser >= 2.0 ([@GSadee](https://github.com/GSadee))
+
 ## v2.0.0-RC.1 (2024-11-07)
 
 #### Details
