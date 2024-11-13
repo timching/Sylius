@@ -101,7 +101,7 @@ You have the following parameters available:
 * `channel`: Channel in which an order was placed
 * `localeCode`: Locale code in which an order was placed
 
-{% embed url="https://sylius.com/plus/?utm_campaign=plus&utm_medium=cta&utm_source=docs" fullWidth="true" %}
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-start (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Sylius Plus: Return Requests Emails
 
@@ -175,7 +175,7 @@ Parameters:
 
 <div data-full-width="true">
 
-<figure><img src="../../.gitbook/assets/banner.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-end.png" alt=""><figcaption></figcaption></figure>
 
 </div>
 

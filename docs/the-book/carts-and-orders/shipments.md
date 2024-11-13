@@ -22,9 +22,13 @@ A shipment represents a shipping request for an order in Sylius. Each order can 
 To understand the process of creating shipments, refer to the guide on [Orders](orders.md) where shipments are covered in detail.
 {% endhint %}
 
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-start (1).png" alt=""><figcaption></figcaption></figure>
+
 ### Splitting Shipments
 
 In Sylius Plus, orders can be fulfilled partially, allowing for shipment splitting. This feature provides a UI where you can select items from an existing shipment to create a new one and send it (with or without a tracking code). Shipments can be split as long as at least one shipment remains in the `ready` state.
+
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-end.png" alt=""><figcaption></figcaption></figure>
 
 ### Shipment State Machine
 

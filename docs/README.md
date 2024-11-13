@@ -14,7 +14,11 @@ layout:
 
 # 📖 Sylius 2.0 Documentation
 
-<figure><img src=".gitbook/assets/sylius-logo_sylius-logo-light.png" alt="" width="563"><figcaption></figcaption></figure>
+<div data-full-width="true">
+
+<figure><img src=".gitbook/assets/sylius-docs-heading.png" alt=""><figcaption></figcaption></figure>
+
+</div>
 
 **Sylius** is an open-source e-commerce platform with a modular architecture, providing a robust foundation for online stores. It focuses on delivering a dynamic developer experience and allows extensive customization to meet unique business needs.&#x20;
 
