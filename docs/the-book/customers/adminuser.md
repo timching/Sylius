@@ -36,6 +36,12 @@ In **Sylius** by default you have got the administration panel routes (`/admin/*
 
 Only the logged-in **AdminUsers** are eligible to enter these routes.
 
+<div data-full-width="true">
+
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-start (1).png" alt=""><figcaption></figcaption></figure>
+
+</div>
+
 ## Access Control via Administrator Roles (ACL/RBAC)
 
 RBAC (_Role Based Access Control_) or ACL (_Access Control Layer_) is an approach to restricting system access for users using the roles system. It is required by the majority of companies on the enterprise level, thus it is provided in the Sylius Plus edition.
@@ -193,6 +199,12 @@ You can also use a twig function:
 It is possible to choose a channel to which an Administrator has access. It is done on the Administrator’s configuration page. If a channel is not chosen for an Administrator then they will have access to all channels.
 
 Having chosen a channel on an Administrator, their access will get restricted within the Sales section of the main menu in the Admin Panel. Thus they will see only orders, payments, shipments, return requests, invoices and credit memos from the channel they have access to.
+
+<div data-full-width="true">
+
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-end.png" alt=""><figcaption></figcaption></figure>
+
+</div>
 
 ### Additional Admin User Fixtures
 

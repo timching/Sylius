@@ -1,9 +1,5 @@
 ---
-coverY: 0
 layout:
-  cover:
-    visible: true
-    size: full
   title:
     visible: true
   description:
@@ -16,7 +12,7 @@ layout:
     visible: true
 ---
 
-# Sylius Plus Installation
+# ➕ Sylius Plus Installation
 
 Sylius Plus is a licensed, modular set of advanced extensions to Sylius applications that add new features and experience. As these are private packages they cannot be installed by every Sylius user, but only by those having the license.
 

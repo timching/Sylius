@@ -12,7 +12,13 @@ layout:
     visible: true
 ---
 
-# Multi-Source Inventory
+# ➕ Multi-Source Inventory
+
+<div data-full-width="true">
+
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-start (1).png" alt=""><figcaption></figcaption></figure>
+
+</div>
 
 Sylius Plus offers a more advanced approach to inventory management than the open-source version. While the Community Edition allows only one stock amount per variant, **Sylius Plus Multi-Source Inventory** enables you to create multiple **Inventory Sources** and manage different stock amounts for each source.
 
@@ -107,3 +113,9 @@ stocks_in_frankfurt_warehouse:
             - 'HOME_WEB'
             - 'FASHION_WEB'
 ```
+
+<div data-full-width="true">
+
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-end.png" alt=""><figcaption></figcaption></figure>
+
+</div>

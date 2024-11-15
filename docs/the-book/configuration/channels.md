@@ -84,7 +84,11 @@ For [Invoicing](https://docs.sylius.com/en/1.13/book/orders/invoices.html) and [
 
 <figure><img src="../../.gitbook/assets/shop_billing_data.png" alt=""><figcaption></figcaption></figure>
 
-{% embed url="https://sylius.com/plus/?utm_campaign=plus&utm_medium=cta&utm_source=docs" fullWidth="true" %}
+<div data-full-width="true">
+
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-start (1).png" alt=""><figcaption></figcaption></figure>
+
+</div>
 
 #### Business Units
 
@@ -104,6 +108,6 @@ Sylius Plus is supplied with an enhanced version of Shop Billing Data from Syliu
 
 <div data-full-width="true">
 
-<figure><img src="../../.gitbook/assets/banner.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/sylius-docs-plusfeature-end.png" alt=""><figcaption></figcaption></figure>
 
 </div>

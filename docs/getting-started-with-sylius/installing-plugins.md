@@ -69,6 +69,5 @@ By using plugins, you avoid reinventing the wheel and speed up the development p
 
 #### Learn more
 
-* [The Book: Plugins](../the-book/sylius-plugins/)
-* [Plugins Development Guide](../the-book/sylius-plugins/plugin-development-guide.md)
+* [Plugins Development Guide](https://old-docs.sylius.com/en/1.13/book/plugins/guide/index.html)
 * :sparkles: [Sylius Store: The Official Plugins List](https://store.sylius.com/)
