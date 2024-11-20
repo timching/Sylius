@@ -416,6 +416,7 @@ your app as necessary.
 
 #### Sylius State Machine Abstraction
 
+- Removed `sylius_core.state_machine` configuration parameter.
 - Changed `sylius_state_machine_abstraction.default_adapter` from `winzou_state_machine` to `symfony_workflow`.
 
 #### Resource
