@@ -251,7 +251,7 @@ All the `setter` methods have been removed from the commands above and also ther
       - `PUT /api/v2/admin/channel-price-history-configs/{id}`
 
 1. **ShopBillingData**
-    - The resource configuration managed by the `Channel` resource.
+    - The resource configuration is now managed by the `Channel` resource.
     - Removed endpoints:
       - `GET /api/v2/admin/shop-billing-datas/{id}`
       - `GET /api/v2/admin/channels/{code}/shop-billing-data`
