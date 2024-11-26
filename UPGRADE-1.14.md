@@ -1036,7 +1036,7 @@ The old namespaces are deprecated and may be removed in future versions. Update 
 
         public function __construct(
     -       private FormatMoneyHelperInterface $helper,
-    +       private private FormatMoneyHelperInterface|MoneyFormatterInterface $helper,
+    +       private FormatMoneyHelperInterface|MoneyFormatterInterface $helper,
         )
     ```
 
