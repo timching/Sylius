@@ -2159,6 +2159,7 @@ Similarly, use form types from `ShopBundle` for the Shop context.
 * `use_webpack` twig global variable was removed. Webpack is always used now, and there is no need to check for it.
 * Image sizes have been simplified and standardized for both the Admin and Shop Bundle.
 * Some Twig extension services have been moved from the UiBundle to the new Twig Extra package
+* Flags have been removed from languages - it resolves all ambiguity and ensures a consistent and straightforward language selection experience. This approach reduces maintenance complexity and eliminates the risk of incorrect or misleading flag assignments.
 
 #### KNP Menu
 
