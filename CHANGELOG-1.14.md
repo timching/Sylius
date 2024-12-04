@@ -1,5 +1,23 @@
 # CHANGELOG FOR `1.14.X`
 
+## v1.14.1 (2024-12-04)
+
+#### Details
+
+- [#17472](https://github.com/Sylius/Sylius/issues/17472) [Docs] Disallow indexing old-docs in search engines ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#17471](https://github.com/Sylius/Sylius/issues/17471) Fix channel collector's name to match the tag's id ([@GSadee](https://github.com/GSadee))
+- [#17494](https://github.com/Sylius/Sylius/issues/17494) [Docs v1] Organization docs ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#17500](https://github.com/Sylius/Sylius/issues/17500) Update README.md ([@kulczy](https://github.com/kulczy))
+- [#17502](https://github.com/Sylius/Sylius/issues/17502) Update breadcrumbs.html ([@kulczy](https://github.com/kulczy))
+- [#17515](https://github.com/Sylius/Sylius/issues/17515) removing the double "private" in UPGRADE-1.14.md ([@christopherhero](https://github.com/christopherhero))
+- [#17525](https://github.com/Sylius/Sylius/issues/17525) [Maintenance] Remove unnecessary definition of interface ([@Wojdylak](https://github.com/Wojdylak))
+- [#17527](https://github.com/Sylius/Sylius/issues/17527) Allow to add extra filters on promotion actions ([@lruozzi9](https://github.com/lruozzi9))
+- [#17507](https://github.com/Sylius/Sylius/issues/17507) fix: json_decode check always pass ([@sonbui00](https://github.com/sonbui00))
+- [#17533](https://github.com/Sylius/Sylius/issues/17533) Tag attribute case mismatch on sylius php attributes ([@ehibes](https://github.com/ehibes))
+- [#17537](https://github.com/Sylius/Sylius/issues/17537) [CS][DX] Refactor
+- [#17540](https://github.com/Sylius/Sylius/issues/17540) Add a logo used in emails ([@kulczy](https://github.com/kulczy))
+- [#17543](https://github.com/Sylius/Sylius/issues/17543) [Behat] Add http accept header to custom item action ([@Wojdylak](https://github.com/Wojdylak))
+
 ## v1.14.0 (2024-11-12)
 
 #### Details
