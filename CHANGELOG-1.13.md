@@ -1,5 +1,24 @@
 # CHANGELOG FOR `1.13.X`
 
+## v1.13.9 (2024-12-04)
+
+#### Details
+
+- [#17401](https://github.com/Sylius/Sylius/issues/17401) [Documentation] Fix 2.0-dev installation instruction tip ([@GSadee](https://github.com/GSadee))
+- [#17408](https://github.com/Sylius/Sylius/issues/17408) [API] Use model class parameter instead of hardcoded class for ShippingMethodRule resource ([@GSadee](https://github.com/GSadee))
+- [#17417](https://github.com/Sylius/Sylius/issues/17417) [Docs] Add links to 2.x docs on the 1.x documentation ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#17380](https://github.com/Sylius/Sylius/issues/17380) [CoreBundle] Fix initial log creation for table sylius_channel_pricing_log_entry ([@jblairy](https://github.com/jblairy))
+- [#17472](https://github.com/Sylius/Sylius/issues/17472) [Docs] Disallow indexing old-docs in search engines ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#17494](https://github.com/Sylius/Sylius/issues/17494) [Docs v1] Organization docs ([@CoderMaggie](https://github.com/CoderMaggie))
+- [#17500](https://github.com/Sylius/Sylius/issues/17500) Update README.md ([@kulczy](https://github.com/kulczy))
+- [#17502](https://github.com/Sylius/Sylius/issues/17502) Update breadcrumbs.html ([@kulczy](https://github.com/kulczy))
+- [#17527](https://github.com/Sylius/Sylius/issues/17527) Allow to add extra filters on promotion actions ([@lruozzi9](https://github.com/lruozzi9))
+- [#17507](https://github.com/Sylius/Sylius/issues/17507) fix: json_decode check always pass ([@sonbui00](https://github.com/sonbui00))
+- [#17533](https://github.com/Sylius/Sylius/issues/17533) Tag attribute case mismatch on sylius php attributes ([@ehibes](https://github.com/ehibes))
+- [#17537](https://github.com/Sylius/Sylius/issues/17537) [CS][DX] Refactor
+- [#17540](https://github.com/Sylius/Sylius/issues/17540) Add a logo used in emails ([@kulczy](https://github.com/kulczy))
+- [#17543](https://github.com/Sylius/Sylius/issues/17543) [Behat] Add http accept header to custom item action ([@Wojdylak](https://github.com/Wojdylak))
+
 ## v1.13.8 (2024-10-30)
 
 #### Details
