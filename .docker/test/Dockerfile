@@ -1,10 +1,12 @@
 FROM ghcr.io/sylius/sylius-php:8.2-fixuid-xdebug-alpine
 
 USER root
-RUN apk add --update apk add nano \
+RUN apk add --update;
+RUN apk add nano \
     # for all test commands, they use makefile
-    make \ 
+        make \
     # for the integration tests, they need the frontend running
-    nodejs npm yarn
+        nodejs npm yarn \
+    ;
 
 USER sylius

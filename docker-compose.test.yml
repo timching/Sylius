@@ -19,7 +19,7 @@ services:
         build:
             dockerfile: .docker/test/Dockerfile
             context: .
-        entrypoint: ["make", "phpunit-integration"]
+        entrypoint: ["make", "integration"]
         profiles: ["integration"]
         environment:
             APP_ENV: "test_cached"
