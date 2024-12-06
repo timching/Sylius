@@ -36,7 +36,7 @@ jobs:
                 uses: notiz-dev/github-action-json-property@release
                 with:
                     path: '.github/workflows/matrix.json'
-                    prop_path: '${{ inputs.type }}.e2e-mysql'
+                    prop_path: '${{ inputs.type }}.frontend'
 
     frontend:
         needs: get-matrix
