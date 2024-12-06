@@ -20,49 +20,40 @@ use Sylius\Bundle\CoreBundle\CatalogPromotion\Checker\InForTaxonsScopeVariantChe
 use Sylius\Bundle\CoreBundle\CatalogPromotion\Checker\InForVariantsScopeVariantChecker;
 use Sylius\Component\Core\Model\CatalogPromotionInterface;
 use Sylius\Tests\Api\JsonApiTestCase;
-use Sylius\Tests\Api\Utils\AdminUserLoginTrait;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Kernel;
 
 final class CatalogPromotionsTest extends JsonApiTestCase
 {
-    use AdminUserLoginTrait;
+    protected function setUp(): void
+    {
+        $this->setUpAdminContext();
+
+        $this->setUpDefaultGetHeaders();
+        $this->setUpDefaultPostHeaders();
+        $this->setUpDefaultPutHeaders();
+
+        parent::setUp();
+    }
 
     /** @test */
     public function it_gets_catalog_promotions(): void
     {
-        $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel.yaml', 'catalog_promotion/catalog_promotion.yaml']);
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
+        $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel/channel.yaml', 'catalog_promotion/catalog_promotion.yaml']);
 
-        $this->client->request(
-            method: 'GET',
-            uri: '/api/v2/admin/catalog-promotions',
-            server: $header,
-        );
+        $this->requestGet('/api/v2/admin/catalog-promotions');
 
-        $this->assertResponse(
-            $this->client->getResponse(),
-            'admin/catalog_promotion/get_catalog_promotions_response',
-            Response::HTTP_OK,
-        );
+        $this->assertResponseSuccessful('admin/catalog_promotion/get_catalog_promotions_response');
     }
 
     /** @test */
     public function it_gets_catalog_promotion(): void
     {
         $catalogPromotion = $this->loadFixturesAndGetCatalogPromotion();
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
-        $this->client->request(
-            method: 'GET',
-            uri: sprintf('/api/v2/admin/catalog-promotions/%s', $catalogPromotion->getCode()),
-            server: $header,
-        );
+        $this->requestGet(sprintf('/api/v2/admin/catalog-promotions/%s', $catalogPromotion->getCode()));
 
-        $this->assertResponse(
-            $this->client->getResponse(),
-            'admin/catalog_promotion/get_catalog_promotion_response',
-            Response::HTTP_OK,
-        );
+        $this->assertResponseSuccessful('admin/catalog_promotion/get_catalog_promotion_response');
     }
 
     /** @test */
@@ -70,18 +61,15 @@ final class CatalogPromotionsTest extends JsonApiTestCase
     {
         $this->loadFixturesFromFiles([
             'authentication/api_administrator.yaml',
-            'channel.yaml',
+            'channel/channel.yaml',
             'tax_category.yaml',
             'shipping_category.yaml',
             'product/product_variant.yaml',
         ]);
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
-        $this->client->request(
-            method: 'POST',
+        $this->requestPost(
             uri: '/api/v2/admin/catalog-promotions',
-            server: $header,
-            content: json_encode([
+            body: [
                 'name' => 'T-Shirts discount',
                 'code' => 'tshirts_discount',
                 'startDate' => '2022-01-01',
@@ -114,7 +102,7 @@ final class CatalogPromotionsTest extends JsonApiTestCase
                 'enabled' => true,
                 'exclusive' => false,
                 'priority' => 100,
-            ], \JSON_THROW_ON_ERROR),
+            ],
         );
 
         $this->assertResponse(
@@ -128,88 +116,71 @@ final class CatalogPromotionsTest extends JsonApiTestCase
     public function it_does_not_create_a_catalog_promotion_without_required_data(): void
     {
         $this->loadFixturesFromFiles(['authentication/api_administrator.yaml']);
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
-        $this->client->request(
-            method: 'POST',
-            uri: '/api/v2/admin/catalog-promotions',
-            server: $header,
-            content: json_encode([], \JSON_THROW_ON_ERROR),
-        );
+        $this->requestPost(uri: '/api/v2/admin/catalog-promotions', body: []);
 
-        $this->assertResponse(
-            $this->client->getResponse(),
-            'admin/catalog_promotion/post_catalog_promotion_without_required_data_response',
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-        );
+        $this->assertResponseUnprocessableEntity('admin/catalog_promotion/post_catalog_promotion_without_required_data_response');
     }
 
     /** @test */
     public function it_does_not_create_a_catalog_promotion_with_taken_code(): void
     {
-        $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel.yaml', 'catalog_promotion/catalog_promotion.yaml']);
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
+        $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel/channel.yaml', 'catalog_promotion/catalog_promotion.yaml']);
 
-        $this->client->request(
-            method: 'POST',
+        $this->requestPost(
             uri: '/api/v2/admin/catalog-promotions',
-            server: $header,
-            content: json_encode([
+            body: [
                 'name' => 'Mugs discount',
                 'code' => 'mugs_discount',
-            ], \JSON_THROW_ON_ERROR),
+            ],
         );
 
-        $this->assertResponse(
-            $this->client->getResponse(),
+        $this->assertResponseUnprocessableEntity(
             'admin/catalog_promotion/post_catalog_promotion_with_taken_code_response',
-            Response::HTTP_UNPROCESSABLE_ENTITY,
         );
     }
 
     /** @test */
     public function it_does_not_create_a_catalog_promotion_with_end_date_earlier_than_start_date(): void
     {
-        $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel.yaml', 'catalog_promotion/catalog_promotion.yaml']);
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
+        $this->loadFixturesFromFiles(['authentication/api_administrator.yaml', 'channel/channel.yaml', 'catalog_promotion/catalog_promotion.yaml']);
 
-        $this->client->request(
-            method: 'POST',
+        $this->requestPost(
             uri: '/api/v2/admin/catalog-promotions',
-            server: $header,
-            content: json_encode([
+            body: [
                 'name' => 'calatog Promotion',
                 'code' => 'catalog_promotion',
                 'startDate' => '2021-11-04 10:42:00',
                 'endDate' => '2021-10-04 10:42:00',
-            ], \JSON_THROW_ON_ERROR),
+            ],
         );
 
-        $this->assertResponse(
-            $this->client->getResponse(),
+        $this->assertResponseUnprocessableEntity(
             'admin/catalog_promotion/post_catalog_promotion_with_invalid_dates_response',
-            Response::HTTP_UNPROCESSABLE_ENTITY,
         );
     }
 
     /** @test */
     public function it_does_not_create_a_catalog_promotion_with_invalid_scopes(): void
     {
+        if (Kernel::VERSION_ID >= 70200) {
+            // Behavior of validation changed in Symfony starting from version 7.2.0
+            // Details: https://github.com/symfony/symfony/pull/57436
+            $this->markTestSkipped('This test is skipped due to a behavior change in Symfony starting from version 7.2.0.');
+        }
+
         $this->loadFixturesFromFiles([
             'authentication/api_administrator.yaml',
-            'channel.yaml',
+            'channel/channel.yaml',
             'tax_category.yaml',
             'shipping_category.yaml',
             'product/product_variant.yaml',
             'taxon_image.yaml',
         ]);
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
-        $this->client->request(
-            method: 'POST',
+        $this->requestPost(
             uri: '/api/v2/admin/catalog-promotions',
-            server: $header,
-            content: json_encode([
+            body: [
                 'name' => 'T-Shirts discount',
                 'code' => 'tshirts_discount',
                 'channels' => [
@@ -309,7 +280,7 @@ final class CatalogPromotionsTest extends JsonApiTestCase
                 ]],
                 'enabled' => true,
                 'exclusive' => false,
-            ], \JSON_THROW_ON_ERROR),
+            ],
         );
 
         $this->assertJsonResponseViolations($this->client->getResponse(), [
@@ -385,18 +356,15 @@ final class CatalogPromotionsTest extends JsonApiTestCase
     {
         $this->loadFixturesFromFiles([
             'authentication/api_administrator.yaml',
-            'channel.yaml',
+            'channel/channel.yaml',
             'tax_category.yaml',
             'shipping_category.yaml',
             'product/product_variant.yaml',
         ]);
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
-        $this->client->request(
-            method: 'POST',
+        $this->requestPost(
             uri: '/api/v2/admin/catalog-promotions',
-            server: $header,
-            content: json_encode([
+            body: [
                 'name' => 'T-Shirts discount',
                 'code' => 'tshirts_discount',
                 'channels' => [
@@ -488,7 +456,7 @@ final class CatalogPromotionsTest extends JsonApiTestCase
                 ]],
                 'enabled' => true,
                 'exclusive' => false,
-            ], \JSON_THROW_ON_ERROR),
+            ],
         );
 
         $this->assertJsonResponseViolations($this->client->getResponse(), [
@@ -525,6 +493,10 @@ final class CatalogPromotionsTest extends JsonApiTestCase
                 'message' => 'This field is missing.',
             ],
             [
+                'propertyPath' => 'actions[7].configuration',
+                'message' => 'Channel with code invalid_channel does not exist.',
+            ],
+            [
                 'propertyPath' => 'actions[7].configuration[WEB]',
                 'message' => 'This field is missing.',
             ],
@@ -547,13 +519,10 @@ final class CatalogPromotionsTest extends JsonApiTestCase
     public function it_updates_catalog_promotion(): void
     {
         $catalogPromotion = $this->loadFixturesAndGetCatalogPromotion();
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
-        $this->client->request(
-            method: 'PUT',
+        $this->requestPut(
             uri: sprintf('/api/v2/admin/catalog-promotions/%s', $catalogPromotion->getCode()),
-            server: $header,
-            content: json_encode([
+            body: [
                 'name' => 'T-Shirts discount',
                 'code' => 'new_code',
                 'actions' => [
@@ -578,46 +547,41 @@ final class CatalogPromotionsTest extends JsonApiTestCase
                     '/api/v2/admin/channels/MOBILE',
                 ],
                 'translations' => ['en_US' => [
-                    '@id' => sprintf('/api/v2/admin/catalog-promotion-translations/%s', $catalogPromotion->getTranslation('en_US')->getId()),
-                    'label' => 'T-Shirts discount',
+                    '@id' => sprintf(
+                        '/api/v2/admin/catalog-promotions/%s/translations/%s',
+                        $catalogPromotion->getCode(),
+                        $catalogPromotion->getTranslation('en_US')->getLocale(),
+                    ),
+                    'label' => 'T-Shirts discount: edited',
                 ]],
                 'enabled' => true,
                 'exclusive' => false,
                 'priority' => 1000,
-            ], \JSON_THROW_ON_ERROR),
+            ],
         );
 
-        $this->assertResponse(
-            $this->client->getResponse(),
-            'admin/catalog_promotion/put_catalog_promotion_response',
-            Response::HTTP_OK,
-        );
+        $this->assertResponseSuccessful('admin/catalog_promotion/put_catalog_promotion_response');
     }
 
     /** @test */
     public function it_does_not_update_a_catalog_promotion_with_duplicate_locale_translation(): void
     {
         $catalogPromotion = $this->loadFixturesAndGetCatalogPromotion();
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
 
-        $this->client->request(
-            method: 'PUT',
+        $this->requestPut(
             uri: sprintf('/api/v2/admin/catalog-promotions/%s', $catalogPromotion->getCode()),
-            server: $header,
-            content: json_encode([
+            body: [
                 'translations' => [
                     'en_US' => [
                         'slug' => 'caps/cap',
                         'name' => 'Cap',
                     ],
                 ],
-            ], \JSON_THROW_ON_ERROR),
+            ],
         );
 
-        $this->assertResponse(
-            $this->client->getResponse(),
+        $this->assertResponseUnprocessableEntity(
             'admin/catalog_promotion/put_catalog_promotion_with_duplicate_locale_translation',
-            Response::HTTP_UNPROCESSABLE_ENTITY,
         );
     }
 
@@ -626,13 +590,7 @@ final class CatalogPromotionsTest extends JsonApiTestCase
     {
         $catalogPromotion = $this->loadFixturesAndGetCatalogPromotion();
 
-        $header = array_merge($this->logInAdminUser('api@example.com'), self::CONTENT_TYPE_HEADER);
-
-        $this->client->request(
-            method: 'DELETE',
-            uri: sprintf('/api/v2/admin/catalog-promotions/%s', $catalogPromotion->getCode()),
-            server: $header,
-        );
+        $this->requestDelete(sprintf('/api/v2/admin/catalog-promotions/%s', $catalogPromotion->getCode()));
 
         $this->assertResponseCode($this->client->getResponse(), Response::HTTP_ACCEPTED);
     }
@@ -641,7 +599,7 @@ final class CatalogPromotionsTest extends JsonApiTestCase
     {
         $fixtures = $this->loadFixturesFromFiles([
             'authentication/api_administrator.yaml',
-            'channel.yaml',
+            'channel/channel.yaml',
             'tax_category.yaml',
             'shipping_category.yaml',
             'product/product_variant.yaml',

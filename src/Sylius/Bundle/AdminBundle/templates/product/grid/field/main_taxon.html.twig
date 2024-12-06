@@ -1,0 +1,7 @@
+{% if data.fullname is defined %}
+    {{ data.fullname }}
+{% else %}
+    <span class="text-danger">
+        {{ ux_icon('tabler:exclamation-circle') }} <i>{{ 'sylius.ui.no_main_taxon'|trans }}</i>
+    </span>
+{% endif %}
