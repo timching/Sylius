@@ -17,7 +17,8 @@ export default [
             'indent': ['error', 4],
             'semi': ['error', 'always'],
             'comma-dangle': ['error', 'never'],
-            'quotes': ['error', 'single']
+            'quotes': ['error', 'single'],
+            'no-console': ['error', {'allow': ['warn', 'error']}]
         }
     }
 ];
