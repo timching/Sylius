@@ -10,7 +10,8 @@
   "scripts": {
     "build": "encore dev",
     "build:prod": "encore production",
-    "watch": "encore dev --watch"
+    "watch": "encore dev --watch",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@sylius-ui/admin": "file:src/Sylius/Bundle/AdminBundle",
