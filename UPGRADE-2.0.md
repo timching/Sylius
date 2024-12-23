@@ -1928,7 +1928,7 @@ and maintainability of the application and also follows Symfony's best practices
 | **CurrencyBundle**                                                                                                  |                                                                                                     |
 | `sylius.currency_converter`                                                                                         | `sylius.converter.currency`                                                                         |
 | `sylius.currency_name_converter`                                                                                    | `sylius.converter.currency_name`                                                                    |
-| **InventoryBundle**                                                                                                 |     
+| **InventoryBundle**                                                                                                 |                                                                                                     |
 | `sylius.availability_checker`                                                                                       | `sylius.checker.inventory.availability`                                                             |
 | `sylius.availability_checker.default`                                                                               | `sylius.checker.inventory.availability`                                                             |
 | **LocaleBundle**                                                                                                    |                                                                                                     |
