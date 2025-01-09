@@ -1,3 +1,8 @@
+# UPGRADE FROM `v1.14.1` TO `v1.14.2`
+
+1. Extracted a new `sylius.order_processing.adjustment_clearing_types` parameter responsible for the collection of adjustment types to be cleared during order processing.
+   Previously the collection of types was hardcoded as an argument of the `sylius.order_processing.order_adjustments_clearer` service.
+
 # UPGRADE FROM `v1.13.X` TO `v1.14.0`
 
 ## Dependencies
