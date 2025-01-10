@@ -316,7 +316,7 @@ class ShowPage extends SymfonyPage implements ShowPageInterface
             try {
                 parent::open($urlParameters);
                 $isOpen = true;
-            } catch (UnexpectedPageException) {
+            } catch (UnexpectedPageException $e) {
                 $isOpen = false;
                 sleep(1);
             }
