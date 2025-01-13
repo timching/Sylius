@@ -1,5 +1,22 @@
 # CHANGELOG FOR `1.14.X`
 
+## v1.14.2 (2025-01-13)
+
+#### Details
+
+- [#17550](https://github.com/Sylius/Sylius/issues/17550) [Maintenance][Behat] Enable not creating a driver session in api scenarios ([@NoResponseMate](https://github.com/NoResponseMate))
+- [#17554](https://github.com/Sylius/Sylius/issues/17554) [CI] GHA improvements ([@NoResponseMate](https://github.com/NoResponseMate))
+- [#17566](https://github.com/Sylius/Sylius/issues/17566) Allow grid action button's link URL to be defined without defining a … ([@JeanDavidDaviet](https://github.com/JeanDavidDaviet))
+- [#17598](https://github.com/Sylius/Sylius/issues/17598) [Bug] Fix statistics tests in new year ([@mpysiak](https://github.com/mpysiak))
+- [#17590](https://github.com/Sylius/Sylius/issues/17590) Fix Migrations With Custom Table Name ([@Rafikooo](https://github.com/Rafikooo))
+- [#17603](https://github.com/Sylius/Sylius/issues/17603) [CS][DX] Refactor
+- [#17602](https://github.com/Sylius/Sylius/issues/17602) [CS][DX] Refactor
+- [#17611](https://github.com/Sylius/Sylius/issues/17611) [Maintenance][OrderProcessing] Extract adjustment types to be cleared to a parameter ([@NoResponseMate](https://github.com/NoResponseMate))
+- [#17607](https://github.com/Sylius/Sylius/issues/17607) [Bug] Fix missing variable ([@mpysiak](https://github.com/mpysiak))
+- [#17556](https://github.com/Sylius/Sylius/issues/17556) [Login] remove loader login page in safari when loading page from cache ([@zairigimad](https://github.com/zairigimad))
+- [#17613](https://github.com/Sylius/Sylius/issues/17613) [Inventory] Fix availability checker aliases ([@GSadee](https://github.com/GSadee))
+- [#17612](https://github.com/Sylius/Sylius/issues/17612) Add help on channel pricing when product is simple ([@ehibes](https://github.com/ehibes))
+
 ## v1.14.1 (2024-12-04)
 
 #### Details
