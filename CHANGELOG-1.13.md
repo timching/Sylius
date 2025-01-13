@@ -1,5 +1,16 @@
 # CHANGELOG FOR `1.13.X`
 
+## v1.13.10 (2025-01-13)
+
+#### Details
+
+- [#17550](https://github.com/Sylius/Sylius/issues/17550) [Maintenance][Behat] Enable not creating a driver session in api scenarios ([@NoResponseMate](https://github.com/NoResponseMate))
+- [#17566](https://github.com/Sylius/Sylius/issues/17566) Allow grid action button's link URL to be defined without defining a … ([@JeanDavidDaviet](https://github.com/JeanDavidDaviet))
+- [#17598](https://github.com/Sylius/Sylius/issues/17598) [Bug] Fix statistics tests in new year ([@mpysiak](https://github.com/mpysiak))
+- [#17590](https://github.com/Sylius/Sylius/issues/17590) Fix Migrations With Custom Table Name ([@Rafikooo](https://github.com/Rafikooo))
+- [#17603](https://github.com/Sylius/Sylius/issues/17603) [CS][DX] Refactor
+- [#17607](https://github.com/Sylius/Sylius/issues/17607) [Bug] Fix missing variable ([@mpysiak](https://github.com/mpysiak))
+
 ## v1.13.9 (2024-12-04)
 
 #### Details
